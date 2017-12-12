@@ -74,7 +74,9 @@ const ColProps = {
           {getFieldDecorator('field')(
           <Select style={{ width: '30%' }} size="large" placeholder="选择查询属性">
             <Option value="id">订单编号</Option>
-            <Option value="Jiangsu">Jiangsu</Option>
+            <Option value="from_name">发货人姓名</Option>
+            <Option value="from_phone">发货人电话</Option>
+            <Option value="to_name">收货人姓名</Option>
           </Select>
           )}
           {getFieldDecorator('value')(
