@@ -21,8 +21,9 @@ class Price extends Component {
 	}
 	calPrice(distance, weight){
 		var result = (2*distance*weight).toFixed(2)
-		result;
-		return 
+		if(isNaN(result))
+			result = 0;
+		return result;
 	}
 
     onChange(value){
@@ -79,7 +80,7 @@ class Price extends Component {
     render() {
         return (
         	<div>
-                <InputNumber id={this.props.id} onChange={this.onChange.bind(this)} disabled={this.props.disabled} value={this.state.value}></InputNumber>元
+                <InputNumber id={this.props.id} onChange={this.onChange.bind(this)} disabled={this.props.disabled} min={0} value={this.state.value}></InputNumber>元
         		<div ref='map' className={this.props.className} style={{width:0,height:0}}></div>
         	</div>
             

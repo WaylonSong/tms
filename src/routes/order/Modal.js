@@ -91,7 +91,7 @@ const modal = ({
     console.log(value);
     var params = {};
     for(var j = 0; j < itemIndexes.length; j++){
-      params[`priceCal-${j}`] = {from: value, to:safeGetFieldValue(`address-${j}`).str, cube: safeGetFieldValue(`cube-${j}`).str};
+      params[`price-${j}`] = {from: value, to:safeGetFieldValue(`address-${j}`).str, cube: safeGetFieldValue(`cube-${j}`).str};
     }
     setFieldsValue(
        params
@@ -99,14 +99,14 @@ const modal = ({
   }
   const handleToAddress = (i)=>(value)=>{
     var params = {};
-    params[`priceCal-${i}`] = {from:safeGetFieldValue('from-address').str, to: value, cube: safeGetFieldValue(`cube-${i}`).str};
+    params[`price-${i}`] = {from:safeGetFieldValue('from-address').str, to: value, cube: safeGetFieldValue(`cube-${i}`).str};
     setFieldsValue(
        params
     );
   }
   const handleCube = (i)=>(value)=>{
     var params = {};
-    params[`priceCal-${i}`] = {from:safeGetFieldValue('from-address').str, to: safeGetFieldValue(`address-${i}`).str, cube: value};
+    params[`price-${i}`] = {from:safeGetFieldValue('from-address').str, to: safeGetFieldValue(`address-${i}`).str, cube: value};
     setFieldsValue(
        params
     );
@@ -222,7 +222,14 @@ const modal = ({
             </FormItem>
            
             <FormItem label="价格" hasFeedback {...formItemLayout}>
-              {getFieldDecorator(`priceCal-${i}`)(<Price id={`priceCal-${i}`} center='贵阳' />)}
+              {getFieldDecorator(`price-${i}`, {
+                initialValue: item.to[i].price,
+                rules: [
+                  {
+                    required: true,
+                  },
+                ],
+              })(<Price id={`price-${i}`} {...disableFlag} center='贵阳' />)}
             </FormItem>
           </Card>
         </Col>

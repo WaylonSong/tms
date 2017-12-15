@@ -36,6 +36,15 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       className: styles.avatar,
       render: (text, record) => <a onClick={e => viewItem(record.id, e)}>{text}</a>,
     }, {
+      title: '订单状态',
+      dataIndex: 'status',
+      key: 'status',
+      render: (text) => <span>{text=='1'?'待处理':'已处理'}</span>,
+    }, {
+      title: '金额',
+      dataIndex: 'price',
+      key: 'price',
+    },{
       title: '发货人',
       dataIndex: 'from_name',
       key: 'from_name',
@@ -56,16 +65,16 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       key: 'to_name',
       render: (text) => <span>{text}</span>,
     }, {
-      title: '订单状态',
-      dataIndex: 'status',
-      key: 'status',
-      render: (text) => <span>{text=='1'?'待处理':'已处理'}</span>,
+      title: '收货地址',
+      dataIndex: 'to_address',
+      key: 'to_address',
+      render: (text) => <span>{text}</span>,
     }, {
-      title: 'CreateTime',
+      title: '创建时间',
       dataIndex: 'createTime',
       key: 'createTime',
     }, {
-      title: 'Operation',
+      title: '操作',
       key: 'operation',
       width: 100,
       render: (text, record) => {
