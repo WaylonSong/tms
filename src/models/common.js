@@ -43,7 +43,7 @@ const pageModel = modelExtend(model, {
 
 })
 
-const crudModelGenerator = (namespace)=>{return{
+const crudModelGenerator = (namespace, collectionName)=>{return{
     namespace,
     state: {
       list: [],
@@ -116,7 +116,7 @@ const crudModelGenerator = (namespace)=>{return{
         }else{
           payload = location.query || queryString.parse(location.search)|| { page: 1, pageSize: 10 }
         }
-        const data = yield call(queryAll, payload, namespace)
+        const data = yield call(queryAll, payload, collectionName)
         if (data) {
           yield put({
             type: 'querySuccess',
@@ -132,7 +132,7 @@ const crudModelGenerator = (namespace)=>{return{
         }
       },
       * delete ({ payload }, { call, put, select }) {
-        const data = yield call(remove, { id: payload }, namespace)
+        const data = yield call(remove, { id: payload }, collectionName)
         const { selectedRowKeys } = yield select(o => o[namespace])
         if (data.success) {
           yield put({ type: 'updateState', payload: { selectedRowKeys: selectedRowKeys.filter(_ => _ !== payload) } })
@@ -144,7 +144,7 @@ const crudModelGenerator = (namespace)=>{return{
       },
 
       * multiDelete ({ payload }, { call, put }) {
-        const data = yield call(removeAll, payload, namespace)
+        const data = yield call(removeAll, payload, collectionName)
         if (data.success) {
           yield put({ type: 'updateState', payload: { selectedRowKeys: [] } })
           yield put({ type: 'query' })
@@ -154,7 +154,7 @@ const crudModelGenerator = (namespace)=>{return{
       },
 
       * create ({ payload }, { call, put }) {
-        const data = yield call(create, payload, namespace)
+        const data = yield call(create, payload, collectionName)
         if (data.success) {
           yield put({ type: 'hideModal' })
           yield put({ type: 'query' })
@@ -164,9 +164,10 @@ const crudModelGenerator = (namespace)=>{return{
       },
 
       * update ({ payload }, { select, call, put }) {
-        const id = yield select(({ user }) => user.currentItem.id)
+        console.log(payload);
+        const id = yield select((obj) => obj[namespace].currentItem.id)
         const newObj = { ...payload, id }
-        const data = yield call(update, newObj, namespace)
+        const data = yield call(update, newObj, collectionName)
         if (data.success) {
           yield put({ type: 'hideModal' })
           yield put({ type: 'query' })

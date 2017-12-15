@@ -2,7 +2,9 @@
 import { crudModelGenerator } from './common'
 import { queryAll, query, queryById, deleteAll, create, remove, update } from 'services/crud'
 const resourceName = "order"
-var obj = crudModelGenerator(`${resourceName}`)
+const collectionName = "orders"
+
+var obj = crudModelGenerator(`${resourceName}`, `${collectionName}`)
 // function addBlanckTo(state){}
 obj.state["item"] = {from:{},to:[{}]};
 obj.reducers['addBlanckTo'] = (state)=>  {
@@ -25,14 +27,12 @@ obj.reducers['showModal'] = (state, { payload }) => {
 	  		itemIndexes.push(i);
 	}else
 		itemIndexes.push(0);
-	return { ...state, ...payload, modalVisible: true , itemIndexes}
+	return { ...state, ...payload, modalVisible: true, itemIndexes}
 }
 
 obj.effects['editItem'] = function *({ payload}, { call, put }){
 	// payload.currentItemId
-	console.log("payload.currentItemId");
-	console.log(payload.currentItemId);
-	const data = yield call(query, {id:payload.currentItemId}, `${resourceName}`)
+	const data = yield call(query, {id:payload.currentItemId}, `${collectionName}`)
 	if(data){
 		yield put({
         type: `showModal`,

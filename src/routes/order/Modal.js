@@ -37,7 +37,7 @@ const modal = ({
   ...modalProps
 }) => {
   const handleOk = () => {
-    console.log(getFieldsValue())
+    // console.log(getFieldsValue())
     if(modalType == "view")
       onOk("");
     else{
@@ -62,25 +62,7 @@ const modal = ({
   const handleAddBlankTo = (nextI)=>()=>{
     onAddBlankTo();
   }
-  // const handlePrice = (i) => (value)=> {
-  //   var price = {};
-  //   price[`price-${i}`] = value * 27.5
-
-  //   var params = {};
-  //   params[`price-${i}`] = value * 27.5;
-    
-  //   if(i > 0){
-  //     params[`priceCal-${i}`] = {from:getFieldValue('from-address').str, to:getFieldValue(`address-${i}`).str, cube: value};
-  //   }else{
-  //     i = -i;
-  //     for(var j = 0; j < i; j++){
-  //       params[`priceCal-${j}`] = {from:getFieldValue('from-address').str, to:getFieldValue(`address-${j}`).str, cube: value};
-  //     }
-  //   }
-  //   setFieldsValue(
-  //      params
-  //   );
-  // }
+  
   const safeGetFieldValue = (name)=>{
     if(getFieldValue(name))
       return getFieldValue(name)

@@ -12,7 +12,6 @@ class Price extends Component {
 		};
 	}
 	async componentWillReceiveProps(nextProps) {
-		console.log(nextProps)
 		if (nextProps.value) {
 			// {from:"西单", to:"东单", cube: value};
   		  	await this.setState({cube: nextProps.value.cube});

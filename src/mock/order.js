@@ -114,7 +114,7 @@ module.exports = {
   },
 
 
-  [`POST ${apiPrefix}/order`] (req, res) {
+  [`POST ${apiPrefix}/orders`] (req, res) {
     const newData = req.body
     newData.createTime = Mock.mock('@now')
     newData.avatar = newData.avatar || Mock.Random.image('100x100', Mock.Random.color(), '#757575', 'png', newData.nickName.substr(0, 1))
@@ -125,7 +125,7 @@ module.exports = {
     res.status(200).end()
   },
 
-  [`GET ${apiPrefix}/order/:id`] (req, res) {
+  [`GET ${apiPrefix}/orders/:id`] (req, res) {
     const { id } = req.params
     const data = queryArray(database, id, 'id')
     if (data) {
@@ -135,7 +135,7 @@ module.exports = {
     }
   },
 
-  [`DELETE ${apiPrefix}/order/:id`] (req, res) {
+  [`DELETE ${apiPrefix}/orders/:id`] (req, res) {
     console.log("req.params", req.params);
     const { id } = req.params
     const data = queryArray(database, id, 'id')
@@ -147,7 +147,7 @@ module.exports = {
     }
   },
 
-  [`PATCH ${apiPrefix}/order/:id`] (req, res) {
+  [`PUT ${apiPrefix}/orders/:id`] (req, res) {
     const { id } = req.params
     const editItem = req.body
     let isExist = false

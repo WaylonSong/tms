@@ -19,11 +19,31 @@ const menuList =[
   },{
     id: '2',
     bpid: '1',
-    name: 'Order',
-    icon: 'setting',
+    name: '订单管理',
+    icon: 'book',
     route: '/order',
   },{
     id: '3',
+    bpid: '1',
+    name: '运单管理',
+    icon: 'solution',
+    route: '/deliver',
+  },{
+    id: '31',
+    bpid: '3',
+    mpid: '3',
+    name: '运单列表',
+    icon: 'bars',
+    route: '/deliver',
+  },{
+    id: '32',
+    bpid: '3',
+    mpid: '3',
+    name: '运单分布',
+    icon: 'schedule',
+    route: '/deliver',
+  },{
+    id: '4',
     bpid: '1',
     name: 'Map',
     icon: 'setting',

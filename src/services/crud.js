@@ -11,7 +11,7 @@ export async function query (params, url) {
 
 export async function queryAll (params, url) {
   return request({
-    url: `${apiPrefix}/${url}s`,
+    url: `${apiPrefix}/${url}`,
     method: 'get',
     data: params,
   })
@@ -19,7 +19,7 @@ export async function queryAll (params, url) {
 
 export async function removeAll (params, url) {
   return request({
-    url: `${apiPrefix}/${url}s`,
+    url: `${apiPrefix}/${url}`,
     method: 'delete',
     data: params,
   })
@@ -44,9 +44,10 @@ export async function remove (params, url) {
 }
 
 export async function update (params, url) {
+  console.log(params)
   return request({
     url:`${apiPrefix}/${url}/:id`,
-    method: 'patch',
+    method: 'put',
     data: params,
   })
 }

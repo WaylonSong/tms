@@ -102,7 +102,6 @@ const Obj = (props) => {
         payload: {
           modalType: type,
           currentItemId: recordId,
-          // currentItem: {from:{phone:"123456"}, to:[{phone:"123"}, {phone:"456"}]},
         },
       })
     },
