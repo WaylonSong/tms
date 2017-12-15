@@ -32,31 +32,36 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       title: '订单编号',
       dataIndex: 'id',
       key: 'id',
-      width: 64,
+      width: 80,
       className: styles.avatar,
       render: (text, record) => <a onClick={e => viewItem(record.id, e)}>{text}</a>,
     }, {
       title: '订单状态',
       dataIndex: 'status',
       key: 'status',
+      width: 80,
       render: (text) => <span>{text=='1'?'待处理':'已处理'}</span>,
     }, {
       title: '金额',
       dataIndex: 'price',
+      width: 60,
       key: 'price',
     },{
       title: '发货人',
       dataIndex: 'from_name',
       key: 'from_name',
+      width: 100,
       render: (text) => <span>{text}</span>,
     }, {
       title: '发货地址',
       dataIndex: 'from_district',
+      width: 200,
       key: 'from_district',
       render: (text) => <span>{text}</span>,
     }, {
       title: '电话',
       dataIndex: 'from_phone',
+      width: 100,
       key: 'from_phone',
       render: (text) => <span>{text}</span>,
     }, {
@@ -67,11 +72,13 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
     }, {
       title: '收货地址',
       dataIndex: 'to_address',
+      width: 200,
       key: 'to_address',
       render: (text) => <span>{text}</span>,
     }, {
       title: '创建时间',
       dataIndex: 'createTime',
+      width: 150,
       key: 'createTime',
     }, {
       title: '操作',
