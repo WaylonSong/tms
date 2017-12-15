@@ -22,7 +22,13 @@ const menuList =[
     name: 'Order',
     icon: 'setting',
     route: '/order',
-  },
+  },{
+    id: '3',
+    bpid: '1',
+    name: 'Map',
+    icon: 'setting',
+    route: '/map',
+  }
 ];
 export default {
   namespace: 'app',

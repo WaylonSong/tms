@@ -24,8 +24,8 @@ let ordersListData2 = Mock.mock({
   'data|80-100': [
     {
       id: '@id',
-      from: {name: '@name', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: '贵阳北站'},
-      to: [{name: '@name', phone: /^1[34578]\d{9}$/, district: '@county(true)', detail:'@title', address: '贵阳站', 'cube|1-100.1-10': 1, 'price|50-200.1-2': 1}, {name: '@name', phone: /^1[34578]\d{9}$/, detail:'@title', district: '@county(true)', address: '贵阳东站', 'cube|1-100.1-2': 1, 'price|50-200.1-2': 1}],
+      from: {name: '@name', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'贵阳市乌当区贵阳北站', x:'33', y:'116'}},
+      to: [{name: '@name', phone: /^1[34578]\d{9}$/, district: '@county(true)', detail:'@title', address: {str:'贵阳市乌当区贵阳北站', x:'33', y:'116'}, 'cube|1-100.1-10': 1, 'price|50-200.1-2': 1}, {name: '@name', phone: /^1[34578]\d{9}$/, detail:'@title', district: '@county(true)', address: {str:'贵阳市乌当区贵阳北站', x:'33', y:'116'}, 'cube|1-100.1-2': 1, 'price|50-200.1-2': 1}],
       from_name: '@name',
       from_phone: /^1[34578]\d{9}$/, 
       from_district: '@county(true)', 

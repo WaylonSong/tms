@@ -2,6 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Radio, Modal, Cascader, Row, Col, Card, Icon, Tooltip} from 'antd'
 import city from '../../utils/city'
+import ACInput from '../../components/Map/ACInput'
+import Price from '../../components/Map/Price'
+
 const Search = Input.Search
 
 const FormItem = Form.Item
@@ -14,6 +17,7 @@ const formItemLayout = {
     span: 14,
   },
 }
+var districtMap = {}
 
 const modal = ({
   item,
@@ -33,6 +37,7 @@ const modal = ({
   ...modalProps
 }) => {
   const handleOk = () => {
+    console.log(getFieldsValue())
     if(modalType == "view")
       onOk("");
     else{
@@ -42,9 +47,9 @@ const modal = ({
         }
         const data = {
           ...getFieldsValue(),
+          ...districtMap,
           key: item.key,
         }
-        // data.address = data.address.join(' ')
         onOk(data)
       })
     }
@@ -57,12 +62,63 @@ const modal = ({
   const handleAddBlankTo = (nextI)=>()=>{
     onAddBlankTo();
   }
-  const handlePrice = (i) => (value)=> {
-    var price = {};
-    price[`price-${i}`] = value * 27.5
+  // const handlePrice = (i) => (value)=> {
+  //   var price = {};
+  //   price[`price-${i}`] = value * 27.5
+
+  //   var params = {};
+  //   params[`price-${i}`] = value * 27.5;
+    
+  //   if(i > 0){
+  //     params[`priceCal-${i}`] = {from:getFieldValue('from-address').str, to:getFieldValue(`address-${i}`).str, cube: value};
+  //   }else{
+  //     i = -i;
+  //     for(var j = 0; j < i; j++){
+  //       params[`priceCal-${j}`] = {from:getFieldValue('from-address').str, to:getFieldValue(`address-${j}`).str, cube: value};
+  //     }
+  //   }
+  //   setFieldsValue(
+  //      params
+  //   );
+  // }
+  const safeGetFieldValue = (name)=>{
+    if(getFieldValue(name))
+      return getFieldValue(name)
+    else
+      return ""
+  }
+  const handleFromAddress = (value)=>{
+    console.log(value);
+    var params = {};
+    for(var j = 0; j < itemIndexes.length; j++){
+      params[`priceCal-${j}`] = {from: value, to:safeGetFieldValue(`address-${j}`).str, cube: safeGetFieldValue(`cube-${j}`).str};
+    }
     setFieldsValue(
-       price
+       params
     );
+  }
+  const handleToAddress = (i)=>(value)=>{
+    var params = {};
+    params[`priceCal-${i}`] = {from:safeGetFieldValue('from-address').str, to: value, cube: safeGetFieldValue(`cube-${i}`).str};
+    setFieldsValue(
+       params
+    );
+  }
+  const handleCube = (i)=>(value)=>{
+    var params = {};
+    params[`priceCal-${i}`] = {from:safeGetFieldValue('from-address').str, to: safeGetFieldValue(`address-${i}`).str, cube: value};
+    setFieldsValue(
+       params
+    );
+  }
+
+  const handleDistrict = (key)=>(value, selectedOptions) => {
+    districtMap[key] = selectedOptions[2]["id"]
+    console.log(districtMap)
+  }
+  const handleAddress =(key)=>()=>{
+    console.log(key)
+    return "from Modal"
   }
   const modalOpts = {
     ...modalProps,
@@ -77,7 +133,6 @@ const modal = ({
   var disableFlag = {disabled:modalType=='view'}
 
   const genToList = () => {
-    console.log("item", item);
     var list = itemIndexes.map((i, counter)=>{
       var extra;
       if(counter > 0 && modalType !="view"){
@@ -108,6 +163,7 @@ const modal = ({
                 style={{ width: '100%' }}
                 options={city}
                 placeholder="请选择"
+                onChange={handleDistrict(`district-${i}`)}
               />)}
             </FormItem>
             <FormItem key={`address-${i}`} label="详细地址" hasFeedback {...formItemLayout}>
@@ -118,7 +174,7 @@ const modal = ({
                     required: true,
                   },
                 ],
-              })(<Input {...disableFlag}/>)}
+              })(<ACInput id={`address-${i}`} center='贵阳' {...disableFlag} onChange={handleToAddress(i)}/>)}
             </FormItem>
             <FormItem label="收货人" hasFeedback {...formItemLayout}>
               {getFieldDecorator(`name-${i}`, {
@@ -161,17 +217,12 @@ const modal = ({
               })(<InputNumber
                   {...disableFlag}
                   min={0}
-                  onChange={handlePrice(i)}
+                  onChange={handleCube(i)}
                 />)}<span>立方米</span>
             </FormItem>
+           
             <FormItem label="价格" hasFeedback {...formItemLayout}>
-              {getFieldDecorator(`price-${i}`, {
-                initialValue: item.to[i].price,
-              })(<InputNumber
-                  initialValue={0}
-                  disabled
-                  min={0}
-                />)}<span>元</span>
+              {getFieldDecorator(`priceCal-${i}`)(<Price id={`priceCal-${i}`} center='贵阳' />)}
             </FormItem>
           </Card>
         </Col>
@@ -186,7 +237,9 @@ const modal = ({
   }
   // getFieldDecorator('keys', { initialValue: [] });
   return (
-    <Modal {...modalOpts} width={1200}>
+   
+    <Modal {...modalOpts} width={1200} style={{}}>
+     {/* <ACInput/>*/}
       <Form layout="horizontal">
         <Row gutter={24}>
           <Col xs={{ span: 24}} lg={{ span: 12}}>
@@ -205,6 +258,7 @@ const modal = ({
                   style={{ width: '100%' }}
                   options={city}
                   placeholder="请选择"
+                  onChange={handleDistrict('from-district')}
                 />)}
               </FormItem>
               <FormItem label="详细地址" hasFeedback {...formItemLayout}>
@@ -215,7 +269,7 @@ const modal = ({
                       required: true,
                     },
                   ],
-                })(<Input {...disableFlag}/>)}
+                })(<ACInput id='from-address' center='贵阳' {...disableFlag} onChange={handleFromAddress}/>)}
               </FormItem>
               <FormItem label="发货人" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('from-name', {

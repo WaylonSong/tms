@@ -4,10 +4,13 @@ import moment from 'moment'
 import { FilterItem } from 'components'
 import { Form, Button, Row, Col, DatePicker, Input, Cascader, Switch, Select} from 'antd'
 import city from '../../utils/city'
+import ACInput from '../../components/Map/ACInput'
+
 const InputGroup = Input.Group;
 const Option = Select.Option;
 const Search = Input.Search
 const { RangePicker } = DatePicker
+const options = ['id', 'from_name', 'from_phone', 'to_name']
 const ColProps = {
   xs: 24,
   sm: 12,
@@ -15,23 +18,20 @@ const ColProps = {
     marginBottom: 16,
   },
 }
-  const Filter = ({addOrder,onFilterChange,
-    form: {
-      getFieldDecorator,
-      getFieldsValue,
-      setFieldsValue,
-    },
-  }) => {
+const Filter = ({
+  addOrder, 
+  onFilterChange,
+  form: {
+    getFieldDecorator,
+    getFieldsValue,
+    setFieldsValue,
+  },
+}) => {
 
   const handleFields = (fields) => {
     const { createTime, field, value} = fields
     if (createTime&&createTime.length) {
       fields.createTime = [createTime[0].format('YYYY-MM-DD'), createTime[1].format('YYYY-MM-DD')]
-    }
-    if (field){
-      fields[field] = value
-      delete fields["field"];
-      delete fields["value"];
     }
     return fields
   }
@@ -39,8 +39,9 @@ const ColProps = {
   const handleSubmit = () => {
     let fields = getFieldsValue()
     fields = handleFields(fields)
-    console.log(fields);
+    console.log("---------------- ",fields)
     onFilterChange(fields)
+
   }
 
   const handleReset = () => {
@@ -73,10 +74,10 @@ const ColProps = {
         <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
           {getFieldDecorator('field')(
           <Select style={{ width: '30%' }} size="large" placeholder="选择查询属性">
-            <Option value="id">订单编号</Option>
-            <Option value="from_name">发货人姓名</Option>
-            <Option value="from_phone">发货人电话</Option>
-            <Option value="to_name">收货人姓名</Option>
+            <Option value={options[0]}>订单编号</Option>
+            <Option value={options[1]}>发货人姓名</Option>
+            <Option value={options[2]}>发货人电话</Option>
+            <Option value={options[3]}>收货人姓名</Option>
           </Select>
           )}
           {getFieldDecorator('value')(

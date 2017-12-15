@@ -14,6 +14,7 @@ const EnumPostStatus = {
   UNPUBLISH: 1,
   PUBLISHED: 2,
 }
+const options = ['id', 'from_name', 'from_phone', 'to_name']
 
 const Obj = (props) => {
   var {dispatch, loading, location } = props;
@@ -135,7 +136,17 @@ const Obj = (props) => {
       })
     },
     onFilterChange (fields) {
-      var params = {...query, ...fields, page:1, pageSize}
+
+      var params = {...query}
+      for(var i in options){
+        delete params[options[i]]
+      }
+      if(typeof(fields['field'])!='undefined')
+        params[fields['field']] = fields['value']
+      delete fields['field']
+      delete fields['value']
+      params = {...params, page:1, ...fields, pageSize }
+      console.log(fields, params)
       dispatch(routerRedux.push({
         search: queryString.stringify(params)
       }))
