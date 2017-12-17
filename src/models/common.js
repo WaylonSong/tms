@@ -110,6 +110,21 @@ const crudModelGenerator = (namespace, collectionName)=>{return{
       },
     },
     effects:{
+
+      * editItem ({ payload}, { call, put }) {
+        // payload.currentItemId
+        const data = yield call(query, {id: payload.currentItemId}, `${collectionName}`)
+        if(data){
+          yield put({
+            type: `showModal`,
+            payload: {
+              modalType: payload.modalType,
+              currentItem: data,
+            },
+          })
+        }
+      },
+
       * query ({ payload}, { call, put }) {
         if(payload){
           ;

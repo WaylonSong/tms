@@ -1,17 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import { Input, InputNumber } from 'antd';
 
-class Price extends Component {
+class DistanceHandler extends Component {
     constructor(props) {
 		super(props);
 		const value = this.props.value || 0
 		this.state = {
 		  value: value,
-		  distance: 0,
-		  cube: 0 
+		  from: '',
+		  to: ''
 		};
 	}
-	async componentWillReceiveProps(nextProps) {
+	componentWillReceiveProps(nextProps) {
 		var shouldUpdate = false;
 		for (var key in nextProps){
 			if(nextProps[key] != this.props[key]){
@@ -20,21 +20,15 @@ class Price extends Component {
 			}
 		}
 		if (shouldUpdate) {
-			// {from:"西单", to:"东单", cube: value};
+			// {from:"西单", to:"东单"};
 			if(nextProps.value){
-				await this.setState({cube: nextProps.value.cube});
   		  		this.transit.search(nextProps.value.from, nextProps.value.to);
 			}
 		}
 	}
-	calPrice(distance, weight){
-		var result = (2*distance*weight).toFixed(2)
-		if(isNaN(result))
-			result = 0;
-		return result;
-	}
 
     onChange(value){
+    	console.log(value)
     	this.setState({value: value});
     	this.triggerChange({value: value})
     }
@@ -74,8 +68,6 @@ class Price extends Component {
 				return ;
 			}
 			var plan = results.getPlan(0);
-			// output += plan.getDuration(true) + "\n";                //获取时间
-			// output += "总路程为：" ;
 			output = plan.getDistance(true) //+ "\n";             //获取距离
 		}
 		var self = this;
@@ -83,13 +75,13 @@ class Price extends Component {
 			onSearchComplete: searchComplete,
 			onPolylinesSet: function(){
 				var distance = output.substring(0, output.length-2);
-				self.setState({distance: distance, value: self.calPrice(distance, self.state.cube)})      
+				self.onChange(distance)      
 		}});
     }
     render() {
         return (
         	<div>
-                <InputNumber id={this.props.id} onChange={this.onChange.bind(this)} disabled={this.props.disabled} min={0} value={this.state.value}></InputNumber>元
+                <InputNumber id={this.props.id} onChange={this.onChange.bind(this)} disabled={this.props.disabled} min={0} value={this.state.value}></InputNumber>公里
         		<div ref='map' className={this.props.className} style={{width:0,height:0}}></div>
         	</div>
             
@@ -97,4 +89,4 @@ class Price extends Component {
     }
 }
 
-export default Price;
+export default DistanceHandler;

@@ -4,7 +4,6 @@ import { Form, Input, InputNumber, Radio, Modal, Cascader, Row, Col, Card, Icon,
 import city from '../../utils/city'
 import ACInput from '../../components/Map/ACInput'
 import Price from '../../components/Map/Price'
-import DistanceHandler from '../../components/Map/DistanceHandler'
 
 const Search = Input.Search
 
@@ -55,9 +54,6 @@ const modal = ({
       })
     }
   }
-  const calPrice = (cube, distance) =>{
-    return 2 * cube * distance
-  }
 
   const handleMinusTo = (i, counter)=>()=>{
     onMinusTo(counter)
@@ -73,74 +69,58 @@ const modal = ({
     else
       return ""
   }
-  
+  const updateWholePrice = ()=>{
+    // console.log("updateWholePrice")
+    // var price = 0;
+    // for(var j = 0; j < itemIndexes.length; j++){
+    //   price += parseInt(getFieldValue(`price-${j}`))
+    // }
+    // getFieldValue('price')
+    setFieldsValue(
+       from_name: 11111
+    );
+  }
   const handleFromAddress = (value)=>{
     console.log(value);
     var params = {};
     for(var j = 0; j < itemIndexes.length; j++){
-      params[`distance_${j}`] = {from: value.str, to:safeGetFieldValue('from_address').str};
+      params[`price-${j}`] = {from: value.str, to:safeGetFieldValue(`address_${j}`).str, cube: safeGetFieldValue(`cube_${j}`)};
     }
     setFieldsValue(
        params
     );
+    updateWholePrice();
   }
   const handleToAddress = (i)=>(value)=>{
     var params = {};
-    params[`distance_${i}`] = {from:safeGetFieldValue('from_address').str, to: value.str};
+    console.log(value);
+    // params[`price_${i}`] = {from:safeGetFieldValue('from_address').str, to: value.str, cube: safeGetFieldValue(`cube_${i}`)};
+    params[`distance_${i}`] = {from:safeGetFieldValue('from_address').str, to: value.str, value:0};
+    console.log(params)
     setFieldsValue(
-       params
+       `distance_${i}`: 1111
     );
-  }
-  
-  const handlePrice = (i)=>(value)=>{
-    console.log("handlePrice:",i, value);
-    var totalPrice = 0;
-    for(var j = 0; j < itemIndexes.length; j++){
-      if(i == j)
-        totalPrice += Number(value)
-      else
-        totalPrice += Number(getFieldValue(`price_${j}`));
-    }
-    setFieldsValue(
-       {price: totalPrice}
-    );
-  }
-  const handleCargoPrice = (i)=>(value)=>{
-    var totalPrice = 0;
-    for(var j = 0; j < itemIndexes.length; j++){
-      if(i == j)
-        totalPrice += Number(value)
-      else
-        totalPrice += Number(getFieldValue(`cargo_price_${j}`));
-    }
-    setFieldsValue(
-       {cargo_price: totalPrice}
-    );
+    // updateWholePrice();
   }
   const handleCube = (i)=>(value)=>{
     var params = {};
-    var price = calPrice(Number(value), Number(safeGetFieldValue(`distance_${i}`).value));
-    if(isNaN(price))
-      price = 0;
-    params[`price_${i}`] = price
+    params[`price_${i}`] = {from:safeGetFieldValue('from_address').str, to: safeGetFieldValue(`address_${i}`).str, cube: value};
     setFieldsValue(
        params
     );
+    updateWholePrice();
   }
   const handleDistance = (i)=>(value)=>{
-    var params = {};
-    var price = calPrice(Number(safeGetFieldValue(`cube_${i}`)), Number(value.value));
-    if(isNaN(price))
-      price = 0;
-    params[`price_${i}`] = price
-    setFieldsValue(
-       params
-    );
+    console.log(i, value);
   }
   const handleDistrict = (key)=>(value, selectedOptions) => {
     districtMap[key] = selectedOptions[2]["id"]
+    console.log(districtMap)
   }
-  
+  const handleAddress =(key)=>()=>{
+    console.log(key)
+    return "from Modal"
+  }
   const modalOpts = {
     ...modalProps,
     onOk: handleOk,
@@ -227,7 +207,7 @@ const modal = ({
                 ],
               })(<Input {...disableFlag} placeholder="简述货物情况，比如“洗衣机”"/>)}
             </FormItem>
-            <FormItem label="里程测算" hasFeedback {...formItemLayout}>
+            <FormItem label="预计里程" hasFeedback {...formItemLayout}>
               {getFieldDecorator(`distance_${i}`, {
                 initialValue: item.to[i].distance||0,
                 rules: [
@@ -235,14 +215,15 @@ const modal = ({
                     required: true,
                   },
                 ],
-              })(<DistanceHandler
-                  onChange={handleDistance(i)}
+              })(<InputNumber
                   {...disableFlag}
-                />)}
+                  min={0}
+                  // onChange={handleDistance(i)}
+                />)}<span>公里</span>
             </FormItem>
             <FormItem label="物品尺寸" hasFeedback {...formItemLayout}>
               {getFieldDecorator(`cube_${i}`, {
-                initialValue: item.to[i].cube||0,
+                initialValue: item.to[i].cube,
                 rules: [
                   {
                     required: true,
@@ -255,24 +236,20 @@ const modal = ({
                 />)}<span>立方米</span>
             </FormItem>
            
-            <FormItem label="价格测算" hasFeedback {...formItemLayout}>
+            {/*<FormItem label="价格" hasFeedback {...formItemLayout}>
               {getFieldDecorator(`price_${i}`, {
-                initialValue: item.to[i].price||0,
+                initialValue: item.to[i].price,
                 rules: [
                   {
                     required: true,
                   },
                 ],
-              })(<InputNumber
-                  {...disableFlag}
-                  min={0}
-                  onChange={handlePrice(i)}
-                />)}<span>元</span>
-            </FormItem>
+              })(<Price id={`price_${i}`} {...disableFlag} center='贵阳' onChange={updateWholePrice} />)}
+            </FormItem>*/}
 
             <FormItem label="捎带货款" hasFeedback {...formItemLayout}>
-              {getFieldDecorator(`cargo_price_${i}`, {
-                initialValue: item.to[i].cargo_price||0,
+              {getFieldDecorator(`cargoFee_${i}`, {
+                initialValue: item.to[i].cargoFee,
                 rules: [
                   {
                     required: true,
@@ -281,7 +258,6 @@ const modal = ({
               })(<InputNumber
                   {...disableFlag}
                   min={0}
-                  onChange={handleCargoPrice(i)}
                 />)}<span>元</span>
             </FormItem>
           </Card>
@@ -362,7 +338,7 @@ const modal = ({
                         required: true,
                       },
                     ],
-                  })(<Radio.Group {...disableFlag} value={"large"}>
+                  })(<Radio.Group value={"large"} onChange={()=>console.log()}>
                   <Radio.Button value="在线支付">在线支付</Radio.Button>
                   <Radio.Button value="现金支付">现金支付</Radio.Button>
                   <Radio.Button value="回单支付">回单支付</Radio.Button>
@@ -370,27 +346,26 @@ const modal = ({
               </FormItem>
               <FormItem label="订单总金额" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('price', {
-                initialValue: item.price||0,
+                initialValue: item.price,
                 rules: [
                   {
                     required: true,
                   },
                 ],
               })(<InputNumber
-                  {...disableFlag}
+                  disabled
                   min={0}
                 />)}<span>元</span>
               </FormItem>
               <FormItem label="捎带货款总金额" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('cargo_price', {
-                initialValue: item.cargo_price||0,
+                initialValue: item.cargo_price,
                 rules: [
                   {
                     required: true,
                   },
                 ],
               })(<InputNumber
-                  {...disableFlag}
                   disabled
                   min={0}
                 />)}<span>元</span>
@@ -403,7 +378,7 @@ const modal = ({
                         required: true,
                       },
                     ],
-                  })(<Radio.Group value={"large"} {...disableFlag} onChange={()=>console.log()}>
+                  })(<Radio.Group value={"large"} onChange={()=>console.log()}>
                   <Radio.Button value="未支付">未支付</Radio.Button>
                   <Radio.Button value="已支付">已支付</Radio.Button>
                 </Radio.Group>)}

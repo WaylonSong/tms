@@ -8,11 +8,11 @@ import queryString from 'query-string'
 import List from './List'
 import Filter from './Filter'
 import Modal from './Modal'
-const resourceName = "order";
+const resourceName = "driver";
 const TabPane = Tabs.TabPane
-const EnumPostStatus = {
-  UNPUBLISH: 1,
-  PUBLISHED: 2,
+const EnumCarStatus = {
+  ON: 1,
+  OFF: 2,
 }
 const options = ['id', 'from_name', 'from_phone', 'to_name']
 
@@ -154,10 +154,10 @@ const Obj = (props) => {
 
 
   var activeKey = "";
-  if(query.status === String(EnumPostStatus.UNPUBLISH))
-    activeKey = String(EnumPostStatus.UNPUBLISH)
-  else if(query.status === String(EnumPostStatus.PUBLISHED))
-    activeKey = String(EnumPostStatus.PUBLISHED)
+  if(query.status === String(EnumCarStatus.ON))
+    activeKey = String(EnumCarStatus.ON)
+  else if(query.status === String(EnumCarStatus.OFF))
+    activeKey = String(EnumCarStatus.OFF)
 
   const parsed = queryString.parse(location.search);
   // console.log(location);
@@ -169,10 +169,10 @@ const Obj = (props) => {
         <TabPane tab="全部" key={""}>
           <List {...listProps} />
         </TabPane>
-        <TabPane tab="已处理" key={String(EnumPostStatus.PUBLISHED)}>
+        <TabPane tab="当班" key={String(EnumCarStatus.ON)}>
           <List {...listProps} />
         </TabPane>
-        <TabPane tab="待处理" key={String(EnumPostStatus.UNPUBLISH)}>
+        <TabPane tab="下班" key={String(EnumCarStatus.OFF)}>
           <List {...listProps} />
         </TabPane>
       </Tabs>
@@ -180,10 +180,10 @@ const Obj = (props) => {
   )
 }
 Obj.propTypes = {
-  order: PropTypes.object,
+  driver: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
   loading: PropTypes.object,
 }
 
-export default connect(({ order, loading }) => ({ order, loading }))(Obj)
+export default connect(({ driver, loading }) => ({ driver, loading }))(Obj)

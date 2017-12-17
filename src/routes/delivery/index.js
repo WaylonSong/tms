@@ -8,11 +8,13 @@ import queryString from 'query-string'
 import List from './List'
 import Filter from './Filter'
 import Modal from './Modal'
-const resourceName = "order";
+const resourceName = "delivery";
 const TabPane = Tabs.TabPane
 const EnumPostStatus = {
-  UNPUBLISH: 1,
-  PUBLISHED: 2,
+  NOT_DISTRIBUTED : 1,
+  NOT_RECEIVED : 2,
+  ONBOARD : 3,
+  RECEIVED : 4,
 }
 const options = ['id', 'from_name', 'from_phone', 'to_name']
 
@@ -40,7 +42,6 @@ const Obj = (props) => {
     maskClosable: false,
     confirmLoading: loading.effects[resourceName+'/update'],
     modalType: props[resourceName].modalType,
-    title: getModalTitle(props[resourceName].modalType),
     wrapresourceName: 'vertical-center-modal',
     onOk (data) {
       if(modalType == "view"){
@@ -62,12 +63,12 @@ const Obj = (props) => {
     },
     onAddBlankTo : ()=>{
       dispatch({
-        type : 'order/addBlanckTo',
+        type : 'delivery/addBlanckTo',
       })
     },
     onMinusTo : (counter) =>{
       dispatch({
-        type : 'order/minusTo',
+        type : 'delivery/minusTo',
         payload: counter
       })
     }
@@ -76,7 +77,7 @@ const Obj = (props) => {
   const listProps = {
     resourceName,
     dataSource: list,
-    loading: loading.effects['order/query'],
+    loading: loading.effects['delivery/query'],
     pagination,
     location,
     isMotion,
@@ -151,13 +152,9 @@ const Obj = (props) => {
       }))
     },
   }
-
-
-  var activeKey = "";
-  if(query.status === String(EnumPostStatus.UNPUBLISH))
-    activeKey = String(EnumPostStatus.UNPUBLISH)
-  else if(query.status === String(EnumPostStatus.PUBLISHED))
-    activeKey = String(EnumPostStatus.PUBLISHED)
+  let activeKey = "";
+  if(query.status)
+    activeKey = query.status;
 
   const parsed = queryString.parse(location.search);
   // console.log(location);
@@ -165,14 +162,20 @@ const Obj = (props) => {
     <Page inner>
       <Filter {...filterProps} />
       {modalVisible && <Modal {...modalProps} />}
-      <Tabs activeKey={activeKey} onTabClick={handleTabClick}>
+      <Tabs type="line" size='small' activeKey={activeKey} onTabClick={handleTabClick}>
         <TabPane tab="全部" key={""}>
           <List {...listProps} />
         </TabPane>
-        <TabPane tab="已处理" key={String(EnumPostStatus.PUBLISHED)}>
+        <TabPane tab="待分配" key={String(EnumPostStatus.NOT_DISTRIBUTED)}>
           <List {...listProps} />
         </TabPane>
-        <TabPane tab="待处理" key={String(EnumPostStatus.UNPUBLISH)}>
+        <TabPane tab="待接货" key={String(EnumPostStatus.NOT_RECEIVED)}>
+          <List {...listProps} />
+        </TabPane>
+        <TabPane tab="配送中" key={String(EnumPostStatus.ONBOARD)}>
+          <List {...listProps} />
+        </TabPane>
+        <TabPane tab="已送达" key={String(EnumPostStatus.RECEIVED)}>
           <List {...listProps} />
         </TabPane>
       </Tabs>
@@ -180,10 +183,10 @@ const Obj = (props) => {
   )
 }
 Obj.propTypes = {
-  order: PropTypes.object,
+  delivery: PropTypes.object,
   location: PropTypes.object,
   dispatch: PropTypes.func,
   loading: PropTypes.object,
 }
 
-export default connect(({ order, loading }) => ({ order, loading }))(Obj)
+export default connect(({ delivery, loading }) => ({ delivery, loading }))(Obj)

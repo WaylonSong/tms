@@ -67,9 +67,6 @@ const Filter = ({
   }
   return (
     <Row gutter={24}>
-      <Col xl={{ span: 2 }} md={{ span: 4 }}>
-        <Button style={{ width: '100%' }} size="large" type="primary" onClick={addOrder}>创建</Button>
-      </Col>
       <Col {...ColProps}  xl={{ span: 8 }} md={{ span: 8 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
           {getFieldDecorator('field')(
@@ -96,7 +93,7 @@ const Filter = ({
       </Col>
         <Col xl={{ span: 2 }} md={{ span: 4 }}>
           <Button size="large" type={'primary'} style={{marginRight: 10}} onClick={handleSubmit}>查询</Button>
-          <Button size="large" onClick={handleReset}>重置</Button>
+          <Button size="large" onClick={handleReset}>Reset</Button>
         </Col>
     </Row>
   )

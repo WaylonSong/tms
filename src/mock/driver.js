@@ -1,7 +1,7 @@
 const qs = require('qs')
 const Mock = require('mockjs')
 const config = require('../utils/config')
-
+const collectionName = "drivers"
 const { apiPrefix } = config
 
 // let ordersListData = Mock.mock({
@@ -24,21 +24,15 @@ let ordersListData2 = Mock.mock({
   'data|80-100': [
     {
       id: '@id',
-      from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'贵阳市乌当区贵阳北站', x:'33', y:'116'}},
-      to: [{name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', detail:'@ctitle', address: {str:'贵阳市乌当区贵阳北站', x:'33', y:'116'}, 'cube|1-100.1-10': 1, 'price|50-200.1-2': 1, distance:'@string("number", 2)', 'cargo_price|1500-2000.1-2': 1}, {name: '@name', phone: /^1[34578]\d{9}$/, detail:'@ctitle', district: '@county(true)', address: {str:'贵阳市乌当区贵阳北站', x:'33', y:'116'}, distance:'@string("number", 2)', 'cube|1-100.1-2': 1, 'price|50-200.1-2': 1, 'cargo_price|1500-2000.1-2': 1}],
-      from_name: '@cname',
-      from_phone: /^1[34578]\d{9}$/, 
-      from_district: '@county(true)', 
-      from_address: '@cword(5, 15)',
-      'price|150-250.1-2': 1,
-      'cargo_price|3050-4050.1-2': 1,
-      'price_type|+1': ["现金支付","在线支付","回单支付"],
-      'price_status|+1': ["未支付","已支付"],
-      to_name: '@cname'+' / '+'@cname'+' / '+'@cname', 
-      to_phone: /^1[34578]\d{9}$/, 
-      to_district: '@county(true)',
-      to_address: '@cword(5, 15)',
+      name: '@cname',
+      phone: /^1[34578]\d{9}$/,
+      number: '贵'+'@character("upper")'+'@string("number", 5)',
       'status|1-2': 1,
+      'occupy|1-20': 1, 
+      'gender|+1': ["男", "女"],
+      'brand|+1': ["五菱", "依维柯", "金杯", "卡玛斯", "东风"],
+      id_card: '@id',
+      drivers: '@cname'+' / '+'@cname'+' / '+'@cname', 
       createTime: '@datetime',
     },
   ],
@@ -74,7 +68,7 @@ const NOTFOUND = {
 
 module.exports = {
 
-  [`GET ${apiPrefix}/orders`] (req, res) {
+  [`GET ${apiPrefix}/${collectionName}`] (req, res) {
     const { query } = req
     let { pageSize, page, ...other } = query
     pageSize = pageSize || 10
@@ -110,14 +104,14 @@ module.exports = {
     })
   },
 
-  [`DELETE ${apiPrefix}/orders`] (req, res) {
+  [`DELETE ${apiPrefix}/${collectionName}`] (req, res) {
     const { ids } = req.body
     database = database.filter(item => !ids.some(_ => _ === item.id))
     res.status(204).end()
   },
 
 
-  [`POST ${apiPrefix}/orders`] (req, res) {
+  [`POST ${apiPrefix}/${collectionName}`] (req, res) {
     const newData = req.body
     newData.createTime = Mock.mock('@now')
     newData.avatar = newData.avatar || Mock.Random.image('100x100', Mock.Random.color(), '#757575', 'png', newData.nickName.substr(0, 1))
@@ -128,7 +122,7 @@ module.exports = {
     res.status(200).end()
   },
 
-  [`GET ${apiPrefix}/orders/:id`] (req, res) {
+  [`GET ${apiPrefix}/${collectionName}/:id`] (req, res) {
     const { id } = req.params
     const data = queryArray(database, id, 'id')
     if (data) {
@@ -138,7 +132,7 @@ module.exports = {
     }
   },
 
-  [`DELETE ${apiPrefix}/orders/:id`] (req, res) {
+  [`DELETE ${apiPrefix}/${collectionName}/:id`] (req, res) {
     console.log("req.params", req.params);
     const { id } = req.params
     const data = queryArray(database, id, 'id')
@@ -150,7 +144,7 @@ module.exports = {
     }
   },
 
-  [`PUT ${apiPrefix}/orders/:id`] (req, res) {
+  [`PUT ${apiPrefix}/${collectionName}/:id`] (req, res) {
     const { id } = req.params
     const editItem = req.body
     let isExist = false

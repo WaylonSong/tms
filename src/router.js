@@ -68,6 +68,24 @@ const Routers = function ({ history, app }) {
       models: () => [import('./models/order')],
       component: () => import('./routes/order/'),
     },{
+      path: '/delivery',
+      models: () => [import('./models/delivery')],
+      component: () => import('./routes/delivery/'),
+    },{
+      path: '/vehicle',
+      models: () => [import('./models/vehicle')],
+      component: () => import('./routes/vehicle/'),
+    },{
+      path: '/vehicle/map',
+      component: () => import('./routes/vehicle/Map'),
+    },{
+      path: '/vehicle/:id/track',
+      component: () => import('./routes/vehicle/Track'),
+    },{
+      path: '/driver',
+      models: () => [import('./models/driver')],
+      component: () => import('./routes/driver/'),
+    },{
       path: '/map',
       // models: () => [import('./models/order')],
       component: () => import('./routes/map/'),
