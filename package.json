@@ -57,10 +57,13 @@
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-react": "^7.1.0",
     "html-webpack-plugin": "^2.29.0",
+    "react-bmap": "^1.0.57",
     "redbox-react": "^1.2.10",
     "roadhog": "^1.2.2"
   },
-  "pre-commit": ["lint"],
+  "pre-commit": [
+    "lint"
+  ],
   "scripts": {
     "dev": "cross-env BROWSER=none HOST=0.0.0.0 roadhog server",
     "start": "roadhog buildDll && cross-env BROWSER=none HOST=0.0.0.0 roadhog server",
