@@ -10,7 +10,8 @@ const InputGroup = Input.Group;
 const Option = Select.Option;
 const Search = Input.Search
 const { RangePicker } = DatePicker
-const options = ['id', 'from_name', 'from_phone', 'to_name']
+const options = [{'id':'行驶证编号'}, {'number':'车牌号码'}, {'type':'车型'}, {'brand':'品牌'}, {'occupy':'载重'}]
+
 const ColProps = {
   xs: 24,
   sm: 12,
@@ -74,10 +75,9 @@ const Filter = ({
         <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
           {getFieldDecorator('field')(
           <Select style={{ width: '30%' }} size="large" placeholder="选择查询属性">
-            <Option value={options[0]}>订单编号</Option>
-            <Option value={options[1]}>发货人姓名</Option>
-            <Option value={options[2]}>发货人电话</Option>
-            <Option value={options[3]}>收货人姓名</Option>
+            {options.map(function(item, index){
+              return <Option value={Object.keys(item)[0]}>{item[Object.keys(item)[0]]}</Option>
+            })}
           </Select>
           )}
           {getFieldDecorator('value')(
@@ -94,7 +94,7 @@ const Filter = ({
           </FilterItem>
         </div>
       </Col>
-        <Col xl={{ span: 2 }} md={{ span: 4 }}>
+        <Col xl={{ span: 4 }} md={{ span: 4 }}>
           <Button size="large" type={'primary'} style={{marginRight: 10}} onClick={handleSubmit}>查询</Button>
           <Button size="large" onClick={handleReset}>重置</Button>
         </Col>

@@ -1,29 +1,30 @@
 const qs = require('qs')
 const Mock = require('mockjs')
 const config = require('../utils/config')
-
+const { EnumDeliveryStatus }= require('../utils/enums')
 const { apiPrefix } = config
 const collectionName = "deliveries"
 
 let deliveryListData2 = Mock.mock({
-  'data|80-100': [
+  'data|10-20': [
     {
       id: '@id',
-      from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'贵阳市乌当区贵阳北站', x:'33', y:'116'}},
-      to: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', detail:'@ctitle', address: {str:'贵阳市乌当区贵阳北站', x:'33', y:'116'}, 'cube|1-100.1-10': 1, 'price|50-200.1-2': 1}, 
-      from_name: '@cname',
-      from_phone: /^1[34578]\d{9}$/, 
-      from_district: '@county(true)', 
-      from_address: '@ctitle',
+      from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: '@ctitle'},
+      to: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', detail:'@ctitle', address: '@ctitle', 'cube|1-100.1-10': 1, 'price|50-200.1-2': 1}, 
+      // from_name: '@cname',
+      // from_phone: /^1[34578]\d{9}$/, 
+      // from_district: '@county(true)', 
+      // from_address: '@ctitle',
       'price|150-250.1-2': 1,
-      to_name: '@cname',
-      to_phone: /^1[34578]\d{9}$/,
-      to_district: '@county(true)',
-      to_address: '@ctitle',
-      vehicle: '贵A 12345',
+      // to_name: '@cname',
+      // to_phone: /^1[34578]\d{9}$/,
+      // to_district: '@county(true)',
+      // to_address: '@ctitle',
+      vehicle: '贵'+'@character("upper")'+'@string("number", 5)',
+      driver:{name: '@cname', phone: /^1[34578]\d{9}$/},
       detail:'@ctitle',
       'cube|1-100.1-10': 1, 
-      'status|1-4': 1,
+      'status|0-3': 1,
       createTime: '@datetime',
       distributTime: '@datetime',
       loadTime: '@datetime',
@@ -72,7 +73,10 @@ module.exports = {
     for (let key in other) {
       if ({}.hasOwnProperty.call(other, key)) {
         newData = newData.filter((item) => {
-          if ({}.hasOwnProperty.call(item, key)) {
+          /*if ({}.hasOwnProperty.call(item, key)) {
+            
+          }
+          return true*/
             if (key === 'address') {
               return other[key].every(iitem => item[key].indexOf(iitem) > -1)
             } else if (key === 'createTime') {
@@ -85,9 +89,12 @@ module.exports = {
               }
               return true
             }
-            return String(item[key]).trim().indexOf(decodeURI(other[key]).trim()) > -1
-          }
-          return true
+            var itemValue = item[key];
+            if(key.indexOf('_') > -1){
+              itemValue = item[key.split('_')[0]][key.split('_')[1]]
+            }
+            // console.log(itemValue)
+            return String(itemValue).trim().indexOf(decodeURI(other[key]).trim()) > -1
         })
       }
     }
@@ -113,6 +120,21 @@ module.exports = {
 
     database.unshift(newData)
 
+    res.status(200).end()
+  },
+
+  [`POST ${apiPrefix}/${collectionName}/assignTo`] (req, res) {
+    const newData = req.body
+    const {id, vehicle_number} = req.body
+    database = database.map((item) => {
+      if (item.id === id) {
+        var editItem = Object.assign({}, item)
+        editItem.vehicle = vehicle_number
+        editItem.status = EnumDeliveryStatus.NOT_RECEIVED
+        return editItem
+      }
+      return item
+    })
     res.status(200).end()
   },
 

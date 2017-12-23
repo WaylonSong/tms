@@ -26,5 +26,7 @@ module.exports = {
     weather: `${APIV1}/weather`,
     v1test: `${APIV1}/test`,
     v2test: `${APIV2}/test`,
+    'vehicles_candidate': `${APIV1}/vehicles/candidate`,
+    'assginTo': `${APIV1}/deliveries/assignTo`,
   },
 }

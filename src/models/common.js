@@ -189,6 +189,11 @@ const crudModelGenerator = (namespace, collectionName)=>{return{
         } else {
           throw data
         }
+      },
+      
+      * closeModalAndRefresh ({ payload }, { select, call, put }) {
+        yield put({ type: 'hideModal' })
+        yield put({ type: 'query' })
       }
     }
 }}

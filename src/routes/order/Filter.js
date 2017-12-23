@@ -94,7 +94,7 @@ const Filter = ({
           </FilterItem>
         </div>
       </Col>
-        <Col xl={{ span: 2 }} md={{ span: 4 }}>
+        <Col xl={{ span: 4 }} md={{ span: 4 }}>
           <Button size="large" type={'primary'} style={{marginRight: 10}} onClick={handleSubmit}>查询</Button>
           <Button size="large" onClick={handleReset}>重置</Button>
         </Col>

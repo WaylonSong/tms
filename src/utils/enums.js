@@ -4,6 +4,12 @@ const EnumRoleType = {
   DEVELOPER: 'developer',
 }
 
+const EnumDeliveryStatus = {
+  NOT_DISTRIBUTED : 0,
+  NOT_RECEIVED : 1,
+  ONBOARD : 2,
+  RECEIVED : 3,
+}
 module.exports = {
-  EnumRoleType,
+  EnumRoleType, EnumDeliveryStatus
 }

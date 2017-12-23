@@ -53,6 +53,23 @@ let ordersListData2 = Mock.mock({
   ],
 })
 
+let assignedVehicleList = Mock.mock({
+  'data|80-100': [
+    {
+      id: '@id',
+      number: '贵'+'@character("upper")'+'@string("number", 5)',
+      'status|1-2': 1,
+      'occupy|1-20': 1, 
+      'type|+1': ["箱货", "货车", "平板", "面包车", "冷藏车"],
+      'brand|+1': ["五菱", "依维柯", "金杯", "卡玛斯", "东风"],
+      driver: {name:'@cname', phone: /^1[34578]\d{9}$/, },
+      company: '@ctitle(3,5)', 
+      track: [{'x|116.1-4':1, 'y|39.89-92':1 },{'x|116.1-4':1, 'y|39.89-92':1 },{'x|116.1-4':1, 'y|39.89-92':1 },{'x|116.1-4':1, 'y|39.89-92':1 },{'x|116.1-4':1, 'y|39.89-92':1 },{'x|116.1-4':1, 'y|39.89-92':1 },{'x|116.1-4':1, 'y|39.89-92':1 },{'x|116.1-4':1, 'y|39.89-92':1 },],
+      location: {'x|116.1-4':1, 'y|39.89-92':1 }
+    },
+  ],
+})
+
 
 let database = ordersListData2.data
 
@@ -119,6 +136,31 @@ module.exports = {
     })
   },
 
+  [`GET ${apiPrefix}/${collectionName}/candidate`] (req, res) {
+    const { query } = req
+    let { pageSize, page, ...other } = query
+    pageSize = pageSize || 10
+    page = page || 1
+
+    let newData = assignedVehicleList.data
+    res.status(200).json({
+      data: newData.slice((page - 1) * pageSize, page * pageSize),
+      total: newData.length,
+    })
+  },
+
+  [`GET ${apiPrefix}/${collectionName}/situation`] (req, res) {
+    const { query } = req
+    let { number } = query
+    let newData = database
+    var vehicles = newData.filter((item) => {
+      return item.number == number
+    })
+    res.status(200).json({
+      data: vehicles
+    })
+  },
+
   [`DELETE ${apiPrefix}/${collectionName}`] (req, res) {
     const { ids } = req.body
     database = database.filter(item => !ids.some(_ => _ === item.id))
@@ -178,4 +220,6 @@ module.exports = {
       res.status(404).json(NOTFOUND)
     }
   },
+
+  
 }

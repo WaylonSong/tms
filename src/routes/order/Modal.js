@@ -26,6 +26,7 @@ const modal = ({
   itemIndexes,
   onOk,
   onAddBlankTo,
+  onDirect,
   // onCancel,
   onMinusTo = ()=>console.log("Minus To"),
   form: {
@@ -284,6 +285,12 @@ const modal = ({
                   onChange={handleCargoPrice(i)}
                 />)}<span>元</span>
             </FormItem>
+
+            {modalType == "view" &&
+            <FormItem label="运单列表" hasFeedback {...formItemLayout}>
+              {getFieldDecorator(`deliveries`)(<ul>{item.to[i].deliveries.map((i)=><li style={{color:"blue", cursor:"pointer"}} onClick={onDirect(i)}>{i}</li>)}</ul>)}
+            </FormItem>
+            }  
           </Card>
         </Col>
       )

@@ -39,13 +39,14 @@ const Filter = ({
   const handleSubmit = () => {
     let fields = getFieldsValue()
     fields = handleFields(fields)
-    console.log("---------------- ",fields)
+    console.log(fields)
     onFilterChange(fields)
 
   }
 
   const handleReset = () => {
     const fields = getFieldsValue()
+    console.log(fields);
     for (let item in fields) {
       if ({}.hasOwnProperty.call(fields, item)) {
         if (fields[item] instanceof Array) {
@@ -71,7 +72,7 @@ const Filter = ({
         <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
           {getFieldDecorator('field')(
           <Select style={{ width: '30%' }} size="large" placeholder="选择查询属性">
-            <Option value={options[0]}>订单编号</Option>
+            <Option value={options[0]}>运单编号</Option>
             <Option value={options[1]}>发货人姓名</Option>
             <Option value={options[2]}>发货人电话</Option>
             <Option value={options[3]}>收货人姓名</Option>
@@ -91,7 +92,7 @@ const Filter = ({
           </FilterItem>
         </div>
       </Col>
-        <Col xl={{ span: 2 }} md={{ span: 4 }}>
+        <Col xl={{ span: 4 }} md={{ span: 4 }}>
           <Button size="large" type={'primary'} style={{marginRight: 10}} onClick={handleSubmit}>查询</Button>
           <Button size="large" onClick={handleReset}>Reset</Button>
         </Col>

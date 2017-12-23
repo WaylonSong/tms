@@ -7,20 +7,22 @@ import { Link } from 'react-router-dom'
 import queryString from 'query-string'
 import AnimTableBody from 'components/DataTable/AnimTableBody'
 import styles from './List.less'
+import {EnumDeliveryStatus} from '../../utils/enums'
+
 const status = ['待分配', '待接货', '配送中', '已送达'];
 
 const confirm = Modal.confirm
 const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...tableProps }) => {
   location.query = queryString.parse(location.search)
 
-  const handleMenuClick = (recordId, e) => {
+  const handleMenuClick = (record, e) => {
     if (e.key === '1') {
-      onEditItem(recordId, 'update')
+      onEditItem(record, 'update')
     } else if (e.key === '2') {
       confirm({
         title: '确认删除么？',
         onOk () {
-          onDeleteItem(recordId)
+          onDeleteItem(record.id)
         },
       })
     }
@@ -35,26 +37,13 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       key: 'id',
       width: 80,
       className: styles.avatar,
-      render: (text, record) => <a onClick={e => viewItem(record.id, e)}>{text}</a>,
+      render: (text, record) => <a onClick={e => onEditItem(record, e)}>{text}</a>,
     }, {
-      title: '操作',
-      key: 'operation',
-      width: 30,
-      render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record.id, e)} menuOptions={[{ key: '1', name: '调度' }, { key: '2', name: '删除' }, { key: '3', name: '修改' }]} />
-      },
-    },{
       title: '运单状态',
       dataIndex: 'status',
       key: 'status',
       width: 80,
-      render: (text) => <span>{status[parseInt(text)-1]}</span>,
-    }, {
-      title: '分配车辆',
-      dataIndex: 'vehicle',
-      key: 'vehicle',
-      width: 100,
-      render: (text, record) => <span>{record.status == '1'?'':text}</span>,
+      render: (text) => <span>{status[parseInt(text)]}</span>,
     }, {
       title: '订单金额',
       dataIndex: 'price',
@@ -62,51 +51,51 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       key: 'price',
     },{
       title: '发货人',
-      dataIndex: 'from_name',
-      key: 'from_name',
+      dataIndex: 'from.name',
+      key: 'from.name',
       width: 80,
       render: (text) => <span>{text}</span>,
     }, {
       title: '发货人所在地',
-      dataIndex: 'from_district',
+      dataIndex: 'from.district',
       width: 200,
-      key: 'from_district',
+      key: 'from.district',
       render: (text) => <span>{text}</span>,
-    },{
+    }, {
       title: '发货地址',
-      dataIndex: 'from_address',
+      dataIndex: 'from.address',
       width: 200,
-      key: 'from_address',
+      key: 'from.address',
       render: (text) => <span>{text}</span>,
     }, {
       title: '发货人电话',
-      dataIndex: 'from_phone',
+      dataIndex: 'from.phone',
       width: 120,
-      key: 'from_phone',
+      key: 'from.phone',
       render: (text) => <span>{text}</span>,
     }, {
       title: '收货人',
-      dataIndex: 'to_name',
+      dataIndex: 'to.name',
       width: 80,
-      key: 'to_name',
+      key: 'to.name',
       render: (text) => <span>{text}</span>,
     }, {
       title: '收货人所在地',
-      dataIndex: 'to_district',
+      dataIndex: 'to.district',
       width: 200,
-      key: 'to_district',
+      key: 'to.district',
       render: (text) => <span>{text}</span>,
     },{
       title: '收货地址',
-      dataIndex: 'to_address',
+      dataIndex: 'to.address',
       width: 200,
-      key: 'to_address',
+      key: 'to.address',
       render: (text) => <span>{text}</span>,
     }, {
       title: '收货人电话',
-      dataIndex: 'to_phone',
+      dataIndex: 'to.phone',
       width: 120,
-      key: 'to_phone',
+      key: 'to.phone',
       render: (text) => <span>{text}</span>,
     }, {
       title: '货物体积(m³)',
@@ -125,19 +114,37 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       dataIndex: 'distributTime',
       width: 150,
       key: 'distributTime',
-      render: (text, record) => <span>{parseInt(record.status) > 1?text:''}</span>,
+      render: (text, record) => <span>{parseInt(record.status) > 0?text:''}</span>,
     }, {
+      title: '分配车辆',
+      dataIndex: 'vehicle',
+      key: 'vehicle',
+      width: 100,
+      render: (text, record) => <span>{record.status == EnumDeliveryStatus.NOT_DISTRIBUTED?'':text}</span>,
+    }, {
+      title: '司机',
+      dataIndex: 'driver.name',
+      key: 'driver.name',
+      width: 100,
+      render: (text, record) => <span>{record.status == EnumDeliveryStatus.NOT_DISTRIBUTED?'':text}</span>,
+    }, {
+      title: '司机电话',
+      dataIndex: 'driver.phone',
+      key: 'driver.phone',
+      width: 100,
+      render: (text, record) => <span>{record.status == EnumDeliveryStatus.NOT_DISTRIBUTED?'':text}</span>,
+    },{
       title: '接货时间',
       dataIndex: 'loadTime',
       width: 150,
       key: 'loadTime',
-      render: (text, record) => <span>{parseInt(record.status) > 2?text:''}</span>,
+      render: (text, record) => <span>{parseInt(record.status) > 1?text:''}</span>,
     }, {
       title: '送抵时间',
       dataIndex: 'arriveTime',
       width: 150,
       key: 'arriveTime',
-      render: (text, record) => <span>{parseInt(record.status) == 4?text:''}</span>,
+      render: (text, record) => <span>{parseInt(record.status) == 3?text:''}</span>,
     }, 
   ]
 
@@ -154,7 +161,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
         {...tableProps}
         className={classnames({ [styles.table]: true, [styles.motion]: isMotion })}
         bordered
-        scroll={{ x: 1800 }}
+        scroll={{ x: 2000 }}
         columns={columns}
         simple
         rowKey={record => record.id}

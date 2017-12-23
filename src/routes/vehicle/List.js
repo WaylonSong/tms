@@ -55,7 +55,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       width: 80,
       render: (text) => <span>{text}</span>,
     },{
-      title: '车型',
+      title: '品牌',
       dataIndex: 'brand',
       key: 'brand',
       width: 80,

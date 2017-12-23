@@ -14,7 +14,7 @@ const EnumCarStatus = {
   ON: 1,
   OFF: 2,
 }
-const options = ['id', 'from_name', 'from_phone', 'to_name']
+const options = ['id', 'number', 'type', 'brand', 'occupy']
 
 const Obj = (props) => {
   var {dispatch, loading, location } = props;
@@ -105,17 +105,6 @@ const Obj = (props) => {
         },
       })
     },
-    // rowSelection: {
-      // selectedRowKeys,
-      // onChange: (keys) => {
-      //   dispatch({
-      //     type: 'user/updateState',
-      //     payload: {
-      //       selectedRowKeys: keys,
-      //     },
-      //   })
-      // },
-    // },
   }
   const handleTabClick = (key) => {
     var routes = {

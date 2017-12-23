@@ -8,20 +8,17 @@ import queryString from 'query-string'
 import List from './List'
 import Filter from './Filter'
 import Modal from './Modal'
+import {EnumDeliveryStatus} from '../../utils/enums'
+
 const resourceName = "delivery";
 const TabPane = Tabs.TabPane
-const EnumPostStatus = {
-  NOT_DISTRIBUTED : 1,
-  NOT_RECEIVED : 2,
-  ONBOARD : 3,
-  RECEIVED : 4,
-}
-const options = ['id', 'from_name', 'from_phone', 'to_name']
+
+const options = ['id', 'from_name', 'from_phone', 'to_name', 'to_phone']
 
 const Obj = (props) => {
   var {dispatch, loading, location } = props;
   var obj = props[resourceName];
-  const { list, pagination, currentItem, modalVisible, modalType, isMotion, selectedRowKeys, itemIndexes } = obj
+  const { list, pagination, currentItem, modalVisible, modalType, isMotion, selectedRowKeys, itemIndexes, distribut, assignedVehicle } = obj
   const { pageSize } = pagination
   const { pathname } = location
   const query = queryString.parse(location.search);
@@ -35,30 +32,58 @@ const Obj = (props) => {
           return '查看订单'
     }
   };
+  const distributProps = {
+    currentItem,
+    distribut,
+    assignTo : (number, driver, driver_phone)=>{
+      dispatch({
+        type : 'delivery/assignTo',
+        payload: {
+          id: currentItem.id,
+          vehicle_number: number,
+          'driver.name':driver,
+          'driver.phone':driver_phone
+        }
+      })
+    },
+    onVehiclePageChange: (page, pageSize)=>{
+      dispatch({
+        type : 'delivery/queryCandidateVehicles',
+        payload : {
+          page: page,
+          currentItemId: currentItem.id
+        }
+      })
+    }
+  };
+  const viewProps = {
+    currentItem,
+    assignedVehicle,
+    /*viewTrack : (number)=>{
+      dispatch(routerRedux.push({
+        pathname:`/vehicle/track/${number}`
+      }))
+    }*/
+  };
   const modalProps = {
     item: props[resourceName].modalType === 'create' ? {from:{},to:[{}]} : currentItem,
     itemIndexes,
+    distributProps,
+    viewProps,
     visible: props[resourceName].modalVisible,
     maskClosable: false,
     confirmLoading: loading.effects[resourceName+'/update'],
+    assignToLoading: loading.effects[resourceName+'/assignTo'],
     modalType: props[resourceName].modalType,
     wrapresourceName: 'vertical-center-modal',
     onOk (data) {
-      if(modalType == "view"){
-        dispatch({
-          type: resourceName+'/hideModal',
-        })
-      }
-      else{
-        dispatch({
-          type: `${resourceName}/${modalType}`,
-          payload: data,
-        })
-      }
+      dispatch({
+        type: resourceName+'/closeModalAndRefresh',
+      })
     },
     onCancel () {
       dispatch({
-        type: resourceName+'/hideModal',
+        type: resourceName+'/closeModalAndRefresh',
       })
     },
     onAddBlankTo : ()=>{
@@ -71,7 +96,8 @@ const Obj = (props) => {
         type : 'delivery/minusTo',
         payload: counter
       })
-    }
+    },
+    
   }
 
   const listProps = {
@@ -97,26 +123,15 @@ const Obj = (props) => {
         payload: id,
       })
     },
-    onEditItem (recordId, type) {
+    onEditItem (record, type) {
       dispatch({
         type: `${resourceName}/editItem`,
         payload: {
           modalType: type,
-          currentItemId: recordId,
+          currentItem: record,
         },
       })
     },
-    // rowSelection: {
-      // selectedRowKeys,
-      // onChange: (keys) => {
-      //   dispatch({
-      //     type: 'user/updateState',
-      //     payload: {
-      //       selectedRowKeys: keys,
-      //     },
-      //   })
-      // },
-    // },
   }
   const handleTabClick = (key) => {
     var routes = {
@@ -146,7 +161,6 @@ const Obj = (props) => {
       delete fields['field']
       delete fields['value']
       params = {...params, page:1, ...fields, pageSize }
-      console.log(fields, params)
       dispatch(routerRedux.push({
         search: queryString.stringify(params)
       }))
@@ -166,16 +180,16 @@ const Obj = (props) => {
         <TabPane tab="全部" key={""}>
           <List {...listProps} />
         </TabPane>
-        <TabPane tab="待分配" key={String(EnumPostStatus.NOT_DISTRIBUTED)}>
+        <TabPane tab="待分配" key={String(EnumDeliveryStatus.NOT_DISTRIBUTED)}>
           <List {...listProps} />
         </TabPane>
-        <TabPane tab="待接货" key={String(EnumPostStatus.NOT_RECEIVED)}>
+        <TabPane tab="待接货" key={String(EnumDeliveryStatus.NOT_RECEIVED)}>
           <List {...listProps} />
         </TabPane>
-        <TabPane tab="配送中" key={String(EnumPostStatus.ONBOARD)}>
+        <TabPane tab="配送中" key={String(EnumDeliveryStatus.ONBOARD)}>
           <List {...listProps} />
         </TabPane>
-        <TabPane tab="已送达" key={String(EnumPostStatus.RECEIVED)}>
+        <TabPane tab="已送达" key={String(EnumDeliveryStatus.RECEIVED)}>
           <List {...listProps} />
         </TabPane>
       </Tabs>

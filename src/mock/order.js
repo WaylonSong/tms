@@ -25,19 +25,20 @@ let ordersListData2 = Mock.mock({
     {
       id: '@id',
       from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'贵阳市乌当区贵阳北站', x:'33', y:'116'}},
-      to: [{name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', detail:'@ctitle', address: {str:'贵阳市乌当区贵阳北站', x:'33', y:'116'}, 'cube|1-100.1-10': 1, 'price|50-200.1-2': 1, distance:'@string("number", 2)', 'cargo_price|1500-2000.1-2': 1}, {name: '@name', phone: /^1[34578]\d{9}$/, detail:'@ctitle', district: '@county(true)', address: {str:'贵阳市乌当区贵阳北站', x:'33', y:'116'}, distance:'@string("number", 2)', 'cube|1-100.1-2': 1, 'price|50-200.1-2': 1, 'cargo_price|1500-2000.1-2': 1}],
-      from_name: '@cname',
-      from_phone: /^1[34578]\d{9}$/, 
-      from_district: '@county(true)', 
-      from_address: '@cword(5, 15)',
+      to: [{name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', detail:'@ctitle', address: {str:'@county(true)'+' @cword(5, 15)', x:'33', y:'116'}, 'cube|1-100.1-10': 1, 'price|50-200.1-2': 1, distance:'@string("number", 2)', 'cargo_price|1500-2000.1-2': 1, deliveries:['@id']}, 
+      {name: '@name', phone: /^1[34578]\d{9}$/, detail:'@ctitle', district: '@county(true)', address: {str:'@county(true)'+' @cword(5, 15)', x:'33', y:'116'}, distance:'@string("number", 2)', 'cube|1-100.1-2': 1, 'price|50-200.1-2': 1, 'cargo_price|1500-2000.1-2': 1, deliveries:['@id']}],
+      // from_name: '@cname',
+      // from_phone: /^1[34578]\d{9}$/, 
+      // from_district: '@county(true)', 
+      // from_address: '@cword(5, 15)',
       'price|150-250.1-2': 1,
       'cargo_price|3050-4050.1-2': 1,
       'price_type|+1': ["现金支付","在线支付","回单支付"],
       'price_status|+1': ["未支付","已支付"],
-      to_name: '@cname'+' / '+'@cname'+' / '+'@cname', 
-      to_phone: /^1[34578]\d{9}$/, 
-      to_district: '@county(true)',
-      to_address: '@cword(5, 15)',
+      // to_name: '@cname'+' / '+'@cname'+' / '+'@cname', 
+      // to_phone: /^1[34578]\d{9}$/, 
+      // to_district: '@county(true)',
+      // to_address: '@cword(5, 15)'+' / '+'@cword(5, 15)'+' / '+'@cword(5, 15)',
       'status|1-2': 1,
       createTime: '@datetime',
     },
@@ -84,10 +85,18 @@ module.exports = {
     for (let key in other) {
       if ({}.hasOwnProperty.call(other, key)) {
         newData = newData.filter((item) => {
-          if ({}.hasOwnProperty.call(item, key)) {
+          // if ({}.hasOwnProperty.call(item, key)) {
             if (key === 'address') {
               return other[key].every(iitem => item[key].indexOf(iitem) > -1)
-            } else if (key === 'createTime') {
+            }else if (key === 'to_name' || key === 'to_address'|| key === 'to_phone') {
+              var key2 = key.split('_')[1]
+              for(var i = 0; i < item.to.length; i++){
+                if(item.to[i][key2].indexOf(other[key]) > -1)
+                  return true;
+              }
+              return false;
+            }  
+            else if (key === 'createTime') {
               const start = new Date(other[key][0]).getTime()
               const end = new Date(other[key][1]).getTime()
               const now = new Date(item[key]).getTime()
@@ -97,8 +106,13 @@ module.exports = {
               }
               return true
             }
-            return String(item[key]).trim().indexOf(decodeURI(other[key]).trim()) > -1
-          }
+            var itemValue = item[key];
+            if(key.indexOf('_') > -1){
+              itemValue = item[key.split('_')[0]][key.split('_')[1]]
+            }
+            // console.log(itemValue)
+            return String(itemValue).trim().indexOf(decodeURI(other[key]).trim()) > -1
+          // }
           return true
         })
       }

@@ -23,14 +23,14 @@ const Obj = (props) => {
   const { pageSize } = pagination
   const { pathname } = location
   const query = queryString.parse(location.search);
-  const getModalTitle = (modalType)=>{
+  const getModalTitle = (modalType, id='')=>{
       switch(modalType){
         case 'create':
           return '创建订单'
         case 'update':
-          return '编辑订单'
+          return '编辑订单: '+id
         case 'view':
-          return '查看订单'
+          return '查看订单：'+id
     }
   };
   const modalProps = {
@@ -40,7 +40,7 @@ const Obj = (props) => {
     maskClosable: false,
     confirmLoading: loading.effects[resourceName+'/update'],
     modalType: props[resourceName].modalType,
-    title: getModalTitle(props[resourceName].modalType),
+    title: getModalTitle(props[resourceName].modalType, currentItem.id),
     wrapresourceName: 'vertical-center-modal',
     onOk (data) {
       if(modalType == "view"){
@@ -70,6 +70,11 @@ const Obj = (props) => {
         type : 'order/minusTo',
         payload: counter
       })
+    }, 
+    onDirect : (diveryId)=>()=>{
+      dispatch(routerRedux.push({
+        pathname: `/delivery/${diveryId}`
+      }))
     }
   }
 
