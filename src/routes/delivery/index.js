@@ -22,16 +22,6 @@ const Obj = (props) => {
   const { pageSize } = pagination
   const { pathname } = location
   const query = queryString.parse(location.search);
-  const getModalTitle = (modalType)=>{
-      switch(modalType){
-        case 'create':
-          return '创建订单'
-        case 'update':
-          return '编辑订单'
-        case 'view':
-          return '查看订单'
-    }
-  };
   const distributProps = {
     currentItem,
     distribut,
@@ -59,11 +49,6 @@ const Obj = (props) => {
   const viewProps = {
     currentItem,
     assignedVehicle,
-    /*viewTrack : (number)=>{
-      dispatch(routerRedux.push({
-        pathname:`/vehicle/track/${number}`
-      }))
-    }*/
   };
   const modalProps = {
     item: props[resourceName].modalType === 'create' ? {from:{},to:[{}]} : currentItem,
@@ -86,18 +71,6 @@ const Obj = (props) => {
         type: resourceName+'/closeModalAndRefresh',
       })
     },
-    onAddBlankTo : ()=>{
-      dispatch({
-        type : 'delivery/addBlanckTo',
-      })
-    },
-    onMinusTo : (counter) =>{
-      dispatch({
-        type : 'delivery/minusTo',
-        payload: counter
-      })
-    },
-    
   }
 
   const listProps = {
@@ -128,7 +101,7 @@ const Obj = (props) => {
         type: `${resourceName}/editItem`,
         payload: {
           modalType: type,
-          currentItem: record,
+          id: record.id,
         },
       })
     },

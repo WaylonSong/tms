@@ -24,7 +24,7 @@ const menuList =[
     route: '/order',
   },{
     id: '3',
-    bpid: '1',
+    // bpid: '0',
     name: '运单管理',
     icon: 'solution',
   },{
@@ -41,6 +41,13 @@ const menuList =[
     name: '运单分布',
     icon: 'schedule',
     // route: '/delivery',
+  },{
+    id: '33',
+    bpid: '3',
+    mpid: '-1',
+    name: '运单详情',
+    icon: 'setting',
+    route: '/delivery/:id',
   },{
     id: '4',
     bpid: '1',
@@ -79,7 +86,7 @@ const menuList =[
     name: 'Map',
     icon: 'setting',
     route: '/map',
-  }
+  },
 ];
 export default {
   namespace: 'app',

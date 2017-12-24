@@ -53,7 +53,11 @@ const queryArray = (array, key, keyAlias = 'key') => {
   if (data) {
     return data
   }
-  return null
+  // return 
+  //便于测试，随机id搜索不到。默认返回首元素
+  console.log(array[0])
+  return array[0]
+
 }
 
 const NOTFOUND = {

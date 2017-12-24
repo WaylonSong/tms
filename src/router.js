@@ -28,10 +28,10 @@ const Routers = function ({ history, app }) {
       path: '/user/:id',
       models: () => [import('./models/user/detail')],
       component: () => import('./routes/user/detail/'),
-    },  /*{
+    },  {
       path: '/request',
       component: () => import('./routes/request/'),
-    }, {
+    }, /*{
       path: '/UIElement/iconfont',
       component: () => import('./routes/UIElement/iconfont/'),
     }, {
@@ -58,11 +58,11 @@ const Routers = function ({ history, app }) {
     }, {
       path: '/chart/Recharts',
       component: () => import('./routes/chart/Recharts/'),
-    }, {
+    }, */{
       path: '/post',
       models: () => [import('./models/post')],
       component: () => import('./routes/post/'),
-    },*/
+    },
     {
       path: '/order',
       models: () => [import('./models/order')],
@@ -71,6 +71,10 @@ const Routers = function ({ history, app }) {
       path: '/delivery',
       models: () => [import('./models/delivery')],
       component: () => import('./routes/delivery/'),
+    },{
+      path: '/delivery/:id',
+      models: () => [import('./models/delivery/detail')],
+      component: () => import('./routes/delivery/detail/'),
     },{
       path: '/vehicle',
       models: () => [import('./models/vehicle')],
