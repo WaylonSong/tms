@@ -71,9 +71,13 @@ const Routers = function ({ history, app }) {
       path: '/delivery',
       models: () => [import('./models/delivery')],
       component: () => import('./routes/delivery/'),
-    },{
+    },/*{
       path: '/delivery/:id',
-      models: () => [import('./models/delivery/detail')],
+      models: () => [import('./models/delivery')],
+      component: () => import('./routes/delivery/'),
+    },*/{
+      path: '/delivery/:id',
+      models: () => [import('./models/delivery')],
       component: () => import('./routes/delivery/detail/'),
     },{
       path: '/vehicle',

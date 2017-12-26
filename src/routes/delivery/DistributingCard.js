@@ -13,7 +13,7 @@ import styles from './Modal.less'
 const TabPane = Tabs.TabPane
 const status = ['待分配', '待接货', '配送中', '已送达'];
 
-const DistributionCard = ({
+const DistributingCard = ({
   distributProps,
 }) => {
   // const handlePageChange = (page)=>{
@@ -41,7 +41,7 @@ const DistributionCard = ({
   )
 }
 
-DistributionCard.propTypes = {
+DistributingCard.propTypes = {
 }
-export default DistributionCard
+export default DistributingCard
 

@@ -8,12 +8,11 @@ import queryString from 'query-string'
 import List from './List'
 import Filter from './Filter'
 import Modal from './Modal'
+import {EnumOnDutyType} from '../../utils/enums'
+
 const resourceName = "vehicle";
 const TabPane = Tabs.TabPane
-const EnumCarStatus = {
-  ON: 1,
-  OFF: 2,
-}
+
 const options = ['id', 'number', 'type', 'brand', 'occupy']
 
 const Obj = (props) => {
@@ -26,11 +25,11 @@ const Obj = (props) => {
   const getModalTitle = (modalType)=>{
       switch(modalType){
         case 'create':
-          return '创建订单'
+          return '创建车辆'
         case 'update':
-          return '编辑订单'
+          return '编辑车辆'
         case 'view':
-          return '查看订单'
+          return '查看车辆'
     }
   };
   const modalProps = {
@@ -60,17 +59,6 @@ const Obj = (props) => {
         type: resourceName+'/hideModal',
       })
     },
-    onAddBlankTo : ()=>{
-      dispatch({
-        type : 'order/addBlanckTo',
-      })
-    },
-    onMinusTo : (counter) =>{
-      dispatch({
-        type : 'order/minusTo',
-        payload: counter
-      })
-    }
   }
 
   const listProps = {
@@ -124,7 +112,6 @@ const Obj = (props) => {
       })
     },
     onFilterChange (fields) {
-
       var params = {...query}
       for(var i in options){
         delete params[options[i]]
@@ -143,10 +130,10 @@ const Obj = (props) => {
 
 
   var activeKey = "";
-  if(query.status === String(EnumCarStatus.ON))
-    activeKey = String(EnumCarStatus.ON)
-  else if(query.status === String(EnumCarStatus.OFF))
-    activeKey = String(EnumCarStatus.OFF)
+  if(query.status === String(EnumOnDutyType.ON))
+    activeKey = String(EnumOnDutyType.ON)
+  else if(query.status === String(EnumOnDutyType.OFF))
+    activeKey = String(EnumOnDutyType.OFF)
 
   const parsed = queryString.parse(location.search);
   // console.log(location);
@@ -158,10 +145,10 @@ const Obj = (props) => {
         <TabPane tab="全部" key={""}>
           <List {...listProps} />
         </TabPane>
-        <TabPane tab="当班车辆" key={String(EnumCarStatus.ON)}>
+        <TabPane tab="当班车辆" key={String(EnumOnDutyType.ON)}>
           <List {...listProps} />
         </TabPane>
-        <TabPane tab="下班车辆" key={String(EnumCarStatus.OFF)}>
+        <TabPane tab="休息车辆" key={String(EnumOnDutyType.OFF)}>
           <List {...listProps} />
         </TabPane>
       </Tabs>

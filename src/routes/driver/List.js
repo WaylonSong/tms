@@ -29,12 +29,19 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
   }
   const columns = [
     {
+      title: '操作',
+      key: 'operation',
+      width: 30,
+      render: (text, record) => {
+        return <DropOption onMenuClick={e => handleMenuClick(record.id, e)} menuOptions={[{ key: '1', name: '修改' }, { key: '2', name: '删除' }]} />
+      },
+    },{
       title: '驾驶证编号',
       dataIndex: 'id',
       key: 'id',
       width: 80,
       className: styles.avatar,
-      render: (text, record) => <a onClick={e => viewItem(record.id, e)}>{text}</a>,
+      // render: (text, record) => <a onClick={e => viewItem(record.id, e)}>{text}</a>,
     }, {
       title: '姓名',
       dataIndex: 'name',
@@ -55,9 +62,21 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       render: (text) => <span>{text}</span>,
     }, {
       title: '身份证',
-      dataIndex: 'id_card',
+      dataIndex: 'idCard',
       width: 80,
-      key: 'id_card',
+      key: 'idCard',
+      render: (text) => <span>{text}</span>,
+    },{
+      title: '学历',
+      dataIndex: 'education',
+      width: 50,
+      key: 'education',
+      render: (text) => <span>{text}</span>,
+    },{
+      title: '银行卡',
+      dataIndex: 'bankCard',
+      width: 80,
+      key: 'bankCard',
       render: (text) => <span>{text}</span>,
     }, {
       title: '电话',
@@ -69,15 +88,8 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       title: '在岗状态',
       dataIndex: 'status',
       key: 'status',
-      width: 80,
-      render: (text, record) => <span>{text == 1? '当班':'下班'}</span>,
-    },{
-      title: '操作',
-      key: 'operation',
       width: 50,
-      render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record.id, e)} menuOptions={[{ key: '1', name: '修改' }, { key: '2', name: '删除' }]} />
-      },
+      render: (text, record) => <span>{text == 1? '当班':'休息'}</span>,
     },
   ]
 
@@ -94,7 +106,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
         {...tableProps}
         className={classnames({ [styles.table]: true, [styles.motion]: isMotion })}
         bordered
-        scroll={{ x: 1000 }}
+        scroll={{ x: 1200 }}
         columns={columns}
         simple
         rowKey={record => record.id}

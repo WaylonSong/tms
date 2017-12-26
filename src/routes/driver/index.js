@@ -8,13 +8,11 @@ import queryString from 'query-string'
 import List from './List'
 import Filter from './Filter'
 import Modal from './Modal'
+import {EnumOnDutyType} from '../../utils/enums'
+const options = ['id', 'name', 'phone', 'idCard']
+
 const resourceName = "driver";
 const TabPane = Tabs.TabPane
-const EnumCarStatus = {
-  ON: 1,
-  OFF: 2,
-}
-const options = ['id', 'from_name', 'from_phone', 'to_name']
 
 const Obj = (props) => {
   var {dispatch, loading, location } = props;
@@ -26,11 +24,11 @@ const Obj = (props) => {
   const getModalTitle = (modalType)=>{
       switch(modalType){
         case 'create':
-          return '创建订单'
+          return '创建司机'
         case 'update':
-          return '编辑订单'
+          return '编辑司机'
         case 'view':
-          return '查看订单'
+          return '查看司机'
     }
   };
   const modalProps = {
@@ -60,17 +58,6 @@ const Obj = (props) => {
         type: resourceName+'/hideModal',
       })
     },
-    onAddBlankTo : ()=>{
-      dispatch({
-        type : 'order/addBlanckTo',
-      })
-    },
-    onMinusTo : (counter) =>{
-      dispatch({
-        type : 'order/minusTo',
-        payload: counter
-      })
-    }
   }
 
   const listProps = {
@@ -105,17 +92,6 @@ const Obj = (props) => {
         },
       })
     },
-    // rowSelection: {
-      // selectedRowKeys,
-      // onChange: (keys) => {
-      //   dispatch({
-      //     type: 'user/updateState',
-      //     payload: {
-      //       selectedRowKeys: keys,
-      //     },
-      //   })
-      // },
-    // },
   }
   const handleTabClick = (key) => {
     var routes = {
@@ -135,7 +111,6 @@ const Obj = (props) => {
       })
     },
     onFilterChange (fields) {
-
       var params = {...query}
       for(var i in options){
         delete params[options[i]]
@@ -154,10 +129,10 @@ const Obj = (props) => {
 
 
   var activeKey = "";
-  if(query.status === String(EnumCarStatus.ON))
-    activeKey = String(EnumCarStatus.ON)
-  else if(query.status === String(EnumCarStatus.OFF))
-    activeKey = String(EnumCarStatus.OFF)
+  if(query.status === String(EnumOnDutyType.ON))
+    activeKey = String(EnumOnDutyType.ON)
+  else if(query.status === String(EnumOnDutyType.OFF))
+    activeKey = String(EnumOnDutyType.OFF)
 
   const parsed = queryString.parse(location.search);
   // console.log(location);
@@ -169,10 +144,10 @@ const Obj = (props) => {
         <TabPane tab="全部" key={""}>
           <List {...listProps} />
         </TabPane>
-        <TabPane tab="当班" key={String(EnumCarStatus.ON)}>
+        <TabPane tab="当班" key={String(EnumOnDutyType.ON)}>
           <List {...listProps} />
         </TabPane>
-        <TabPane tab="下班" key={String(EnumCarStatus.OFF)}>
+        <TabPane tab="休息" key={String(EnumOnDutyType.OFF)}>
           <List {...listProps} />
         </TabPane>
       </Tabs>

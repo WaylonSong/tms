@@ -4,6 +4,8 @@ import { queryAll, query, queryById, deleteAll, create, remove, update } from 's
 import { queryCandidateVehicles, assignTo } from 'services/delivery'
 import { querySituation } from 'services/vehicle' 
 import {EnumDeliveryStatus} from '../utils/enums'
+import queryString from 'query-string'
+import pathToRegexp from 'path-to-regexp'
 
 const resourceName = "delivery"
 const collectionName = "deliveries"
@@ -21,6 +23,32 @@ obj.state["distribut"] = {
 	candidateVehicles: []
 }
 obj.state["assignedVehicle"] = {}
+
+
+obj.subscriptions = {
+  setup ({ dispatch, history }) {
+    history.listen((location) => {
+      if (location.pathname === `/${resourceName}`) {
+      	dispatch({
+          type: 'hideModal',
+        })
+        const payload = location.query || queryString.parse(location.search)|| { page: 1, pageSize: 10 }
+        dispatch({
+          type: 'query',
+          payload:{
+            ...payload
+          }
+        })
+      }else{
+      	const match = pathToRegexp('/delivery/:id').exec(location.pathname)
+		if (match) {
+			dispatch({ type: 'editItem', payload: { id: match[1] } })
+		}
+      }
+    })
+  },
+}
+
 
 obj.reducers['showModal'] = (state, { payload }) => {
 	return { ...state, ...payload, modalVisible: true}

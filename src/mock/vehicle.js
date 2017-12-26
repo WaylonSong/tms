@@ -25,29 +25,14 @@ let ordersListData2 = Mock.mock({
     {
       id: '@id',
       number: '贵'+'@character("upper")'+'@string("number", 5)',
-      'status|1-2': 1,
+      'status|0-1': 1,
       'occupy|1-20': 1, 
       'type|+1': ["箱货", "货车", "平板", "面包车", "冷藏车"],
       'brand|+1': ["五菱", "依维柯", "金杯", "卡玛斯", "东风"],
-      drivers: '@cname'+' / '+'@cname'+' / '+'@cname', 
+      drivers: [{id:'@id', name: '@cname', phone: /^1[34578]\d{9}$/}, {id:'@id', name: '@cname', phone: /^1[34578]\d{9}$/}, {id:'@id', name: '@cname', phone: /^1[34578]\d{9}$/}], 
       company: '@ctitle(3,5)', 
       owner: '@cname',
       phone: /^1[34578]\d{9}$/, 
-      from: {name: '@name', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'贵阳市乌当区贵阳北站', x:'33', y:'116'}},
-      to: [{name: '@name', phone: /^1[34578]\d{9}$/, district: '@county(true)', detail:'@title', address: {str:'贵阳市乌当区贵阳北站', x:'33', y:'116'}, 'cube|1-100.1-10': 1, 'price|50-200.1-2': 1, 'cargoFee|1500-2000.1-2': 1}, {name: '@name', phone: /^1[34578]\d{9}$/, detail:'@title', district: '@county(true)', address: {str:'贵阳市乌当区贵阳北站', x:'33', y:'116'}, 'cube|1-100.1-2': 1, 'price|50-200.1-2': 1, 'cargoFee|1500-2000.1-2': 1}],
-      
-      from_name: '@name',
-      from_phone: /^1[34578]\d{9}$/, 
-      from_district: '@county(true)', 
-      from_address: '@zip(true)',
-      'price|150-250.1-2': 1,
-      'cargo_price|3050-4050.1-2': 1,
-      price_type: "现金支付",
-      price_status: "未支付",
-      to_name: '@name'+' / '+'@name'+' / '+'@name', 
-      to_phone: /^1[34578]\d{9}$/, 
-      to_district: '@county(true)',
-      to_address: '@county(true)',
       createTime: '@datetime',
     },
   ],
@@ -169,11 +154,19 @@ module.exports = {
 
 
   [`POST ${apiPrefix}/${collectionName}`] (req, res) {
-    const newData = req.body
-    newData.createTime = Mock.mock('@now')
-    newData.avatar = newData.avatar || Mock.Random.image('100x100', Mock.Random.color(), '#757575', 'png', newData.nickName.substr(0, 1))
-    newData.id = Mock.mock('@id')
+    var newData = req.body
+    console.log(newData);
+    var drivers = newData.drivers;
+    for(var i in drivers){
+      if(drivers[i].hasOwnProperty('id')){
+        if(!drivers[i].hasOwnProperty('name'))
+          drivers[i]['name'] = Mock.mock('@cname');
+        if(!i.hasOwnProperty('phone'))
+          drivers[i]['phone'] = Mock.mock(/^1[34578]\d{9}$/);
+      }
+    }
 
+    newData.createTime = Mock.mock('@now')
     database.unshift(newData)
 
     res.status(200).end()
@@ -209,6 +202,15 @@ module.exports = {
     database = database.map((item) => {
       if (item.id === id) {
         isExist = true
+        var drivers = editItem.drivers;
+        for(var i in drivers){
+          if(drivers[i].hasOwnProperty('id')){
+            if(!drivers[i].hasOwnProperty('name'))
+              drivers[i]['name'] = Mock.mock('@cname');
+            if(!i.hasOwnProperty('phone'))
+              drivers[i]['phone'] = Mock.mock(/^1[34578]\d{9}$/);
+          }
+        }
         return Object.assign({}, item, editItem)
       }
       return item

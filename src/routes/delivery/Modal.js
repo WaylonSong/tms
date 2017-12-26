@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Radio, Button, Modal, Cascader, Row, Col, Card, Icon, Tooltip, Tabs, Steps, Pagination} from 'antd'
 import city from '../../utils/city'
 import VehicleList from './VehicleList'
-import ViewCard from './ViewCard'
-import DistributionCard from './DistributionCard'
+import DistributingCard from './DistributingCard'
+import DistributedCard from './DistributedCard'
 import { connect } from 'dva'
 import classnames from 'classnames'
 import styles from './Modal.less'
@@ -110,8 +110,8 @@ const modal = ({
         </Col>
       </Row>
       <Row gutter={24}>
-        {item.status == EnumDeliveryStatus.NOT_DISTRIBUTED&&<DistributionCard distributProps={distributProps}/>}
-        {(item.status == EnumDeliveryStatus.NOT_RECEIVED||item.status == EnumDeliveryStatus.ONBOARD)&&<ViewCard viewProps={viewProps}/>}
+        {item.status == EnumDeliveryStatus.NOT_DISTRIBUTED&&<DistributingCard distributProps={distributProps}/>}
+        {(item.status == EnumDeliveryStatus.NOT_RECEIVED||item.status == EnumDeliveryStatus.ONBOARD)&&<DistributedCard viewProps={viewProps}/>}
       </Row>
     </Modal>
   )

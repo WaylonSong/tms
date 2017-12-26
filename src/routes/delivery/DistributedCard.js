@@ -13,7 +13,7 @@ import styles from './Modal.less'
 const TabPane = Tabs.TabPane
 const status = ['待分配', '待接货', '配送中', '已送达'];
 
-const ViewCard = ({
+const DistributedCard = ({
   viewProps,
 }) => {
   return (
@@ -25,7 +25,7 @@ const ViewCard = ({
   )
 }
 
-ViewCard.propTypes = {
+DistributedCard.propTypes = {
 }
-export default ViewCard
+export default DistributedCard
 

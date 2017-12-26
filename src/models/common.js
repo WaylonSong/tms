@@ -65,6 +65,9 @@ const crudModelGenerator = (namespace, collectionName)=>{return{
       setup ({ dispatch, history }) {
         history.listen((location) => {
           if (location.pathname === `/${namespace}`) {
+            /*dispatch({
+              type: 'hideModal',
+            })*/
             const payload = location.query || queryString.parse(location.search)|| { page: 1, pageSize: 10 }
             dispatch({
               type: 'query',

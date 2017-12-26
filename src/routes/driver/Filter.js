@@ -10,7 +10,7 @@ const InputGroup = Input.Group;
 const Option = Select.Option;
 const Search = Input.Search
 const { RangePicker } = DatePicker
-const options = ['id', 'from_name', 'from_phone', 'to_name']
+const options = [{'id':'驾驶证编号'}, {'name':'姓名'}, {'phone':'手机号'}, {'idCard':'身份证号'}]
 const ColProps = {
   xs: 24,
   sm: 12,
@@ -39,7 +39,6 @@ const Filter = ({
   const handleSubmit = () => {
     let fields = getFieldsValue()
     fields = handleFields(fields)
-    console.log("---------------- ",fields)
     onFilterChange(fields)
 
   }
@@ -74,10 +73,9 @@ const Filter = ({
         <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
           {getFieldDecorator('field')(
           <Select style={{ width: '30%' }} size="large" placeholder="选择查询属性">
-            <Option value={options[0]}>订单编号</Option>
-            <Option value={options[1]}>发货人姓名</Option>
-            <Option value={options[2]}>发货人电话</Option>
-            <Option value={options[3]}>收货人姓名</Option>
+            {options.map(function(item, index){
+              return <Option key={`option_${index}`} value={Object.keys(item)[0]}>{item[Object.keys(item)[0]]}</Option>
+            })}
           </Select>
           )}
           {getFieldDecorator('value')(

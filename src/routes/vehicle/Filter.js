@@ -40,7 +40,6 @@ const Filter = ({
   const handleSubmit = () => {
     let fields = getFieldsValue()
     fields = handleFields(fields)
-    console.log("---------------- ",fields)
     onFilterChange(fields)
 
   }
@@ -76,7 +75,7 @@ const Filter = ({
           {getFieldDecorator('field')(
           <Select style={{ width: '30%' }} size="large" placeholder="选择查询属性">
             {options.map(function(item, index){
-              return <Option value={Object.keys(item)[0]}>{item[Object.keys(item)[0]]}</Option>
+              return <Option key={`option_${index}`} value={Object.keys(item)[0]}>{item[Object.keys(item)[0]]}</Option>
             })}
           </Select>
           )}

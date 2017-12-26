@@ -4,13 +4,14 @@ import { connect } from 'dva'
 import styles from './index.less'
 import { Form, Input, InputNumber, Radio, Button, Modal, Cascader, Row, Col, Card, Icon, Tooltip, Tabs, Steps, Pagination} from 'antd'
 import { Page } from 'components'
-import ViewCard from '../ViewCard'
-import DistributionCard from '../DistributionCard'
+import DistributedCard from '../DistributedCard'
+import DistributingCard from '../DistributingCard'
 import {EnumDeliveryStatus} from '../../../utils/enums'
 const Step = Steps.Step;
 
-const Detail = ({deliveryDetail}) => {
-  const {currentItem, distribut, assignedVehicle} = deliveryDetail
+const Detail = ({delivery, dispatch }) => {
+  // console.log(dispatch)
+  const { currentItem, distribut, assignedVehicle} = delivery
   const distributProps = {
     currentItem,
     distribut,
@@ -53,8 +54,8 @@ const Detail = ({deliveryDetail}) => {
         </Col>
       </Row>
       <Row gutter={24}>
-        {currentItem.status == EnumDeliveryStatus.NOT_DISTRIBUTED&&<DistributionCard distributProps={distributProps}/>}
-        {(currentItem.status == EnumDeliveryStatus.NOT_RECEIVED||currentItem.status == EnumDeliveryStatus.ONBOARD)&&<ViewCard viewProps={viewProps}/>}
+        {currentItem.status == EnumDeliveryStatus.NOT_DISTRIBUTED&&<DistributingCard distributProps={distributProps}/>}
+        {(currentItem.status == EnumDeliveryStatus.NOT_RECEIVED||currentItem.status == EnumDeliveryStatus.ONBOARD)&&<DistributedCard viewProps={viewProps}/>}
       </Row>
     </Page>
   )
@@ -64,4 +65,4 @@ Detail.propTypes = {
   userDetail: PropTypes.object,
 }
 
-export default connect(({ deliveryDetail, loading }) => ({ deliveryDetail, loading }))(Detail)
+export default connect(({ delivery, loading }) => ({ delivery, loading }))(Detail)

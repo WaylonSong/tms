@@ -1,3 +1,8 @@
+const EnumOnDutyType = {
+  OFF: 0,
+  ON: 1,
+}
+
 const EnumRoleType = {
   ADMIN: 'admin',
   DEFAULT: 'admin',
@@ -11,5 +16,5 @@ const EnumDeliveryStatus = {
   RECEIVED : 3,
 }
 module.exports = {
-  EnumRoleType, EnumDeliveryStatus
+  EnumRoleType, EnumDeliveryStatus, EnumOnDutyType
 }

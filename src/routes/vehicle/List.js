@@ -7,47 +7,39 @@ import { Link } from 'react-router-dom'
 import queryString from 'query-string'
 import AnimTableBody from 'components/DataTable/AnimTableBody'
 import styles from './List.less'
+import {EnumOnDutyType} from '../../utils/enums'
 
 const confirm = Modal.confirm
 const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...tableProps }) => {
   location.query = queryString.parse(location.search)
-
-  const handleMenuClick = (recordId, e) => {
-    if (e.key === '1') {
-      onEditItem(recordId, 'update')
-    } else if (e.key === '2') {
-      confirm({
-        title: '确认删除么？',
-        onOk () {
-          onDeleteItem(recordId)
-        },
-      })
-    }
-  }
-  const viewItem = (record, e)=>{
-    onEditItem(record, 'view');
-  }
   const columns = [
     {
+      title: '操作',
+      key: 'operation',
+      width: 50,
+      render: (text, record) => {
+        return <DropOption onMenuClick={e => handleMenuClick(record.id, e)} menuOptions={[{ key: '1', name: '修改' }, { key: '2', name: '删除' }]} />
+      },
+    },{
       title: '行驶证编号',
       dataIndex: 'id',
       key: 'id',
       width: 80,
       className: styles.avatar,
-      render: (text, record) => <a onClick={e => viewItem(record.id, e)}>{text}</a>,
+      // render: (text, record) => <a onClick={e => viewItem(record.id, e)}>{text}</a>,
     }, {
       title: '车牌号码',
       dataIndex: 'number',
       key: 'number',
       width: 80,
       className: styles.avatar,
-      render: (text, record) => <a onClick={e => viewItem(record.id, e)}>{text}</a>,
+      // render: (text, record) => <a onClick={e => viewItem(record.id, e)}>{text}</a>,
     }, {
       title: '车辆状态',
       dataIndex: 'status',
       key: 'status',
       width: 80,
-      render: (text) => <span>{text=='1'?'上班':'下班'}</span>,
+      render: (text) => <span>{text==String(EnumOnDutyType.ON)?'当班':'休息'}</span>,
     }, {
       title: '车型',
       dataIndex: 'type',
@@ -71,7 +63,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       dataIndex: 'drivers',
       width: 120,
       key: 'drivers',
-      render: (text) => <span>{text}</span>,
+      render: (text, record) => <ul>{record.drivers.map(function(item){return <li>{`${item.name}:${item.phone} \n `}</li>})}</ul>,
     },{
       title: '所属公司',
       dataIndex: 'company',
@@ -90,15 +82,25 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       width: 100,
       key: 'phone',
       render: (text) => <span>{text}</span>,
-    },{
-      title: '操作',
-      key: 'operation',
-      width: 50,
-      render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record.id, e)} menuOptions={[{ key: '1', name: '修改' }, { key: '2', name: '删除' }]} />
-      },
     },
   ]
+
+  const handleMenuClick = (recordId, e) => {
+    if (e.key === '1') {
+      onEditItem(recordId, 'update')
+    } else if (e.key === '2') {
+      confirm({
+        title: '确认删除么？',
+        onOk () {
+          onDeleteItem(recordId)
+        },
+      })
+    }
+  }
+  const viewItem = (record, e)=>{
+    onEditItem(record, 'view');
+  }
+  
 
   const getBodyWrapperProps = {
     page: location.query.page,
