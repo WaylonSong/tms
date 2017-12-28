@@ -80,22 +80,23 @@ module.exports = {
     for (let key in other) {
       if ({}.hasOwnProperty.call(other, key)) {
         newData = newData.filter((item) => {
-          if ({}.hasOwnProperty.call(item, key)) {
-            if (key === 'address') {
-              return other[key].every(iitem => item[key].indexOf(iitem) > -1)
-            } else if (key === 'createTime') {
+          // if ({}.hasOwnProperty.call(item, key)) {
+            var itemValue = '';
+            if (key.indexOf('.')>-1) {
+              itemValue = String(item[key.split('.')[0]][key.split('.')[1]]).trim();
+            }  
+            else if (key === 'createTime') {
               const start = new Date(other[key][0]).getTime()
               const end = new Date(other[key][1]).getTime()
               const now = new Date(item[key]).getTime()
-
               if (start && end) {
                 return now >= start && now <= end
               }
               return true
+            }else{
+              itemValue = item[key];
             }
-            return String(item[key]).trim().indexOf(decodeURI(other[key]).trim()) > -1
-          }
-          return true
+            return String(itemValue).trim().indexOf(decodeURI(other[key]).trim()) > -1
         })
       }
     }

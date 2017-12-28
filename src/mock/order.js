@@ -88,34 +88,22 @@ module.exports = {
       if ({}.hasOwnProperty.call(other, key)) {
         newData = newData.filter((item) => {
           // if ({}.hasOwnProperty.call(item, key)) {
-            if (key === 'address') {
-              return other[key].every(iitem => item[key].indexOf(iitem) > -1)
-            }else if (key === 'to_name' || key === 'to_address'|| key === 'to_phone') {
-              var key2 = key.split('_')[1]
-              for(var i = 0; i < item.to.length; i++){
-                if(item.to[i][key2].indexOf(other[key]) > -1)
-                  return true;
-              }
-              return false;
+            var itemValue = '';
+            if (key.indexOf('.')>-1) {
+              itemValue = String(item[key.split('.')[0]][key.split('.')[1]]).trim();
             }  
             else if (key === 'createTime') {
               const start = new Date(other[key][0]).getTime()
               const end = new Date(other[key][1]).getTime()
               const now = new Date(item[key]).getTime()
-
               if (start && end) {
                 return now >= start && now <= end
               }
               return true
+            }else{
+              itemValue = item[key];
             }
-            var itemValue = item[key];
-            if(key.indexOf('_') > -1){
-              itemValue = item[key.split('_')[0]][key.split('_')[1]]
-            }
-            // console.log(itemValue)
             return String(itemValue).trim().indexOf(decodeURI(other[key]).trim()) > -1
-          // }
-          // return true
         })
       }
     }
@@ -141,6 +129,7 @@ module.exports = {
     newData.from.district = tools.getFullName(newData.from.district)
     for(var i in newData.to){
       newData.to[i].district = tools.getFullName(newData.to[i].district)
+      newData.to[i].deliveries = [Mock.mock('@id')]
     }
     // console.log(newData);
     database.unshift(newData)
@@ -182,6 +171,7 @@ module.exports = {
         editItem.from.district = tools.getFullName(editItem.from.district)
         for(var i in editItem.to){
           editItem.to[i].district = tools.getFullName(editItem.to[i].district)
+          editItem.to[i].deliveries = [Mock.mock('@id')]
         }
         return Object.assign({}, item, editItem)
       }

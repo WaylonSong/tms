@@ -10,7 +10,7 @@ const InputGroup = Input.Group;
 const Option = Select.Option;
 const Search = Input.Search
 const { RangePicker } = DatePicker
-const options = ['id', 'from_name', 'from_phone', 'to_name']
+const options = ['id', 'from.name', 'from.phone', 'to.name']
 const ColProps = {
   xs: 24,
   sm: 12,

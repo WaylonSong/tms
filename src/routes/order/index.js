@@ -14,7 +14,7 @@ const EnumPostStatus = {
   UNPUBLISH: 1,
   PUBLISHED: 2,
 }
-const options = ['id', 'from_name', 'from_phone', 'to_name']
+const options = ['id', 'from.name', 'from.phone', 'to.name']
 
 const Obj = (props) => {
   var {dispatch, loading, location } = props;

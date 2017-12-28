@@ -300,7 +300,7 @@ const modal = ({
 
             {modalType == "view" &&
             <FormItem label="运单列表" hasFeedback {...formItemLayout}>
-              {getFieldDecorator(`to[${i}].deliveries`)(<ul>{item.to[i].deliveries.map((i)=><li style={{color:"blue", cursor:"pointer"}} onClick={onDirect(i)}>{i}</li>)}</ul>)}
+              <ul>{item.to[i].deliveries.map((i)=><li style={{color:"blue", cursor:"pointer"}} onClick={onDirect(i)}>{i}</li>)}</ul>
             </FormItem>
             }  
           </Card>
