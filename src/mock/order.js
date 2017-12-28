@@ -1,6 +1,8 @@
 const qs = require('qs')
 const Mock = require('mockjs')
 const config = require('../utils/config')
+const city = require('../utils/city')
+const tools = require('../utils/cityTools')
 
 const { apiPrefix } = config
 
@@ -24,9 +26,9 @@ let ordersListData2 = Mock.mock({
   'data|80-100': [
     {
       id: '@id',
-      from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'贵阳市乌当区贵阳北站', x:'33', y:'116'}},
-      to: [{name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', detail:'@ctitle', address: {str:'@county(true)'+' @cword(5, 15)', x:'33', y:'116'}, 'cube|1-100.1-10': 1, 'price|50-200.1-2': 1, distance:'@string("number", 2)', 'cargo_price|1500-2000.1-2': 1, deliveries:['@id']}, 
-      {name: '@name', phone: /^1[34578]\d{9}$/, detail:'@ctitle', district: '@county(true)', address: {str:'@county(true)'+' @cword(5, 15)', x:'33', y:'116'}, distance:'@string("number", 2)', 'cube|1-100.1-2': 1, 'price|50-200.1-2': 1, 'cargo_price|1500-2000.1-2': 1, deliveries:['@id']}],
+      from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'@cword(5, 10)', x:'33', y:'116'}},
+      to: [{name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', detail:'@ctitle', address: {str:'@cword(5, 10)', x:'33', y:'116'}, 'cube|1-100.1-10': 1, 'price|50-200.1-2': 1, distance:'@string("number", 2)', 'cargo_price|1500-2000.1-2': 1, deliveries:['@id']}, 
+      {name: '@name', phone: /^1[34578]\d{9}$/, detail:'@ctitle', district: '@county(true)', address: {str:'@cword(5, 10)', x:'33', y:'116'}, distance:'@string("number", 2)', 'cube|1-100.1-2': 1, 'price|50-200.1-2': 1, 'cargo_price|1500-2000.1-2': 1, deliveries:['@id']}],
       // from_name: '@cname',
       // from_phone: /^1[34578]\d{9}$/, 
       // from_district: '@county(true)', 
@@ -134,11 +136,15 @@ module.exports = {
   [`POST ${apiPrefix}/orders`] (req, res) {
     const newData = req.body
     newData.createTime = Mock.mock('@now')
-    newData.avatar = newData.avatar || Mock.Random.image('100x100', Mock.Random.color(), '#757575', 'png', newData.nickName.substr(0, 1))
     newData.id = Mock.mock('@id')
-
+    // newData.from.district = Mock.mock('@country')
+    newData.from.district = tools.getFullName(newData.from.district)
+    for(var i in newData.to){
+      newData.to[i].district = tools.getFullName(newData.to[i].district)
+    }
+    // console.log(newData);
     database.unshift(newData)
-
+    // console.log(city);
     res.status(200).end()
   },
 
@@ -168,10 +174,15 @@ module.exports = {
     const { id } = req.params
     const editItem = req.body
     let isExist = false
+    console.log(editItem)
 
     database = database.map((item) => {
       if (item.id === id) {
         isExist = true
+        editItem.from.district = tools.getFullName(editItem.from.district)
+        for(var i in editItem.to){
+          editItem.to[i].district = tools.getFullName(editItem.to[i].district)
+        }
         return Object.assign({}, item, editItem)
       }
       return item

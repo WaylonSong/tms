@@ -19,6 +19,8 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
     if (e.key === '1') {
       onEditItem(record, 'update')
     } else if (e.key === '2') {
+      onEditItem(record, 'update')
+    } else if (e.key === '3') {
       confirm({
         title: '确认删除么？',
         onOk () {
@@ -32,6 +34,13 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
   }
   const columns = [
     {
+      title: '操作',
+      key: 'operation',
+      width: 30,
+      render: (text, record) => {
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={record.status == EnumDeliveryStatus.NOT_DISTRIBUTED?[{ key: '1', name: '调度' }, { key: '2', name: '拆分' }]:[{ key: '1', name: '查看' }]} />
+      },
+    },{
       title: '运单编号',
       dataIndex: 'id',
       key: 'id',

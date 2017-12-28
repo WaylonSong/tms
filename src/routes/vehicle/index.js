@@ -78,6 +78,11 @@ const Obj = (props) => {
         }),
       }))
     },
+    onTrack(id){
+      dispatch(routerRedux.push({
+        pathname: `/vehicle/${id}/track`,
+      }))
+    },
     onDeleteItem (id) {
       dispatch({
         type: `${resourceName}/delete`,

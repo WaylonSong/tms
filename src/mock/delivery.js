@@ -6,7 +6,7 @@ const { apiPrefix } = config
 const collectionName = "deliveries"
 
 let deliveryListData2 = Mock.mock({
-  'data|10-20': [
+  'data|20-40': [
     {
       id: '@id',
       from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: '@ctitle'},

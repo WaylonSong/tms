@@ -50,7 +50,7 @@ const menuList =[
     route: '/delivery/:id',
   },{
     id: '4',
-    bpid: '1',
+    // bpid: '1',
     name: '车辆管理',
     icon: 'car',
   },{
@@ -76,17 +76,11 @@ const menuList =[
     route: '/vehicle/:id/track',
   },{
     id: '5',
-    bpid: '1',
+    // bpid: '1',
     name: '司机管理',
     icon: 'user',
     route: '/driver',
-  },/*{
-    id: '6',
-    bpid: '1',
-    name: 'Map',
-    icon: 'setting',
-    route: '/map',
-  },*/
+  },
 ];
 export default {
   namespace: 'app',

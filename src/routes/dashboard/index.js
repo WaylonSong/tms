@@ -91,8 +91,8 @@ function Dashboard ({ dashboard, loading }) {
           </Card>
         </Col>
         <Col lg={8} md={24}>
-          <Card bordered={false} bodyStyle={{ ...bodyStyle.bodyStyle, padding: 0 }}>
-            <User {...user} />
+          <Card bordered={false} {...bodyStyle}>
+            <Cpu {...cpu} />
           </Card>
         </Col>
       </Row>

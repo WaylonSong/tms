@@ -9,7 +9,7 @@ import DistributingCard from '../DistributingCard'
 import {EnumDeliveryStatus} from '../../../utils/enums'
 const Step = Steps.Step;
 
-const Detail = ({delivery, dispatch }) => {
+const Detail = ({delivery, dispatch, history }) => {
   // console.log(dispatch)
   const { currentItem, distribut, assignedVehicle} = delivery
   const distributProps = {
@@ -43,6 +43,9 @@ const Detail = ({delivery, dispatch }) => {
   const content = []
   return( 
     <Page inner>
+      <Row gutter={24} style={{textAlign:'left',marginBottom:30}}>
+        <Button size="large" type={'primary'} style={{marginRight: 10}} onClick={()=>{history.goBack()}}>返回</Button>
+      </Row>
       <Row gutter={24} style={{marginBottom:20}}>
         <Col xs={{ span: 22, offset: 1}} lg={{ span: 22, offset: 1}}>
           <Steps current={parseInt(currentItem.status)} className={styles.card}>
@@ -56,6 +59,9 @@ const Detail = ({delivery, dispatch }) => {
       <Row gutter={24}>
         {currentItem.status == EnumDeliveryStatus.NOT_DISTRIBUTED&&<DistributingCard distributProps={distributProps}/>}
         {(currentItem.status == EnumDeliveryStatus.NOT_RECEIVED||currentItem.status == EnumDeliveryStatus.ONBOARD)&&<DistributedCard viewProps={viewProps}/>}
+      </Row>
+      <Row gutter={24} style={{textAlign:'center'}}>
+        <Button size="large" type={'primary'} style={{marginRight: 10}} onClick={()=>{history.goBack()}}>返回</Button>
       </Row>
     </Page>
   )

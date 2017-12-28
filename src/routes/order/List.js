@@ -29,6 +29,13 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
   }
   const columns = [
     {
+      title: '操作',
+      key: 'operation',
+      width: 100,
+      render: (text, record) => {
+        return <DropOption onMenuClick={e => handleMenuClick(record.id, e)} menuOptions={[{ key: '1', name: '修改' }, { key: '2', name: '删除' }]} />
+      },
+    },{
       title: '订单编号',
       dataIndex: 'id',
       key: 'id',
@@ -54,10 +61,10 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       render: (text) => <span>{text}</span>,
     }, {
       title: '发货地址',
-      dataIndex: 'from.district',
+      dataIndex: 'from.address',
       width: 200,
-      key: 'from.district',
-      render: (text) => <span>{text}</span>,
+      key: 'from.address',
+      render: (text, record) => <span>{record.from.district+' '+record.from.address.str}</span>,
     }, {
       title: '电话',
       dataIndex: 'from.phone',
@@ -74,20 +81,13 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       dataIndex: 'to.address',
       width: 400,
       key: 'to.address',
-      render: (text, record) => <ul>{record.to.map(function(item){return <li>{item.address.str+" : "+item.name}</li>})}</ul>,
+      render: (text, record) => <ul>{record.to.map(function(item){return <li>{item.district+" "+item.address.str+" : "+item.name}</li>})}</ul>,
     }, {
       title: '创建时间',
       dataIndex: 'createTime',
       width: 150,
       key: 'createTime',
-    }, {
-      title: '操作',
-      key: 'operation',
-      width: 100,
-      render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record.id, e)} menuOptions={[{ key: '1', name: '修改' }, { key: '2', name: '删除' }]} />
-      },
-    },
+    }, 
   ]
 
   const getBodyWrapperProps = {

@@ -10,7 +10,7 @@ import styles from './List.less'
 import {EnumOnDutyType} from '../../utils/enums'
 
 const confirm = Modal.confirm
-const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...tableProps }) => {
+const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, onTrack, ...tableProps }) => {
   location.query = queryString.parse(location.search)
   const columns = [
     {
@@ -18,7 +18,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       key: 'operation',
       width: 50,
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record.id, e)} menuOptions={[{ key: '1', name: '修改' }, { key: '2', name: '删除' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record.id, e)} menuOptions={[{ key: '1', name: '修改' }, { key: '2', name: '状态查看' }, { key: '3', name: '删除' }]} />
       },
     },{
       title: '行驶证编号',
@@ -89,6 +89,8 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
     if (e.key === '1') {
       onEditItem(recordId, 'update')
     } else if (e.key === '2') {
+      onTrack(recordId)
+    } else if (e.key === '3') {
       confirm({
         title: '确认删除么？',
         onOk () {
@@ -97,9 +99,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       })
     }
   }
-  const viewItem = (record, e)=>{
-    onEditItem(record, 'view');
-  }
+ 
   
 
   const getBodyWrapperProps = {
@@ -115,6 +115,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
         {...tableProps}
         className={classnames({ [styles.table]: true, [styles.motion]: isMotion })}
         bordered
+        style={{textAlign:'center'}}
         scroll={{ x: 1250 }}
         columns={columns}
         simple

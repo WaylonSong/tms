@@ -17,7 +17,7 @@ const DistributedCard = ({
   viewProps,
 }) => {
   return (
-    <Card key={'car-distribution'} style={{width: '100%'}} title='车量调度' extra={<a href="#">刷新</a>} bordered={false} >
+    <Card key={'car-distribution'} style={{width: '100%'}} title='运单起止与车辆轨迹' extra={<a href="#">刷新</a>} bordered={false} >
       <Col xs={{ span: 22, offset: 1}} lg={{ span: 22, offset: 1}}>
         <VehicleAssignedMap viewProps={viewProps}/>
       </Col>

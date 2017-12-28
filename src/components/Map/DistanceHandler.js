@@ -4,31 +4,36 @@ import { Input, InputNumber } from 'antd';
 class DistanceHandler extends Component {
     constructor(props) {
 		super(props);
-		const value = this.props.value || 0
+		const value = this.props.value;
 		this.state = {
-		  value: value,
-		  from: '',
-		  to: ''
+		  value: value.value||0,
+		  from: value.from||'',
+		  to: value.to||''
 		};
 	}
 	componentWillReceiveProps(nextProps) {
 		var shouldUpdate = false;
-		for (var key in nextProps){
-			if(nextProps[key] != this.props[key]){
-				shouldUpdate = true;
-				break
+		if(nextProps.value['from'] == '' || nextProps.value['to'] == ''){
+			return;
+		}else{
+			for (var key in nextProps.value){
+				if(nextProps.value[key] != this.props.value[key]){
+					shouldUpdate = true;
+					break
+				}
+			}
+			if (shouldUpdate) {
+				// {from:"西单", to:"东单"};
+				console.log(nextProps.value.from, nextProps.value.to)
+				if(nextProps.value){
+	  		  		this.transit.search(nextProps.value.from, nextProps.value.to);
+				}
 			}
 		}
-		if (shouldUpdate) {
-			// {from:"西单", to:"东单"};
-			if(nextProps.value){
-  		  		this.transit.search(nextProps.value.from, nextProps.value.to);
-			}
-		}
+		
 	}
 
     onChange(value){
-    	console.log(value)
     	this.setState({value: value});
     	this.triggerChange({value: value})
     }
