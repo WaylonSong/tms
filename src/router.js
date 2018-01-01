@@ -49,7 +49,7 @@ const Routers = function ({ history, app }) {
     }, {
       path: '/UIElement/editor',
       component: () => import('./routes/UIElement/editor/'),
-    }, {
+    }, */{
       path: '/chart/ECharts',
       component: () => import('./routes/chart/ECharts/'),
     }, {
@@ -58,7 +58,7 @@ const Routers = function ({ history, app }) {
     }, {
       path: '/chart/Recharts',
       component: () => import('./routes/chart/Recharts/'),
-    }, */{
+    }, {
       path: '/post',
       models: () => [import('./models/post')],
       component: () => import('./routes/post/'),
@@ -88,6 +88,7 @@ const Routers = function ({ history, app }) {
       component: () => import('./routes/vehicle/Map'),
     },{
       path: '/vehicle/:id/track',
+      models: () => [import('./models/vehicle')],
       component: () => import('./routes/vehicle/Track'),
     },{
       path: '/driver',

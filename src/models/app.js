@@ -75,12 +75,34 @@ const menuList =[
     icon: 'retweet',
     route: '/vehicle/:id/track',
   },{
-    id: '5',
+    id: '6',
     // bpid: '1',
     name: '司机管理',
     icon: 'user',
     route: '/driver',
   },
+  /*{
+    id: '5',
+    bpid: '1',
+    name: 'Charts',
+    icon: 'code-o',
+  },
+  {
+    id: '51',
+    bpid: '5',
+    mpid: '5',
+    name: 'ECharts',
+    icon: 'line-chart',
+    route: '/chart/ECharts',
+  },
+  {
+    id: '52',
+    bpid: '5',
+    mpid: '5',
+    name: 'highCharts',
+    icon: 'bar-chart',
+    route: '/chart/highCharts',
+  },*/
 ];
 export default {
   namespace: 'app',
