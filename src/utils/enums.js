@@ -14,6 +14,7 @@ const EnumDeliveryStatus = {
   NOT_RECEIVED : 1,
   ONBOARD : 2,
   RECEIVED : 3,
+  SPLITTED : 4,
 }
 module.exports = {
   EnumRoleType, EnumDeliveryStatus, EnumOnDutyType

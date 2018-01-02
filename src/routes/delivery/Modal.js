@@ -12,7 +12,7 @@ import {EnumDeliveryStatus} from '../../utils/enums'
 
 const TabPane = Tabs.TabPane
 
-const status = ['待分配', '待接货', '配送中', '已送达'];
+const status = ['待分配', '待接货', '配送中', '已送达', '已拆分'];
 
 const Step = Steps.Step;
 
@@ -92,6 +92,24 @@ const modal = ({
     width: 80,
   }]
   // getFieldDecorator('keys', { initialValue: [] });
+
+  const genSteps = ()=>{
+    if(item.status == EnumDeliveryStatus.SPLITTED){
+
+      return (<Col xs={{ span: 16, offset: 1}} lg={{ span: 10, offset: 2}}><Steps current={parseInt(item.status)} className={styles.card}>
+            <Step title="已创建" description={<div><div>{`货物体积(m³)：${item.cube}`}</div><div>{`货单金额(元)：${item.price}`}</div><div>{`${item.createTime}`}</div></div>} />
+            <Step title="已拆分" description={<ul>拆分子运单列表{item.children.map((item)=><li>{item}</li>)}</ul>} />
+          </Steps></Col>)
+    }else return(
+          <Steps current={parseInt(item.status)} className={styles.card}>
+            <Step title="已创建" description={<div><div>{`货物体积(m³)：${item.cube}`}</div><div>{`货单金额(元)：${item.price}`}</div><div>{`${item.createTime}`}</div></div>} />
+            <Step title="已分配" description={parseInt(item.status)>0?<div><div>{`分配车辆：${item.vehicle}`}</div><div>{`司机：${item.driver.name}`}</div><div>{`司机电话：${item.driver.phone}`}</div><div>{`${item.distributTime}`}</div></div>:''} />
+            <Step title="已接货" description={parseInt(item.status)>1?<div><div>{`发货人：${item.from.name} ${item.from.phone}`}</div><div>{`发货地址：${item.from.district} ${item.from.address}`}</div><div>{`${item.loadTime}`}</div></div>:''} />
+            <Step title="已送达" description={parseInt(item.status)>2?<div><div>{`收货人：${item.to.name} ${item.to.phone}`}</div><div>{`收货地址：${item.to.district} ${item.to.address}`}</div><div>{`${item.arriveTime}`}</div></div>:''} />
+          </Steps>
+      )
+  }
+
   return (
     <Modal {...modalOpts} title={`运单编号 ${item.id} [${status[parseInt(item.status)]}]`} cancelText={undefined} width={1200} style={{}} 
           footer={[
@@ -101,12 +119,7 @@ const modal = ({
           ]}>
       <Row gutter={24} style={{marginBottom:20}}>
         <Col xs={{ span: 22, offset: 1}} lg={{ span: 22, offset: 1}}>
-          <Steps current={parseInt(item.status)} className={styles.card}>
-            <Step title="已创建" description={<div><div>{`货物体积(m³)：${item.cube}`}</div><div>{`货单金额(元)：${item.price}`}</div><div>{`${item.createTime}`}</div></div>} />
-            <Step title="已分配" description={parseInt(item.status)>0?<div><div>{`分配车辆：${item.vehicle}`}</div><div>{`司机：${item.driver.name}`}</div><div>{`司机电话：${item.driver.phone}`}</div><div>{`${item.distributTime}`}</div></div>:''} />
-            <Step title="已接货" description={parseInt(item.status)>1?<div><div>{`发货人：${item.from.name} ${item.from.phone}`}</div><div>{`发货地址：${item.from.district} ${item.from.address}`}</div><div>{`${item.loadTime}`}</div></div>:''} />
-            <Step title="已送达" description={parseInt(item.status)>2?<div><div>{`收货人：${item.to.name} ${item.to.phone}`}</div><div>{`收货地址：${item.to.district} ${item.to.address}`}</div><div>{`${item.arriveTime}`}</div></div>:''} />
-          </Steps>
+          {genSteps()}
         </Col>
       </Row>
       <Row gutter={24}>

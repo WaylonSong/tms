@@ -28,5 +28,6 @@ module.exports = {
     v2test: `${APIV2}/test`,
     'vehicles_candidate': `${APIV1}/vehicles/candidate`,
     'assginTo': `${APIV1}/deliveries/assignTo`,
+    'split': `${APIV1}/deliveries/split`,
   },
 }

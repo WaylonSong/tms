@@ -29,7 +29,7 @@ const modal = ({
   onAddBlankTo,
   onDirect,
   // onCancel,
-  onMinusTo = ()=>console.log("Minus To"),
+  onMinusTo,
   form: {
     getFieldDecorator,
     validateFields,

@@ -8,6 +8,7 @@ import queryString from 'query-string'
 import List from './List'
 import Filter from './Filter'
 import Modal from './Modal'
+import SplitModal from './SplitModal'
 import {EnumDeliveryStatus} from '../../utils/enums'
 
 const resourceName = "delivery";
@@ -18,7 +19,7 @@ const options = ['id', 'from.name', 'from.phone', 'to.name', 'to.phone']
 const Obj = (props) => {
   var {dispatch, loading, location } = props;
   var obj = props[resourceName];
-  const { list, pagination, currentItem, modalVisible, modalType, isMotion, selectedRowKeys, itemIndexes, distribut, assignedVehicle } = obj
+  const { list, pagination, currentItem, modalVisible, splitModalVisible, modalType, isMotion, selectedRowKeys, itemIndexes, distribut, assignedVehicle } = obj
   const { pageSize } = pagination
   const { pathname } = location
   const query = queryString.parse(location.search);
@@ -72,6 +73,48 @@ const Obj = (props) => {
       })
     },
   }
+  const splitModalProps = {
+    // item: props[resourceName].modalType === 'create' ? {from:{},to:[{}]} : currentItem,,
+    item: (()=>{
+      /*console.log(props[resourceName].modalType)
+      if(props[resourceName].modalType == 'split'){
+        return {...currentItem, splitCubes:[0,0]};
+      }
+      else{
+        return {...currentItem, splitCubes:[0,0]};
+      }*/
+      return currentItem
+    })(),
+    itemIndexes,
+    distributProps,
+    viewProps,
+    visible: true,//props[resourceName].splitModalVisible,
+    maskClosable: false,
+    modalType: props[resourceName].modalType,
+    wrapresourceName: 'vertical-center-modal',
+    onOk (data) {
+      dispatch({
+        type: resourceName+'/postSplit',
+        payload: data
+      })
+    },
+    onCancel () {
+      dispatch({
+        type: resourceName+'/closeModalAndRefresh',
+      })
+    },
+    handleAdd(){
+      dispatch({
+        type: resourceName+'/addSplitCube',
+      })
+    },
+    handleMinus:(i, counter)=>()=>{
+      dispatch({
+        type: resourceName+'/minusSplitCube',
+        payload: counter
+      })
+    }
+  }
 
   const listProps = {
     resourceName,
@@ -97,13 +140,24 @@ const Obj = (props) => {
       })
     },
     onEditItem (record, type) {
-      dispatch({
-        type: `${resourceName}/editItem`,
-        payload: {
-          modalType: type,
-          id: record.id,
-        },
-      })
+      if(type == "split"){
+        dispatch({
+          type: `${resourceName}/splitItem`,
+          payload: {
+            modalType: type,
+            id: record.id,
+          },
+        })
+      }
+      else{
+        dispatch({
+          type: `${resourceName}/editItem`,
+          payload: {
+            modalType: type,
+            id: record.id,
+          },
+        })
+      }
     },
   }
   const handleTabClick = (key) => {
@@ -149,6 +203,7 @@ const Obj = (props) => {
     <Page inner>
       <Filter {...filterProps} />
       {modalVisible && <Modal {...modalProps} />}
+      {splitModalVisible && <SplitModal {...splitModalProps} />}
       <Tabs type="line" size='small' activeKey={activeKey} onTabClick={handleTabClick}>
         <TabPane tab="全部" key={""}>
           <List {...listProps} />
@@ -163,6 +218,9 @@ const Obj = (props) => {
           <List {...listProps} />
         </TabPane>
         <TabPane tab="已送达" key={String(EnumDeliveryStatus.RECEIVED)}>
+          <List {...listProps} />
+        </TabPane>
+        <TabPane tab="已拆分" key={String(EnumDeliveryStatus.SPLITTED)}>
           <List {...listProps} />
         </TabPane>
       </Tabs>

@@ -1,8 +1,7 @@
 import { request, config } from 'utils'
 
 const { api } = config
-const { vehicles_candidate } = api //`${APIV1}/vehicles/candidate`
-const { assginTo } = api
+const { vehicles_candidate, assginTo, split} = api //`${APIV1}/vehicles/candidate`
 
 export async function queryCandidateVehicles (params) {
   return request({
@@ -20,3 +19,10 @@ export async function assignTo (params) {
   })
 }
 
+export async function postSplit (params) {
+  return request({
+    url: split,
+    method: 'post',
+    data: params,
+  })
+}

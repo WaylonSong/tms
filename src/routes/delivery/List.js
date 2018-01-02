@@ -9,7 +9,7 @@ import AnimTableBody from 'components/DataTable/AnimTableBody'
 import styles from './List.less'
 import {EnumDeliveryStatus} from '../../utils/enums'
 
-const status = ['待分配', '待接货', '配送中', '已送达'];
+const status = ['待分配', '待接货', '配送中', '已送达', '已拆分'];
 
 const confirm = Modal.confirm
 const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...tableProps }) => {
@@ -19,7 +19,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
     if (e.key === '1') {
       onEditItem(record, 'update')
     } else if (e.key === '2') {
-      onEditItem(record, 'update')
+      onEditItem(record, 'split')
     } else if (e.key === '3') {
       confirm({
         title: '确认删除么？',

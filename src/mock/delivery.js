@@ -10,20 +10,12 @@ let deliveryListData2 = Mock.mock({
     {
       id: '@id',
       from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: '@ctitle'},
-      to: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', detail:'@ctitle', address: '@ctitle', 'cube|1-100.1-10': 1, 'price|50-200.1-2': 1}, 
-      // from_name: '@cname',
-      // from_phone: /^1[34578]\d{9}$/, 
-      // from_district: '@county(true)', 
-      // from_address: '@ctitle',
+      to: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: '@ctitle'}, 
       'price|150-250.1-2': 1,
-      // to_name: '@cname',
-      // to_phone: /^1[34578]\d{9}$/,
-      // to_district: '@county(true)',
-      // to_address: '@ctitle',
       vehicle: '贵'+'@character("upper")'+'@string("number", 5)',
       driver:{name: '@cname', phone: /^1[34578]\d{9}$/},
       detail:'@ctitle',
-      'cube|1-100.1-10': 1, 
+      'cube|1-100.1-2': 1, 
       'status|0-3': 1,
       createTime: '@datetime',
       distributTime: '@datetime',
@@ -134,6 +126,38 @@ module.exports = {
       }
       return item
     })
+    res.status(200).end()
+  },
+
+  [`POST ${apiPrefix}/${collectionName}/split`] (req, res) {
+    const {id, splitCubes} = req.body
+    var subItems = [];
+    for(var j in database){
+      if (database[j].id === id) {
+        database[j].status = EnumDeliveryStatus.SPLITTED
+        database[j].splitTime = Mock.mock('@now')
+
+        var subTotalPrice = 0;
+        database[j].children = [];
+        for(var i in splitCubes){
+          var subItem = Object.assign({}, database[j])
+          subItem.id = Mock.mock('@id')
+          subItem.cube = splitCubes[i]
+          if(i == splitCubes.length-1)
+            subItem.price = new Number(database[j].price-subTotalPrice).toFixed(2);
+          else{
+            subItem.price = new Number(subItem.cube*database[j].price/database[j].cube).toFixed(2);
+            subTotalPrice += new Number(subItem.price).toFixed(2);
+          }
+          subItem.status = EnumDeliveryStatus.NOT_DISTRIBUTED
+          subItems.push(subItem)
+          database[j].children.push(subItem.id)
+        }
+        break;
+      }
+    }
+    console.log(subItems)
+    database.unshift(...subItems)
     res.status(200).end()
   },
 

@@ -1,7 +1,7 @@
 /* global window */
 import { crudModelGenerator } from './common'
 import { queryAll, query, queryById, deleteAll, create, remove, update } from 'services/crud'
-import { queryCandidateVehicles, assignTo } from 'services/delivery'
+import { queryCandidateVehicles, assignTo, postSplit} from 'services/delivery'
 import { querySituation } from 'services/vehicle' 
 import {EnumDeliveryStatus} from '../utils/enums'
 import queryString from 'query-string'
@@ -12,7 +12,7 @@ const collectionName = "deliveries"
 
 var obj = crudModelGenerator(`${resourceName}`, `${collectionName}`)
 // function addBlanckTo(state){}
-obj.state["item"] = {from:{},to:[{}]};
+// obj.state["item"] = {from:{},to:[{}]};
 obj.state["distribut"] = {
 	distributButtonDisabled: false,
 	pagination: {
@@ -23,7 +23,7 @@ obj.state["distribut"] = {
 	candidateVehicles: []
 }
 obj.state["assignedVehicle"] = {}
-
+obj.state["splitModalVisible"] = false;
 
 obj.subscriptions = {
   setup ({ dispatch, history }) {
@@ -54,6 +54,14 @@ obj.reducers['showModal'] = (state, { payload }) => {
 	return { ...state, ...payload, modalVisible: true}
 }
 
+obj.reducers['hideModal'] = (state, { payload }) => {
+	return { ...state, modalVisible: false, splitModalVisible: false}
+}
+
+obj.reducers['showSplitModal'] = (state, { payload }) => {
+	return { ...state, ...payload, splitModalVisible: true}
+}
+
 obj.reducers['updateItem'] = (state, { payload }) => {
 	var currentItem = {};
 	Object.assign(currentItem, state.currentItem);
@@ -69,6 +77,21 @@ obj.reducers['updateItemPending'] = (state, { payload }) => {
 	Object.assign(distribut, state.distribut);
 	distribut.distributButtonDisabled = true;
 	return { ...state, ...payload, distribut}
+}
+
+obj.reducers['addSplitCube'] = (state, { payload }) => {
+	var currentItem = {};
+	Object.assign(currentItem, state.currentItem);
+	currentItem.splitCubes.push(0);
+	// distribut.distributButtonDisabled = true;
+	return { ...state, ...payload, currentItem}
+}
+
+obj.reducers['minusSplitCube'] = (state, { payload }) => {
+	var currentItem = {};
+	Object.assign(currentItem, state.currentItem);
+	currentItem.splitCubes.splice(payload, 1);
+	return { ...state, currentItem}
 }
 
 obj.effects['editItem'] = function *({ payload}, { call, put }){
@@ -90,6 +113,34 @@ obj.effects['editItem'] = function *({ payload}, { call, put }){
 	}
 	
 }
+
+obj.effects['splitItem'] = function *({ payload}, { call, put }){
+	// payload.currentItemId
+	const data = yield call(query, {id:payload.id}, `${collectionName}`)
+	var putData = {
+        type: `showSplitModal`,
+        payload: {
+          modalType: payload.modalType,
+          currentItem: {...data, splitCubes:[0, 0]}
+        }
+    }
+    yield put(putData)
+}
+
+obj.effects['postSplit'] = function *({ payload}, { call, put }){
+	// payload.currentItemId
+	/*const data = yield call(query, {id:payload.id}, `${collectionName}`)
+	var putData = {
+        type: `showSplitModal`,
+        payload: {
+          modalType: payload.modalType,
+          currentItem: {...data, splitCubes:[0, 0]}
+        }
+    }*/
+    yield call(postSplit, payload)
+    yield put({type:'closeModalAndRefresh'})
+}
+
 obj.effects['queryCandidateVehicles'] = function *({payload, putData}, { call, put, select }){
 	var putData2 = putData || {
         type: `showModal`,
