@@ -9,8 +9,6 @@ import Humidity from './statistics/Humidity'
 
 
 const Track = ({vehicle, dispatch, history }) => {
-  // getFieldDecorator('keys', { initialValue: [] });
-  console.log(vehicle.item)
   return (
     <div>
       <Card key={'track'} style={{width: '100%'}} title={'历史运行轨迹'} bordered={false} >

@@ -126,7 +126,6 @@ const Obj = (props) => {
       delete fields['field']
       delete fields['value']
       params = {...params, page:1, ...fields, pageSize }
-      console.log(fields, params)
       dispatch(routerRedux.push({
         search: queryString.stringify(params)
       }))
