@@ -156,6 +156,26 @@ module.exports = {
     })
   },
 
+  [`GET ${apiPrefix}/${collectionName}/locationList`] (req, res) {
+    const xyList = [{ x: 116.1234, y: 39.89},{ x: 116.234, y: 39.8955},{ x: 116.34, y: 39.9955},{ x: 116.34, y: 40.1},{ x: 116.234, y: 39.7955},{ x: 116.4, y: 39.9955},{ x: 116.2222, y: 39.8986},{ x: 116.2522, y: 39.8996},{ x: 116.4232, y: 39.916},{ x: 116.2232, y: 39.9856},{ x: 116.3252, y: 40.056}];
+    const { query } = req
+    let { pageSize, page, ...other } = query
+    pageSize = pageSize || 10
+    page = page || 1
+
+    let newData = withtrackdb.slice((page - 1) * pageSize, page * pageSize);
+    var locationList = [];
+    for(var i in newData){
+      var randomIndex = parseInt(Math.random()*100%xyList.length)
+      locationList.push({...newData[i], x:xyList[randomIndex].x, y:xyList[randomIndex].y});
+    }
+    res.status(200).json({
+      data: locationList,
+      total: withtrackdb.length,
+    })
+
+  },
+
   [`DELETE ${apiPrefix}/${collectionName}`] (req, res) {
     const { ids } = req.body
     database = database.filter(item => !ids.some(_ => _ === item.id))
@@ -233,5 +253,5 @@ module.exports = {
     }
   },
 
-  
+  // [{ x: 116.1234, y: 39.89},{ x: 116.234, y: 39.8955},{ x: 116.34, y: 39.9955},{ x: 116.34, y: 40.1},{ x: 116.234, y: 39.7955},{ x: 116.4, y: 39.9955},{ x: 116.2222, y: 39.8986},{ x: 116.2522, y: 39.8996},{ x: 116.4232, y: 39.916},{ x: 116.2232, y: 39.9856},{ x: 116.3252, y: 40.056}]
 }

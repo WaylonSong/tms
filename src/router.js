@@ -85,7 +85,7 @@ const Routers = function ({ history, app }) {
       component: () => import('./routes/vehicle/'),
     },{
       path: '/vehicle/map',
-      component: () => import('./routes/vehicle/Map'),
+      component: () => import('./routes/vehicle/VehicleDistribute'),
     },{
       path: '/vehicle/:id/track',
       models: () => [import('./models/vehicle')],

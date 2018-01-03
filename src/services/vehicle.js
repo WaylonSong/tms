@@ -1,5 +1,5 @@
 import { request, config } from 'utils'
-const { APIV1 } = config
+const { APIV1, api } = config
 
 export async function querySituation (params) {
   return request({
@@ -17,3 +17,10 @@ export async function assignTo (params) {
   })
 }
 
+export async function locationList (params) {
+  return request({
+    url: api.locationList,
+    method: 'post',
+    data: params,
+  })
+}

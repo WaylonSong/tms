@@ -29,5 +29,6 @@ module.exports = {
     'vehicles_candidate': `${APIV1}/vehicles/candidate`,
     'assginTo': `${APIV1}/deliveries/assignTo`,
     'split': `${APIV1}/deliveries/split`,
+    'locationList': `${APIV1}/vehicles/locationList`,
   },
 }
