@@ -36,7 +36,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
     {
       title: '操作',
       key: 'operation',
-      width: 30,
+      width: 50,
       render: (text, record) => {
         return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={record.status == EnumDeliveryStatus.NOT_DISTRIBUTED?[{ key: '1', name: '调度' }, { key: '2', name: '拆分' }]:[{ key: '1', name: '查看' }]} />
       },
@@ -44,7 +44,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       title: '运单编号',
       dataIndex: 'id',
       key: 'id',
-      width: 80,
+      width: 100,
       className: styles.avatar,
       render: (text, record) => <a onClick={e => onEditItem(record, e)}>{text}</a>,
     }, {

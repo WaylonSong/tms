@@ -138,7 +138,7 @@ module.exports = {
         database[j].splitTime = Mock.mock('@now')
 
         var subTotalPrice = 0;
-        database[j].children = [];
+        database[j].subs = [];
         for(var i in splitCubes){
           var subItem = Object.assign({}, database[j])
           subItem.id = Mock.mock('@id')
@@ -151,7 +151,7 @@ module.exports = {
           }
           subItem.status = EnumDeliveryStatus.NOT_DISTRIBUTED
           subItems.push(subItem)
-          database[j].children.push(subItem.id)
+          database[j].subs.push(subItem.id)
         }
         break;
       }

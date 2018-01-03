@@ -34,14 +34,14 @@ const menuList =[
     name: '运单调度',
     icon: 'bars',
     route: '/delivery',
-  },{
+  },/*{
     id: '32',
     bpid: '3',
     mpid: '3',
     name: '运单分布',
     icon: 'schedule',
     // route: '/delivery',
-  },{
+  },*/{
     id: '33',
     bpid: '3',
     mpid: '-1',

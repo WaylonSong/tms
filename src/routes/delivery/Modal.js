@@ -98,7 +98,7 @@ const modal = ({
 
       return (<Col xs={{ span: 16, offset: 1}} lg={{ span: 10, offset: 2}}><Steps current={parseInt(item.status)} className={styles.card}>
             <Step title="已创建" description={<div><div>{`货物体积(m³)：${item.cube}`}</div><div>{`货单金额(元)：${item.price}`}</div><div>{`${item.createTime}`}</div></div>} />
-            <Step title="已拆分" description={<ul>拆分子运单列表{item.children.map((item)=><li>{item}</li>)}</ul>} />
+            <Step title="已拆分" description={<ul>拆分子运单列表{item.subs.map((item)=><li>{item}</li>)}</ul>} />
           </Steps></Col>)
     }else return(
           <Steps current={parseInt(item.status)} className={styles.card}>
