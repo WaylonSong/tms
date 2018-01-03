@@ -44,7 +44,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       title: '运单编号',
       dataIndex: 'id',
       key: 'id',
-      width: 100,
+      width: 200,
       className: styles.avatar,
       render: (text, record) => <a onClick={e => onEditItem(record, e)}>{text}</a>,
     }, {
@@ -140,7 +140,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       title: '司机电话',
       dataIndex: 'driver.phone',
       key: 'driver.phone',
-      width: 100,
+      width: 120,
       render: (text, record) => <span>{record.status == EnumDeliveryStatus.NOT_DISTRIBUTED?'':text}</span>,
     },{
       title: '接货时间',
@@ -170,7 +170,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
         {...tableProps}
         className={classnames({ [styles.table]: true, [styles.motion]: isMotion })}
         bordered
-        scroll={{ x: 2000 }}
+        scroll={{ x: 2400 }}
         columns={columns}
         simple
         rowKey={record => record.id}
