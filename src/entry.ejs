@@ -12,9 +12,11 @@
   <meta name="description" content="A admin dashboard application demo built upon Ant Design and Dva.js">
   <title>antd admin</title>
   <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=45caf1856fc0a2d1b19464c6a4eb89c3  "></script>
- 
-      <script
-        src="https://as.alipayobjects.com/g/component/??console-polyfill/0.2.2/index.js,media-match/2.0.2/media.match.min.js"></script>
+  <!-- Polyfills -->
+  <!--[if lt IE 10]>
+  <script src="https://as.alipayobjects.com/g/component/??console-polyfill/0.2.2/index.js,es5-shim/4.5.7/es5-shim.min.js,es5-shim/4.5.7/es5-sham.min.js,es6-shim/0.35.1/es6-sham.min.js,es6-shim/0.35.1/es6-shim.min.js,html5shiv/3.7.2/html5shiv.min.js,media-match/2.0.2/media.match.min.js"></script>
+  <![endif]-->
+  <script src="https://as.alipayobjects.com/g/component/??es6-shim/0.35.1/es6-sham.min.js,es6-shim/0.35.1/es6-shim.min.js"></script>
   <% for (item of htmlWebpackPlugin.options.headScripts) { %>
     <script src="<%= item %>"></script>
   <% } %>
