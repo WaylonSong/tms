@@ -185,7 +185,6 @@ module.exports = {
 
   [`POST ${apiPrefix}/${collectionName}`] (req, res) {
     var newData = req.body
-    console.log(newData);
     var drivers = newData.drivers;
     for(var i in drivers){
       if(drivers[i].hasOwnProperty('id')){
@@ -213,7 +212,6 @@ module.exports = {
   },
 
   [`DELETE ${apiPrefix}/${collectionName}/:id`] (req, res) {
-    console.log("req.params", req.params);
     const { id } = req.params
     const data = queryArray(database, id, 'id')
     if (data) {

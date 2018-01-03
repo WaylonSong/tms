@@ -131,9 +131,7 @@ module.exports = {
       newData.to[i].district = tools.getFullName(newData.to[i].district)
       newData.to[i].deliveries = [Mock.mock('@id')]
     }
-    // console.log(newData);
     database.unshift(newData)
-    // console.log(city);
     res.status(200).end()
   },
 
@@ -148,7 +146,6 @@ module.exports = {
   },
 
   [`DELETE ${apiPrefix}/orders/:id`] (req, res) {
-    console.log("req.params", req.params);
     const { id } = req.params
     const data = queryArray(database, id, 'id')
     if (data) {
@@ -163,7 +160,6 @@ module.exports = {
     const { id } = req.params
     const editItem = req.body
     let isExist = false
-    console.log(editItem)
 
     database = database.map((item) => {
       if (item.id === id) {

@@ -136,7 +136,6 @@ module.exports = {
   },
 
   [`DELETE ${apiPrefix}/${collectionName}/:id`] (req, res) {
-    console.log("req.params", req.params);
     const { id } = req.params
     const data = queryArray(database, id, 'id')
     if (data) {

@@ -47,7 +47,6 @@ const queryArray = (array, key, keyAlias = 'key') => {
   }
   // return 
   //便于测试，随机id搜索不到。默认返回首元素
-  console.log(array[0])
   return array[0]
 
 }
@@ -156,7 +155,6 @@ module.exports = {
         break;
       }
     }
-    console.log(subItems)
     database.unshift(...subItems)
     res.status(200).end()
   },
@@ -172,7 +170,6 @@ module.exports = {
   },
 
   [`DELETE ${apiPrefix}/${collectionName}/:id`] (req, res) {
-    console.log("req.params", req.params);
     const { id } = req.params
     const data = queryArray(database, id, 'id')
     if (data) {
