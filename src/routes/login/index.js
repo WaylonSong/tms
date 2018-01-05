@@ -54,8 +54,8 @@ const Login = ({
             Sign in
           </Button>
           <p>
-            <span>Username：guest</span>
-            <span>Password：guest</span>
+            <span>Username：admin</span>
+            <span>Password：admin</span>
           </p>
         </Row>
 
