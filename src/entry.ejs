@@ -3,13 +3,16 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="description" content="A admin dashboard application demo built upon Ant Design and Dva.js">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="description" content="A admin dashboard application demo built upon Ant Design and Dva.js"/>
   <title>antd admin</title>
-   <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=45caf1856fc0a2d1b19464c6a4eb89c3  "></script>
-  <script src="https://gw.alipayobjects.com/as/g/??datavis/g2/2.3.12/index.js,datavis/g-cloud/1.0.2/index.js,datavis/g2-plugin-slider/1.2.1/slider.js"></script>
+  <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=45caf1856fc0a2d1b19464c6a4eb89c3  "></script>
+  <!--[if lte IE 10]>
+      <script
+        src="https://as.alipayobjects.com/g/component/??console-polyfill/0.2.2/index.js,media-match/2.0.2/media.match.min.js"></script>
+  <![endif]-->
   <% for (item of htmlWebpackPlugin.options.headScripts) { %>
     <script src="<%= item %>"></script>
   <% } %>
