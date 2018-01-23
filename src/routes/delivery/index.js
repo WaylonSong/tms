@@ -14,7 +14,7 @@ import {EnumDeliveryStatus} from '../../utils/enums'
 const resourceName = "delivery";
 const TabPane = Tabs.TabPane
 
-const options = ['id', 'from.name', 'from.phone', 'to.name', 'to.phone']
+const options = ['id', 'from.name', 'from.address', 'from.phone', 'to.name', 'to.address', 'to.phone']
 
 const Obj = (props) => {
   var {dispatch, loading, location } = props;
@@ -42,7 +42,7 @@ const Obj = (props) => {
         type : 'delivery/queryCandidateVehicles',
         payload : {
           page: page,
-          currentItemId: currentItem.id
+          id: currentItem.id
         }
       })
     }

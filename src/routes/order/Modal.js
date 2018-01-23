@@ -283,7 +283,7 @@ const modal = ({
                 />)}<span>元</span>
             </FormItem>
 
-            <FormItem label="捎带货款" hasFeedback {...formItemLayout}>
+            <FormItem label="代收货款" hasFeedback {...formItemLayout}>
               {getFieldDecorator(`to[${i}].cargo_price`, {
                 initialValue: item.to[i].cargo_price||0,
                 rules: [
@@ -300,7 +300,7 @@ const modal = ({
 
             {modalType == "view" &&
             <FormItem label="运单列表" hasFeedback {...formItemLayout}>
-              <ul>{item.to[i].deliveries.map((i)=><li style={{color:"blue", cursor:"pointer"}} onClick={onDirect(i)}>{i}</li>)}</ul>
+              <ul>{item.to[i].deliveries&&item.to[i].deliveries.map((i)=><li style={{color:"blue", cursor:"pointer"}} onClick={onDirect(i)}>{i}</li>)}</ul>
             </FormItem>
             }  
           </Card>

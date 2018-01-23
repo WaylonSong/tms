@@ -4,6 +4,7 @@ import { connect } from 'dva'
 import { Button, Row, Form, Input } from 'antd'
 import { config } from 'utils'
 import styles from './index.less'
+import { routerRedux } from 'dva/router'
 
 const FormItem = Form.Item
 
@@ -24,6 +25,11 @@ const Login = ({
     })
   }
 
+  const registerJump = ()=>{
+    dispatch(routerRedux.push({
+      pathname: `/register`
+    }))
+  }
   return (
     <div className={styles.form}>
       <div className={styles.logo}>
@@ -56,6 +62,9 @@ const Login = ({
           <p>
             <span>Username：admin</span>
             <span>Password：admin</span>
+          </p>
+          <p>
+            <span><a onClick={registerJump}>用户注册</a></span>
           </p>
         </Row>
 

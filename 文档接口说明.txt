@@ -1,0 +1,83 @@
+文档接口说明
+
+一.通用接口CRUD接口
+
+1.crud通用request代码模板见services/crud，符合Rest接口风格，其中url为资源集合名称（eg, orders, deliveries）
+
+2.接口参数详细描述
+
+a.列表查询
+进入页面后，会执行model的setup方法，执行列表查询，代码见models/common，url：/api/collectionName
+参数（即data: params）:搜索属性参数+分页参数，例如 ?name=xx&page=1&pageSize=10，其中分页参数和createTime是通用参数，基本在每个列表查询中都带。
+【data中的params会变为？参数加入url】
+
+b.单个实体查询
+在查看和编辑实体时，前端会调用editItem方法，此时会通过call query查询单个实体。
+url: /api/collectionName/id
+【data中的params只有id，会替换掉url中:id占位符】
+
+c.创建对象修改对象
+创建和修改对象，提交的data：params是一样的，都是mock中定义的完整实体（修改带id，添加不带）
+差别method: {post, put}，以及url中put需要:id占位符
+【过程备忘下，前端范畴，关于修改中的id如何获取，参考models/common中，根据目前缓存的currentItem对象来获取，在router部分提交的增加和修改的payload提交参数一致】
+
+d.删除对象
+只需要关注:id
+
+二.Order接口
+1.数据模型
+order在运单调度完成之后，会绑定相关运单信息，目前在mock中，属性to会包含deliveries:['@id']，后面可能要扩充到起止地货物情况等。
+2.查询接口
+列表查询参数
+const options = ['id', 'from.name', 'from.address', 'from.phone', 'to.name', 'to.address', 'to.phone']
+以及 status，还有共性的page、pageSize、createTime[]
+关于to中由于是一对多，查询和merge稍微麻烦。
+
+三.Delivery接口（collectionName = "deliveries"）
+1.数据模型
+讨论：运单这部分的车辆和司机信息应该是值类型的，避免后面车辆和司机的信息变更，造成快照失效，但是要保证具有主键的关联，确保溯源等需要
+
+2.查询接口
+参数与Order相同，只是delivery这部分from和to都是对象不是数组。
+
+3.扩展接口
+import { queryCandidateVehicles, assignTo, postSplit} from 'services/delivery'
+
+3.1.调度操作
+3.1.1.请求候选车辆，response在vehicle的mock中实现，Get请求举例：http://127.0.0.1:8000/api/v1/vehicles/candidate?id=990000199204285301&page=2&pageSize=10
+id为运单编号，根据运单的货物要求筛选和排序返回车辆列表，需要支持分页请求。
+response参数见mock/vehicle中assignedVehicleList,举例：{"data":[{"id":"230000197410297674","number":"贵S80814","status":2,"occupy":7,"type":"箱货","brand":"五菱","driver":{"name":"石平","phone":"13118085924"},"company":"社油较建","track":[{"x":116.292,"y":39.9856},{"x":116.252,"y":39.9955},{"x":116.292,"y":39.5},{"x":116.312,"y":39.7}],"location":{"x":116.2232,"y":39.9856}}],"total":82}
+尚存bug和待完善：车辆位置查看按钮目前失效应改为状态查看，地图模式应该加入车辆状态查看，车辆状态查看：轨迹，接单情况（配送中的和待接货的，反应车辆目前运载状态和未来的运载能力）
+
+3.1.2指派操作
+POST ${apiPrefix}/${collectionName}/assignTo
+参数，id为运单号码，车辆和司机信息从上述候选列表中获取，后台建立运单、车辆、司机关联
+payload: {
+  id: currentItem.id,
+  vehicle_number: number,
+  'driver.name':driver,
+  'driver.phone':driver_phone
+}
+response:成功 res.status(200).end()
+
+3.2.拆分
+request：POST ${apiPrefix}/${collectionName}/split
+{id: item.id, splitCubes: getFieldValue("splitCubes")};
+举例，如：{"id":"510000199506147466","splitCubes":[3,2.1]} 拆分的体积数组
+拆分过后，原始运单状态为已拆分EnumDeliveryStatus.SPLITTED，形成多个新的未分配订单
+【目前是最简化的拆分假定，后续肯定会更加复杂】
+
+3.3.配送中和已送达运单查询
+如果是非待分配订单，浏览时在调用models/delivery editItem方法时，会调用querySituation方法
+url和参数说明：${apiPrefix}/vehicles/situation?number=xxx
+http://127.0.0.1:8000/api/v1/vehicles/situation?number=%E8%B4%B5U38437
+返回值参考mock/vehicle assignedVehicleList(主要是带有轨迹数据)
+
+【配送过程后续可能要补充异常方面，比如车辆故障重新指派等，送达后可能涉及一些签单、回单、结算等操作】
+
+
+
+
+
+
+
