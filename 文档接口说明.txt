@@ -8,7 +8,10 @@
 
 a.列表查询
 进入页面后，会执行model的setup方法，执行列表查询，代码见models/common，url：/api/collectionName
-参数（即data: params）:搜索属性参数+分页参数，例如 ?name=xx&page=1&pageSize=10，其中分页参数和createTime是通用参数，基本在每个列表查询中都带。
+参数（即data: params）:搜索属性参数+分页参数，例如 ?name=xx&page=1&pageSize=10&createTime=2018-01-11&createTime=2018-01-13，其中分页参数和createTime是通用参数，基本在每个列表查询中都带。
+后台对createTime接收方式         
+String[] createTime = request0.getParameterValues("createTime");
+
 【data中的params会变为？参数加入url】
 
 b.单个实体查询

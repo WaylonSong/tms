@@ -38,7 +38,7 @@ const fetch = (options) => {
   if (fetchType === 'JSONP') {
     return new Promise((resolve, reject) => {
       jsonp(url, {
-        param: `${qs.stringify(data)}&callback`,
+        param: `${qs.stringify(data, {arrayFormat: 'repeat'})}&callback`,
         name: `jsonp_${new Date().getTime()}`,
         timeout: 4000,
       }, (error, result) => {
@@ -49,7 +49,7 @@ const fetch = (options) => {
       })
     })
   } else if (fetchType === 'YQL') {
-    url = `http://query.yahooapis.com/v1/public/yql?q=select * from json where url='${options.url}?${encodeURIComponent(qs.stringify(options.data))}'&format=json`
+    url = `http://query.yahooapis.com/v1/public/yql?q=select * from json where url='${options.url}?${encodeURIComponent(qs.stringify(options.data, {arrayFormat: 'repeat'}))}'&format=json`
     data = null
   }
 
@@ -57,6 +57,9 @@ const fetch = (options) => {
     case 'get':
       return axios.get(url, {
         params: cloneData,
+        paramsSerializer: function(params) {
+           return qs.stringify(params, {arrayFormat: 'repeat'})
+        },
       })
     case 'delete':
       return axios.delete(url, {
