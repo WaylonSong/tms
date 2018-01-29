@@ -36,7 +36,7 @@ const Login = ({
         <img alt={'logo'} src={config.logo} />
         <span>{config.name}</span>
       </div>
-      
+
       <form>
         <FormItem hasFeedback>
           {getFieldDecorator('username', {
@@ -63,6 +63,14 @@ const Login = ({
           <p>
             <span>Username：admin</span>
             <span>Password：admin</span>
+          </p>
+          <p>
+            <span>Username：customer</span>
+            <span>Password：customer</span>
+          </p>
+          <p>
+            <span>Username：driver</span>
+            <span>Password：driver</span>
           </p>
           <p>
             <span><a onClick={registerJump}>用户注册</a></span>
