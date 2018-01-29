@@ -2,107 +2,79 @@
 /* global document */
 /* global location */
 import { routerRedux } from 'dva/router'
-import { parse } from 'qs'
+import qs, { parse } from 'qs'
 import config from 'config'
 import { EnumRoleType } from 'enums'
 import { query, logout } from 'services/app'
 import * as menusService from 'services/menus'
 import queryString from 'query-string'
+import jwt from 'jsonwebtoken';
 
 const { prefix } = config
 const menuList =[
   {
-    id: '1',
+    id: 1,
     icon: 'laptop',
     name: 'Dashboard',
     route: '/dashboard',
   },{
-    id: '2',
+    id: 2,
     // bpid: '1',
     name: '订单管理',
     icon: 'book',
     route: '/order',
   },{
-    id: '3',
+    id: 3,
     // bpid: '0',
     name: '运单管理',
     icon: 'solution',
   },{
-    id: '31',
-    bpid: '3',
-    mpid: '3',
+    id: 31,
+    bpid: 3,
+    mpid: 3,
     name: '运单调度',
     icon: 'bars',
     route: '/delivery',
-  },/*{
-    id: '32',
-    bpid: '3',
-    mpid: '3',
-    name: '运单分布',
-    icon: 'schedule',
-    // route: '/delivery',
-  },*/{
-    id: '33',
-    bpid: '3',
-    mpid: '-1',
+  },{
+    id: 33,
+    bpid: 3,
+    mpid: 3,
     name: '运单详情',
     icon: 'setting',
     route: '/delivery/:id',
   },{
-    id: '4',
+    id: 4,
     // bpid: '1',
     name: '车辆管理',
     icon: 'car',
   },{
-    id: '41',
-    bpid: '4',
-    mpid: '4',
+    id: 41,
+    bpid: 4,
+    mpid: 4,
     name: '车辆列表',
     icon: 'video-camera',
     route: '/vehicle',
   },{
-    id: '42',
-    bpid: '4',
-    mpid: '4',
+    id: 42,
+    bpid: 4,
+    mpid: 4,
     name: '车辆分布',
     icon: 'dot-chart',
     route: '/vehicle/map',
   },{
-    id: '43',
-    bpid: '4',
-    mpid: '4',
+    id: 43,
+    bpid: 4,
+    mpid: 4,
     name: '轨迹回放',
     icon: 'retweet',
     route: '/vehicle/:id/track',
   },{
-    id: '6',
+    id: 5,
     // bpid: '1',
     name: '司机管理',
     icon: 'user',
     route: '/driver',
   },
-  /*{
-    id: '5',
-    bpid: '1',
-    name: 'Charts',
-    icon: 'code-o',
-  },
-  {
-    id: '51',
-    bpid: '5',
-    mpid: '5',
-    name: 'ECharts',
-    icon: 'line-chart',
-    route: '/chart/ECharts',
-  },
-  {
-    id: '52',
-    bpid: '5',
-    mpid: '5',
-    name: 'highCharts',
-    icon: 'bar-chart',
-    route: '/chart/highCharts',
-  },*/
 ];
 export default {
   namespace: 'app',
@@ -159,14 +131,25 @@ export default {
     * query ({
       payload,
     }, { call, put, select }) {
-      const { success, user } = yield call(query, payload)
+      // const { success, user } = yield call(query, payload)
       const { locationPathname } = yield select(_ => _.app)
-      if (success && user) {
-        // const { list } = yield call(menusService.query)
-        const { permissions } = user
+      const cookie = document.cookie
+      var cookies = {};
+      if(cookie)
+        cookies = qs.parse(cookie.replace(/\s/g, ''), { delimiter: ';' })
+      const response = {}
+      var user = {}
+      var permissions;
+      var success;
+      var decoded;
+      if (cookies.token) {
+        permissions = jwt.decode(cookies.token)
+        success = permissions.exp > Date.parse(new Date())/1000;
+      }
+      if(permissions && success){
         let menu = menuList
-        if (permissions.role === EnumRoleType.ADMIN || permissions.role === EnumRoleType.DEVELOPER) {
-          permissions.visit = menuList.map(item => item.id)
+        if (permissions.role === "ADMIN" || permissions.role === "DEVELOPER") {
+          // permissions.visit = menu.map(item => item.id)
         } else {
           menu = menuList.filter((item) => {
             const cases = [
@@ -177,6 +160,8 @@ export default {
             return cases.every(_ => _)
           })
         }
+        permissions.visit = menu.map(item => item.id)
+
         yield put({
           type: 'updateState',
           payload: {
@@ -190,7 +175,7 @@ export default {
             pathname: '/dashboard',
           }))
         }
-      } else if (config.openPages && config.openPages.indexOf(locationPathname) < 0) {
+      }else if (config.openPages && config.openPages.indexOf(locationPathname) < 0) {
         yield put(routerRedux.push({
           pathname: '/login',
           search: queryString.stringify({

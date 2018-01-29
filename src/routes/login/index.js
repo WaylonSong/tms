@@ -36,6 +36,7 @@ const Login = ({
         <img alt={'logo'} src={config.logo} />
         <span>{config.name}</span>
       </div>
+      
       <form>
         <FormItem hasFeedback>
           {getFieldDecorator('username', {

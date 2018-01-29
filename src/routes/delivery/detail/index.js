@@ -46,6 +46,9 @@ const Detail = ({delivery, dispatch, history }) => {
       <Row gutter={24} style={{textAlign:'left',marginBottom:30}}>
         <Button size="large" type={'primary'} style={{marginRight: 10}} onClick={()=>{history.goBack()}}>返回</Button>
       </Row>
+      <Row gutter={24} style={{textAlign:'left',marginBottom:30}}>
+        运单编号：{currentItem.id}
+      </Row>
       <Row gutter={24} style={{marginBottom:20}}>
         <Col xs={{ span: 22, offset: 1}} lg={{ span: 22, offset: 1}}>
           <Steps current={parseInt(currentItem.status)} className={styles.card}>

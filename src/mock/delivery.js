@@ -47,7 +47,10 @@ const queryArray = (array, key, keyAlias = 'key') => {
   }
   // return 
   //便于测试，随机id搜索不到。默认返回首元素
-  return array[0]
+  var index = parseInt(Math.random()*array.length);
+  if(key != ":id")
+    array[index].id = key;
+  return array[index]
 
 }
 

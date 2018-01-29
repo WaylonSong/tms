@@ -1,0 +1,18 @@
+var qs = require('qs')
+var jwt = require('jsonwebtoken')
+
+export function getRole(req){
+  var user = getUser(req)
+  if(user){
+    return user.role;
+  }
+  return '';
+}
+export function getUser(req){
+  const cookie = req.headers.cookie || ''
+  const cookies = qs.parse(cookie.replace(/\s/g, ''), { delimiter: ';' })
+  if (cookies.token) {
+    return jwt.decode(cookies.token);
+  }
+  return {};
+}

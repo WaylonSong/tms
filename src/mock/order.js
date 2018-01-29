@@ -3,6 +3,7 @@ const Mock = require('mockjs')
 const config = require('../utils/config')
 const city = require('../utils/city')
 const tools = require('../utils/cityTools')
+const cookietools = require('../utils/cookietools')
 
 const { apiPrefix } = config
 
@@ -23,7 +24,7 @@ const { apiPrefix } = config
 // })
 
 let ordersListData2 = Mock.mock({
-  'data|80-100': [
+  'data|15-20': [
     {
       id: '@id',
       from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'@cword(5, 10)', x:'33', y:'116'}},
@@ -35,6 +36,8 @@ let ordersListData2 = Mock.mock({
       'price_status|+1': ["未支付","已支付"],
       'status|1-2': 1,
       createTime: '@datetime',
+      'customerId|+1': [0,1,2,3,4,5],
+      'driverId|+1': [0,1,2,3,4,5],
     },
   ],
 })
@@ -74,13 +77,20 @@ module.exports = {
     let { pageSize, page, ...other } = query
     pageSize = pageSize || 10
     page = page || 1
-
+    var user = cookietools.getUser(req);
+    if(user.role == "CUSTOMER"){
+      other['customerId'] = user.id
+    }
+    if(user.role == "DRIVER"){
+      other['driverId'] = user.id
+    }
     let newData = database
     for (let key in other) {
       if ({}.hasOwnProperty.call(other, key)) {
         newData = newData.filter((item) => {
           // if ({}.hasOwnProperty.call(item, key)) {
             var itemValue = '';
+
             if (key.indexOf('.')>-1) {
               itemValue = String(item[key.split('.')[0]][key.split('.')[1]]).trim();
             }  
@@ -117,11 +127,18 @@ module.exports = {
     const newData = req.body
     newData.createTime = Mock.mock('@now')
     newData.id = Mock.mock('@id')
+
     // newData.from.district = Mock.mock('@country')
+    console.log(req.body)
     newData.from.district = tools.getFullName(newData.from.district)
     for(var i in newData.to){
       newData.to[i].district = tools.getFullName(newData.to[i].district)
       newData.to[i].deliveries = [Mock.mock('@id')]
+    }
+
+    var user = cookietools.getUser(req);
+    if(user.role == "CUSTOMER"){
+      newData['customerId'] = user.id
     }
     database.unshift(newData)
     res.status(200).end()

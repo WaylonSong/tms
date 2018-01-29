@@ -8,6 +8,8 @@ import queryString from 'query-string'
 import List from './List'
 import Filter from './Filter'
 import Modal from './Modal'
+import ACInput from '../../components/Map/ACInput'
+
 const resourceName = "order";
 const TabPane = Tabs.TabPane
 const EnumPostStatus = {
@@ -110,17 +112,6 @@ const Obj = (props) => {
         },
       })
     },
-    // rowSelection: {
-      // selectedRowKeys,
-      // onChange: (keys) => {
-      //   dispatch({
-      //     type: 'user/updateState',
-      //     payload: {
-      //       selectedRowKeys: keys,
-      //     },
-      //   })
-      // },
-    // },
   }
   const handleTabClick = (key) => {
     var routes = {
@@ -156,7 +147,9 @@ const Obj = (props) => {
       }))
     },
   }
-
+  const handleToAddress = ()=>{
+    console.log("handle")
+  }
 
   var activeKey = "";
   if(query.status === String(EnumPostStatus.UNPUBLISH))

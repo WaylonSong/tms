@@ -1,68 +1,51 @@
 const qs = require('qs')
 const Mock = require('mockjs')
 const config = require('../utils/config')
+var jwt = require('jsonwebtoken');
+var payload = { foo: 'bar' };
+var secret = 'xxx';
 
 const { apiPrefix } = config
 
+const users = [
+  {
+    id: 0,
+    username: 'admin',
+    password: 'admin',
+    role: "ADMIN",
+  }, {
+    id: 1,
+    username: 'customer',
+    password: 'customer',
+    role: "CUSTOMER",
+  }, {
+    id: 2,
+    username: 'driver',
+    password: 'driver',
+    role: "DRIVER",
+  },
+]
+
 let usersListData = Mock.mock({
-  'data|80-100': [
-    {
-      id: '@id',
-      name: '@name',
-      nickName: '@last',
-      phone: /^1[34578]\d{9}$/,
-      'age|11-99': 1,
-      address: '@county(true)',
-      isMale: '@boolean',
-      email: '@email',
-      createTime: '@datetime',
-      avatar () {
-        return Mock.Random.image('100x100', Mock.Random.color(), '#757575', 'png', this.nickName.substr(0, 1))
-      },
-    },
-  ],
+  'data|3': users
 })
 
 
 let database = usersListData.data
 
-const EnumRoleType = {
-  ADMIN: 'admin',
-  DEFAULT: 'guest',
-  DEVELOPER: 'developer',
-}
-
 const userPermission = {
-  DEFAULT: {
-    visit: ['1', '2', '21', '7', '5', '51', '52', '53'],
-    role: EnumRoleType.DEFAULT,
-  },
   ADMIN: {
-    role: EnumRoleType.ADMIN,
+    visit: [],
   },
-  DEVELOPER: {
-    role: EnumRoleType.DEVELOPER,
+  CUSTOMER: {
+    visit: [1, 2, 3, 33],
+  },
+  DRIVER: {
+    visit: [1, 2, 3, 33],
   },
 }
 
-const adminUsers = [
-  {
-    id: 0,
-    username: 'admin',
-    password: 'admin',
-    permissions: userPermission.ADMIN,
-  }, {
-    id: 1,
-    username: 'guest',
-    password: 'guest',
-    permissions: userPermission.DEFAULT,
-  }, {
-    id: 2,
-    username: '吴彦祖',
-    password: '123456',
-    permissions: userPermission.DEVELOPER,
-  },
-]
+
 
 const queryArray = (array, key, keyAlias = 'key') => {
   if (!(array instanceof Array)) {
@@ -92,15 +75,16 @@ module.exports = {
 
   [`POST ${apiPrefix}/user/login`] (req, res) {
     const { username, password } = req.body
-    const user = adminUsers.filter(item => item.username === username)
-
+    const user = users.filter(item => item.username === username)
     if (user.length > 0 && user[0].password === password) {
-      const now = new Date()
-      now.setDate(now.getDate() + 1)
-      res.cookie('token', JSON.stringify({ id: user[0].id, deadline: now.getTime() }), {
-        maxAge: 900000,
-        httpOnly: true,
-      })
+      var payload = {
+        id : user[0].id,
+        username : user[0].username,
+        role : user[0].role,
+        visit: userPermission[user[0].role].visit
+      }
+      var token = jwt.sign(payload, 'tms_secret',  { expiresIn: '7d' });
+      res.cookie('token', token)
       res.json({ success: true, message: 'Ok' })
     } else {
       res.status(400).end()
@@ -117,13 +101,17 @@ module.exports = {
     const cookies = qs.parse(cookie.replace(/\s/g, ''), { delimiter: ';' })
     const response = {}
     const user = {}
-    if (!cookies.token) {
-      res.status(200).send({ message: 'Not Login' })
-      return
+    console.log(cookies)
+    var token;
+    if (cookies.token) {
+      token = cookies.token
+      console.log(token)
+      console.log(jwt.decode(token))
     }
-    const token = JSON.parse(cookies.token)
+
+
     if (token) {
-      response.success = token.deadline > new Date().getTime()
+      response.success = token.exp > Date.parse(new Date())/1000;
     }
     if (response.success) {
       const userItem = adminUsers.filter(_ => _.id === token.id)
@@ -133,8 +121,10 @@ module.exports = {
         user.id = userItem[0].id
       }
     }
-    response.user = user
-    res.json(response)
+    // response.user = user
+    // res.json(response)
+    res.status(200).send({ message: 'Not Login' })
+    return
   },
 
   [`GET ${apiPrefix}/users`] (req, res) {
