@@ -64,8 +64,8 @@ const modal = ({
       })
     }
   }
-  const calPrice = (cube, distance) =>{
-    return Number(2 * cube * distance).toFixed(2)
+  const calPrice = (volume, distance) =>{
+    return Number(2 * volume * distance).toFixed(2)
   }
 
   const handleMinusTo = (i, counter)=>()=>{
@@ -103,18 +103,20 @@ const modal = ({
   const handlePrice = (i)=>(value)=>{
     var totalPrice = 0;
     for(var j = 0; j < itemIndexes.length; j++){
-      if(i == j)
+      if(i == j){
         totalPrice += Number(value)
-      else
-        totalPrice += Number(getFieldValue(`to[${i}].price`));
+      }
+      else{
+        totalPrice += Number(getFieldValue(`to[${j}].price`));
+      }
     }
     setFieldsValue(
-       {price: totalPrice.toFixed(2)}
+       {"payment.deliverPrice": totalPrice.toFixed(2)}
     );
   }
-  const handleCargoPrice = (i)=>(value)=>{
+  const handleInsurancePrice = (i)=>(value)=>{
     setFieldsValue(
-       {cargo_price: calcTotalPrice(value, 'cargo_price', i, itemIndexes.length)}
+       {"payment.insurancePrice": calcTotalPrice(value, 'insurancePrice', i, itemIndexes.length)}
     );
   }
   const calcTotalPrice = (currentValue, key, index, length)=>{
@@ -127,7 +129,7 @@ const modal = ({
     }
     return totalPrice.toFixed(2);
   }
-  const handleCube = (i)=>(value)=>{
+  const handleVolume = (i)=>(value)=>{
     var params = {};
     var price = calPrice(Number(value), Number(safeGetFieldValue(`to[${i}].distance`).value));
     if(isNaN(price))
@@ -140,7 +142,7 @@ const modal = ({
   }
   const handleDistance = (i)=>(value)=>{
     var params = {};
-    var price = calPrice(Number(safeGetFieldValue(`to[${i}].cube`)), Number(value.value));
+    var price = calPrice(Number(safeGetFieldValue(`to[${i}].volume`)), Number(value.value));
     if(isNaN(price))
       price = 0;
     params[`to[${i}].price`] = price
@@ -163,7 +165,7 @@ const modal = ({
     wrapperCol: { span: 16 },
   };
 
-  var disableFlag = {disabled:modalType=='view'}
+  var disableFlag = {disabled:true}
 
   const genToList = () => {
     var list = itemIndexes.map((i, counter)=>{
@@ -191,7 +193,7 @@ const modal = ({
                   },
                 ],
               })(<Cascader
-                {...disableFlag}
+               
                 size="large"
                 style={{ width: '100%' }}
                 options={city}
@@ -207,7 +209,7 @@ const modal = ({
                     required: true,
                   },
                 ],
-              })(<ACInput id={`to[${i}].address`} center='贵阳' {...disableFlag} onChange={handleToAddress(i)}/>)}
+              })(<ACInput id={`to[${i}].address`} center='贵阳' onChange={handleToAddress(i)}/>)}
             </FormItem>
             <FormItem label="收货人" hasFeedback {...formItemLayout}>
               {getFieldDecorator(`to[${i}].name`, {
@@ -217,7 +219,7 @@ const modal = ({
                     required: true,
                   },
                 ],
-              })(<Input {...disableFlag}/>)}
+              })(<Input/>)}
             </FormItem>
             <FormItem label="电话" hasFeedback {...formItemLayout}>
               {getFieldDecorator(`to[${i}].phone`, {
@@ -227,7 +229,7 @@ const modal = ({
                     required: true,
                   },
                 ],
-              })(<Input {...disableFlag}/>)}
+              })(<Input/>)}
             </FormItem>
             <FormItem label="物品详情描述" hasFeedback {...formItemLayout}>
               {getFieldDecorator(`to[${i}].detail`, {
@@ -237,7 +239,7 @@ const modal = ({
                     required: true,
                   },
                 ],
-              })(<Input {...disableFlag} placeholder="简述货物情况，比如“洗衣机”"/>)}
+              })(<Input placeholder="简述货物情况，比如“洗衣机”"/>)}
             </FormItem>
             <FormItem label="里程测算" hasFeedback {...formItemLayout}>
               {getFieldDecorator(`to[${i}].distance`, {
@@ -250,25 +252,25 @@ const modal = ({
               })(<DistanceHandler
                   id={`to[${i}].distance`}
                   onChange={handleDistance(i)}
-                  {...disableFlag}
+                 
                 />)}
             </FormItem>
             <FormItem label="物品尺寸" hasFeedback {...formItemLayout}>
-              {getFieldDecorator(`to[${i}].cube`, {
-                initialValue: item.to[i].cube||0,
+              {getFieldDecorator(`to[${i}].volume`, {
+                initialValue: item.to[i].volume||0,
                 rules: [
                   {
                     required: true,
                   },
                 ],
               })(<InputNumber
-                  {...disableFlag}
+                 
                   min={0}
-                  onChange={handleCube(i)}
+                  onChange={handleVolume(i)}
                 />)}<span>立方米</span>
             </FormItem>
            
-            <FormItem label="价格测算" hasFeedback {...formItemLayout}>
+            <FormItem label="运费价格" hasFeedback {...formItemLayout}>
               {getFieldDecorator(`to[${i}].price`, {
                 initialValue: item.to[i].price||0,
                 rules: [
@@ -277,32 +279,26 @@ const modal = ({
                   },
                 ],
               })(<InputNumber
-                  {...disableFlag}
+                 
                   min={0}
                   onChange={handlePrice(i)}
                 />)}<span>元</span>
             </FormItem>
 
-            <FormItem label="代收货款" hasFeedback {...formItemLayout}>
-              {getFieldDecorator(`to[${i}].cargo_price`, {
-                initialValue: item.to[i].cargo_price||0,
+            <FormItem label="保价金额" hasFeedback {...formItemLayout}>
+              {getFieldDecorator(`to[${i}].insurancePrice`, {
+                initialValue: item.to[i].insurancePrice||0,
                 rules: [
                   {
                     required: true,
                   },
                 ],
               })(<InputNumber
-                  {...disableFlag}
+                 
                   min={0}
-                  onChange={handleCargoPrice(i)}
+                  onChange={handleInsurancePrice(i)}
                 />)}<span>元</span>
             </FormItem>
-
-            {modalType == "view" &&
-            <FormItem label="运单列表" hasFeedback {...formItemLayout}>
-              <ul>{item.to[i].deliveries&&item.to[i].deliveries.map((i)=><li style={{color:"blue", cursor:"pointer"}} onClick={onDirect(i)}>{i}</li>)}</ul>
-            </FormItem>
-            }  
           </Card>
         </Col>
       )
@@ -330,7 +326,7 @@ const modal = ({
                     },
                   ],
                 })(<Cascader
-                  {...disableFlag}
+                 
                   size="large"
                   style={{ width: '100%' }}
                   options={city}
@@ -346,7 +342,7 @@ const modal = ({
                       required: true,
                     },
                   ],
-                })(<ACInput id='from_address' center='贵阳' {...disableFlag} onChange={handleFromAddress}/>)}
+                })(<ACInput id='from_address' center='贵阳' onChange={handleFromAddress}/>)}
               </FormItem>
               <FormItem label="发货人" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('from.name', {
@@ -356,7 +352,7 @@ const modal = ({
                       required: true,
                     },
                   ],
-                })(<Input {...disableFlag}/>)}
+                })(<Input/>)}
               </FormItem>
               <FormItem label="电话" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('from.phone', {
@@ -366,41 +362,63 @@ const modal = ({
                       required: true,
                     },
                   ],
-                })(<Input {...disableFlag}/>)}
+                })(<Input/>)}
               </FormItem>
               
             </Card>
           </Col>
           <Col xs={{ span: 24}} lg={{ span: 12}} style={{height:350}}>
             <Card style={{width: '100%'}} title="支付类型" bordered={false}>
-              <FormItem label="支付类型" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('price_type', {
-                    initialValue: item.price_type,
-                    rules: [
-                      {
-                        required: true,
-                      },
-                    ],
-                  })(<Radio.Group {...disableFlag}>
-                  <Radio.Button value="在线支付">在线支付</Radio.Button>
-                  <Radio.Button value="现金支付">现金支付</Radio.Button>
-                  <Radio.Button value="回单支付">回单支付</Radio.Button>
-                </Radio.Group>)}
-              </FormItem>
-              <FormItem label="订单总金额" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('price', {
-                initialValue: item.price||0,
+              <FormItem label="运费金额" {...formItemLayout}>
+                  {getFieldDecorator('payment.deliverPrice', {
+                initialValue: 0,
                 rules: [
                   {
                     required: true,
                   },
                 ],
               })(<InputNumber
-                  {...disableFlag}
                   min={0}
                 />)}<span>元</span>
               </FormItem>
-              <FormItem label="捎带货款总金额" hasFeedback {...formItemLayout}>
+              <FormItem label="保价金额" {...formItemLayout}>
+                  {getFieldDecorator('payment.insurancePrice', {
+                initialValue: 0,
+                rules: [
+                  {
+                    required: true,
+                  },
+                ],
+              })(<InputNumber
+                  min={0}
+                />)}<span>元</span>
+              </FormItem>
+              <FormItem label="订单总额" {...formItemLayout}>
+                  {getFieldDecorator('payment.payPrice', {
+                initialValue: 0,
+                rules: [
+                  {
+                    required: true,
+                  },
+                ],
+              })(<InputNumber
+                  min={0}
+                />)}<span>元</span>
+              </FormItem>
+              <FormItem label="支付状态" {...formItemLayout}>
+                  {getFieldDecorator('payment.payState', {
+                    initialValue: 0,
+                    rules: [
+                      {
+                        required: true,
+                      },
+                    ],
+                  })(<Radio.Group  {...disableFlag}>
+                  <Radio.Button value={0}>未支付</Radio.Button>
+                  <Radio.Button value={1}>已支付</Radio.Button>
+                </Radio.Group>)}
+              </FormItem>
+              {/*<FormItem label="捎带货款总金额" hasFeedback {...formItemLayout}>
                   {getFieldDecorator('cargo_price', {
                 initialValue: item.cargo_price||0,
                 rules: [
@@ -409,24 +427,11 @@ const modal = ({
                   },
                 ],
               })(<InputNumber
-                  {...disableFlag}
+                 
                   disabled
                   min={0}
                 />)}<span>元</span>
-              </FormItem>
-              <FormItem label="支付状态" hasFeedback {...formItemLayout}>
-                  {getFieldDecorator('price_status', {
-                    initialValue: item.price_status,
-                    rules: [
-                      {
-                        required: true,
-                      },
-                    ],
-                  })(<Radio.Group {...disableFlag}>
-                  <Radio.Button value="未支付">未支付</Radio.Button>
-                  <Radio.Button value="已支付">已支付</Radio.Button>
-                </Radio.Group>)}
-              </FormItem>
+              </FormItem>*/}
             </Card>
           </Col>
           {genToList()}

@@ -44,15 +44,15 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       render: (text, record) => <a onClick={e => viewItem(record.id, e)}>{text}</a>,
     }, {
       title: '订单状态',
-      dataIndex: 'status',
-      key: 'status',
+      dataIndex: 'state',
+      key: 'state',
       width: 80,
-      render: (text) => <span>{text=='1'?'待处理':'已处理'}</span>,
+      render: (text, record) => <span>{text}</span>,
     }, {
       title: '金额',
-      dataIndex: 'price',
+      dataIndex: 'payment.payPrice',
       width: 60,
-      key: 'price',
+      key: 'payment.payPrice',
     },{
       title: '发货人',
       dataIndex: 'from.name',
@@ -62,7 +62,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
     }, {
       title: '发货地址',
       dataIndex: 'from.address',
-      width: 200,
+      width: 300,
       key: 'from.address',
       render: (text, record) => <span>{record.from.district+' '+record.from.address.str}</span>,
     }, {
@@ -79,9 +79,9 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
     }, */{
       title: '收货地址与收货人',
       dataIndex: 'to.address',
-      width: 400,
+      width: 300,
       key: 'to.address',
-      render: (text, record) => <ul>{record.to.map(function(item){return <li>{item.district+" "+item.address.str+" : "+item.name}</li>})}</ul>,
+      render: (text, record) => <span>{record.to.district+' '+record.to.address.str}</span>,
     }, {
       title: '创建时间',
       dataIndex: 'createTime',

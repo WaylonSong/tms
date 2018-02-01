@@ -7,8 +7,11 @@ import { Page } from 'components'
 import queryString from 'query-string'
 import List from './List'
 import Filter from './Filter'
-import Modal from './Modal'
+import CreateModal from './CreateModal'
+import ViewModal from './ViewModal'
 import ACInput from '../../components/Map/ACInput'
+import {OrderDetailStateDict, EnumDeliveryStatusDict} from '../../utils/dict'
+import {OrderDetailState, EnumDeliveryStatus} from '../../utils/enums'
 
 const resourceName = "order";
 const TabPane = Tabs.TabPane
@@ -21,7 +24,7 @@ const options = ['id', 'from.name', 'from.address', 'from.phone', 'to.name', 'to
 const Obj = (props) => {
   var {dispatch, loading, location } = props;
   var obj = props[resourceName];
-  const { list, pagination, currentItem, modalVisible, modalType, isMotion, selectedRowKeys, itemIndexes } = obj
+  const { list, pagination, currentItem, modalVisible, viewModalVisible, modalType, isMotion, selectedRowKeys, itemIndexes } = obj
   const { pageSize } = pagination
   const { pathname } = location
   const query = queryString.parse(location.search);
@@ -80,6 +83,20 @@ const Obj = (props) => {
     }
   }
 
+  const viewModalProps = {
+    item: currentItem,
+    visible: props[resourceName].viewModalVisible,
+    maskClosable: false,
+    confirmLoading: loading.effects[resourceName+'/update'],
+    modalType: props[resourceName].modalType,
+    title: "订单详情："+currentItem.id,
+    wrapresourceName: 'vertical-center-modal',
+    onCancel () {
+      dispatch({
+        type: resourceName+'/hideViewModal',
+      })
+    },
+  }
   const listProps = {
     resourceName,
     dataSource: list,
@@ -116,8 +133,7 @@ const Obj = (props) => {
   const handleTabClick = (key) => {
     var routes = {
       pathname,
-      search: queryString.stringify({...query, status:key, page:1}),
-      // query: ({status:key}),
+      search: queryString.stringify({...query, state:key, page:1}),
     }
     dispatch(routerRedux.push(routes))
   }
@@ -150,29 +166,26 @@ const Obj = (props) => {
   const handleToAddress = ()=>{
     console.log("handle")
   }
-
   var activeKey = "";
-  if(query.status === String(EnumPostStatus.UNPUBLISH))
-    activeKey = String(EnumPostStatus.UNPUBLISH)
-  else if(query.status === String(EnumPostStatus.PUBLISHED))
-    activeKey = String(EnumPostStatus.PUBLISHED)
-
+  if(query.state){
+    activeKey = String(query.state)
+  }
   const parsed = queryString.parse(location.search);
-  // console.log(location);
   return (
     <Page inner>
       <Filter {...filterProps} />
-      {modalVisible && <Modal {...modalProps} />}
-      <Tabs activeKey={activeKey} onTabClick={handleTabClick}>
+      {modalVisible && <CreateModal {...modalProps} />}
+      {viewModalVisible && <ViewModal {...viewModalProps} />}
+      <Tabs activeKey={activeKey} onTabClick={handleTabClick} size="small">
         <TabPane tab="全部" key={""}>
           <List {...listProps} />
         </TabPane>
-        <TabPane tab="已处理" key={String(EnumPostStatus.PUBLISHED)}>
-          <List {...listProps} />
-        </TabPane>
-        <TabPane tab="待处理" key={String(EnumPostStatus.UNPUBLISH)}>
-          <List {...listProps} />
-        </TabPane>
+        {OrderDetailStateDict.map((i, index)=>{
+          return (
+            <TabPane tab={i} key={String(index)}>
+              <List {...listProps} />
+            </TabPane>)
+        })}
       </Tabs>
     </Page>
   )

@@ -8,19 +8,20 @@ const collectionName = "deliveries"
 let deliveryListData2 = Mock.mock({
   'data|20-40': [
     {
-      id: '@id',
+      'id|+1': 10000001,
+      'customerOrder.id|+1': 10000001,
       from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: '@ctitle'},
       to: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: '@ctitle'}, 
       'price|150-250.1-2': 1,
-      vehicle: '贵'+'@character("upper")'+'@string("number", 5)',
-      driver:{name: '@cname', phone: /^1[34578]\d{9}$/},
+      vehicle: {id:"@id", number:'贵'+'@character("upper")'+'@string("number", 5)'},
+      driver:{id:"@id", name: '@cname', phone: /^1[34578]\d{9}$/},
       detail:'@ctitle',
       'cube|1-100.1-2': 1, 
-      'status|0-3': 1,
+      'deliverOrderState|0-3': 1,
       createTime: '@datetime',
       distributTime: '@datetime',
       loadTime: '@datetime',
-      arriveTime: '@datetime',
+      completeTime: '@datetime',
     },
   ],
 })

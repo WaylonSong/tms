@@ -4,7 +4,7 @@ const config = require('../utils/config')
 const city = require('../utils/city')
 const tools = require('../utils/cityTools')
 const cookietools = require('../utils/cookietools')
-
+const {PayState, PayType, OrderDetailState, PayChannel} = require('../utils/enums')
 const { apiPrefix } = config
 
 // let ordersListData = Mock.mock({
@@ -28,7 +28,7 @@ let ordersListData2 = Mock.mock({
     {
       id: '@id',
       from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'@cword(5, 10)', x:'33', y:'116'}},
-      to: [{name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', detail:'@ctitle', address: {str:'@cword(5, 10)', x:'33', y:'116'}, 'cube|1-100.1-10': 1, 'price|50-200.1-2': 1, distance:'@string("number", 2)', 'cargo_price|1500-2000.1-2': 1, deliveries:['@id']}, 
+      to: [{id: '@id',name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', detail:'@ctitle', address: {str:'@cword(5, 10)', x:'33', y:'116'}, 'cube|1-100.1-10': 1, 'price|50-200.1-2': 1, distance:'@string("number", 2)', 'cargo_price|1500-2000.1-2': 1, deliveries:['@id']}, 
       {name: '@name', phone: /^1[34578]\d{9}$/, detail:'@ctitle', district: '@county(true)', address: {str:'@cword(5, 10)', x:'33', y:'116'}, distance:'@string("number", 2)', 'cube|1-100.1-2': 1, 'price|50-200.1-2': 1, 'cargo_price|1500-2000.1-2': 1, deliveries:['@id']}],
       'price|150-250.1-2': 1,
       'cargo_price|3050-4050.1-2': 1,
@@ -38,13 +38,38 @@ let ordersListData2 = Mock.mock({
       createTime: '@datetime',
       'customerId|+1': [0,1,2,3,4,5],
       'driverId|+1': [0,1,2,3,4,5],
-    },
+    }
+  ],
+})
+
+let ordersListData3 = Mock.mock({
+  'data|3-5': [
+    {
+      'id|+1': 10000001,
+      // id: '@id',
+      'state|+1': [OrderDetailState.NOT_DISTRIBUTED, OrderDetailState.ONBOARD, /*OrderDetailState.COMPLETE, OrderDetailState.INVALID*/],
+      from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'@cword(5, 10)', x:'33', y:'116'}},
+      to:   {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'@cword(5, 10)', x:'33', y:'116'}}, 
+      cargoes: [{name: '@cname', remark: '@cname', 'weight|10-100.1-2': 1, 'volume|10-100.1-2': 1, 'price|10-100.1-2': 1, 'cargoType|+1':["冷链", "百货", "建材"]}], 
+      payment: {
+        'deliverPrice|150-250.1-2': 1, 
+        'insurancePrice|150-250.1-2': 1, 
+        'payPrice|150-250.1-2': 1, 
+        'originalPrice|150-250.1-2': 1, 
+        'payType|+1': [PayType.SENDER_PAY/*, PayType.RECEIVER_PAY, PayType.SENDER_ORDER_PAY*/],
+        'payState|+1': [PayState.UNPAY, PayState.COMPLETE],
+        'items': [{id: '@id', payState: PayState.COMPLETE, payChannel: PayChannel.ALIPAY, tradeNo:'@id', finishTime:'@datetime'}]
+      },
+      distance: 100,
+      'deliverOrders|+1':[/*[{}],*/[{'id|+1':10000001, deliverOrderState:3, distance: 100,'customerOrder.id|+1':10000001,from:{name:'@cname',phone:/^1[34578]\d{9}$/,district:'@county(true)',address:'@ctitle'},to:{name:'@cname',phone:/^1[34578]\d{9}$/,district:'@county(true)',address:'@ctitle'},'price|150-250.1-2':1,vehicle:{id:"@id",number:'贵'+'@character("upper")'+'@string("number", 5)'},driver:{id:"@id",name:'@cname',phone:/^1[34578]\d{9}$/},detail:'@ctitle','cube|1-100.1-2':1,'status|0-3':1,createTime:'@datetime',distributTime:'@datetime',loadTime:'@datetime',completeTime:'@datetime'}]],
+      createTime: '@datetime',
+      'customerId|+1': [0,1,2,3,4,5],
+    }
   ],
 })
 
 
-let database = ordersListData2.data
-
+let database = ordersListData3.data
 
 const queryArray = (array, key, keyAlias = 'key') => {
   if (!(array instanceof Array)) {
@@ -53,7 +78,7 @@ const queryArray = (array, key, keyAlias = 'key') => {
   let data
 
   for (let item of array) {
-    if (item[keyAlias] === key) {
+    if (item[keyAlias] == key) {
       data = item
       break
     }
@@ -146,7 +171,9 @@ module.exports = {
 
   [`GET ${apiPrefix}/orders/:id`] (req, res) {
     const { id } = req.params
+    console.log(database)
     const data = queryArray(database, id, 'id')
+    console.log(data)
     if (data) {
       res.status(200).json(data)
     } else {

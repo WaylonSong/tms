@@ -21,27 +21,46 @@ obj.reducers['minusTo'] = (state, {payload})=>  {
 }
 
 obj.reducers['showModal'] = (state, { payload }) => {
-	var itemIndexes = [];
-	if(payload.modalType == "update" || payload.modalType == "view"){
-		for(var i = 0; i < payload.currentItem.to.length; i++)
-	  		itemIndexes.push(i);
-	}else
-		itemIndexes.push(0);
+	var itemIndexes = [0];
+	// itemIndexes.push(0);
 	return { ...state, ...payload, modalVisible: true, itemIndexes}
 }
 
+obj.reducers['showViewModal'] = (state, { payload }) => {
+	return { ...state, ...payload, viewModalVisible: true}
+}
+
+obj.reducers['hideViewModal'] = (state, { payload }) => {
+	return { ...state, ...payload, viewModalVisible: false}
+}
+
+// obj.effects['showViewModal'] = function *({ payload}, { call, put }){
+// 	// payload.currentItemId
+// 	const data = yield call(query, {id:payload.currentItemId}, `${collectionName}`)
+// 	if(data){
+// 		yield put({
+//         type: `showModal`,
+//         payload: {
+//           modalType: payload.modalType,
+//           currentItem: data,
+//         },
+//       })
+// 	}
+// }
+
 obj.effects['editItem'] = function *({ payload}, { call, put }){
 	// payload.currentItemId
-	const data = yield call(query, {id:payload.currentItemId}, `${collectionName}`)
-	if(data){
-		yield put({
-        type: `showModal`,
+	console.log(payload)
+	const data = yield call(query, {id: payload.currentItemId}, `${collectionName}`)
+    if(data){
+      yield put({
+        type: `showViewModal`,
         payload: {
           modalType: payload.modalType,
           currentItem: data,
         },
       })
-	}
+    }
 }
 
 export default obj
