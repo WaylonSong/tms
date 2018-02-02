@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom'
 import queryString from 'query-string'
 import AnimTableBody from 'components/DataTable/AnimTableBody'
 import styles from './List.less'
+import {OrderDetailStateDict, EnumDeliveryStatusDict} from '../../utils/dict'
+import {OrderDetailState, EnumDeliveryStatus} from '../../utils/enums'
 
 const confirm = Modal.confirm
 const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...tableProps }) => {
@@ -47,7 +49,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       dataIndex: 'state',
       key: 'state',
       width: 80,
-      render: (text, record) => <span>{text}</span>,
+      render: (text, record) => <span>{OrderDetailStateDict[text]}</span>,
     }, {
       title: '金额',
       dataIndex: 'payment.payPrice',

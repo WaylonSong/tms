@@ -267,31 +267,6 @@ const modal = ({
                   min={0}
                 />)}<span>元</span>
               </FormItem>
-              <FormItem label="支付总额" {...formItemLayout}>
-                  {getFieldDecorator('payment.payPrice', {
-                initialValue: item.payment.payPrice||0,
-                rules: [
-                  {
-                    required: true,
-                  },
-                ],
-              })(<InputNumber
-                  min={0}
-                />)}<span>元</span>
-              </FormItem>
-              <FormItem label="订单原价" {...formItemLayout}>
-                  {getFieldDecorator('payment.originalPrice', {
-                initialValue: item.payment.originalPrice||0,
-                rules: [
-                  {
-                    required: true,
-                  },
-                ],
-              })(<InputNumber
-                  {...disableFlag}
-                  min={0}
-                />)}<span>元</span>
-              </FormItem>
               <FormItem label="支付状态" {...formItemLayout}>
                   {getFieldDecorator('payment.payState', {
                     initialValue: 0,
@@ -304,6 +279,18 @@ const modal = ({
                   <Radio.Button value={0}>未支付</Radio.Button>
                   <Radio.Button value={1}>已支付</Radio.Button>
                 </Radio.Group>)}
+              </FormItem>
+              <FormItem label="支付总额" {...formItemLayout}>
+                  {getFieldDecorator('payment.payPrice', {
+                initialValue: item.payment.payPrice||0,
+                rules: [
+                  {
+                    required: true,
+                  },
+                ],
+              })(<InputNumber
+                  min={0}
+                />)}<span>元</span>
               </FormItem>
             </Card>
           </Col>

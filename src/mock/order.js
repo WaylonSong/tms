@@ -23,7 +23,7 @@ const { apiPrefix } = config
 //   ],
 // })
 
-let ordersListData2 = Mock.mock({
+/*let ordersListData2 = Mock.mock({
   'data|15-20': [
     {
       id: '@id',
@@ -40,24 +40,24 @@ let ordersListData2 = Mock.mock({
       'driverId|+1': [0,1,2,3,4,5],
     }
   ],
-})
+})*/
 
 let ordersListData3 = Mock.mock({
   'data|3-5': [
     {
       'id|+1': 10000001,
       // id: '@id',
-      'state|+1': [OrderDetailState.NOT_DISTRIBUTED, OrderDetailState.ONBOARD, /*OrderDetailState.COMPLETE, OrderDetailState.INVALID*/],
+      'state|+1': [/*OrderDetailState.NOT_DISTRIBUTED, OrderDetailState.ONBOARD, */OrderDetailState.COMPLETED, /*.INVALID*/],
       from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'@cword(5, 10)', x:'33', y:'116'}},
       to:   {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'@cword(5, 10)', x:'33', y:'116'}}, 
       cargoes: [{name: '@cname', remark: '@cname', 'weight|10-100.1-2': 1, 'volume|10-100.1-2': 1, 'price|10-100.1-2': 1, 'cargoType|+1':["冷链", "百货", "建材"]}], 
       payment: {
         'deliverPrice|150-250.1-2': 1, 
         'insurancePrice|150-250.1-2': 1, 
-        'payPrice|150-250.1-2': 1, 
+        'payPrice|300-500.1-2': 1, 
         'originalPrice|150-250.1-2': 1, 
         'payType|+1': [PayType.SENDER_PAY/*, PayType.RECEIVER_PAY, PayType.SENDER_ORDER_PAY*/],
-        'payState|+1': [PayState.UNPAY, PayState.COMPLETE],
+        'payState|+1': [/*PayState.UNPAY, */PayState.COMPLETE],
         'items': [{id: '@id', payState: PayState.COMPLETE, payChannel: PayChannel.ALIPAY, tradeNo:'@id', finishTime:'@datetime'}]
       },
       distance: 100,
