@@ -231,6 +231,7 @@ const modal = ({
                       <p>运单状态：{EnumDeliveryStatusDict[i.deliverOrderState]}</p>
                       <p>承运车辆：{i.vehicle.number}</p>
                       <p>司机名称：{i.driver.name}</p>
+                      <p>运单金额：{i.price}</p>
                       {i.deliverOrderState == EnumDeliveryStatus.COMPLETED?<p>完成时间：{i.completeTime}</p>:''}
                     </Panel>
                   )
