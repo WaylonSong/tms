@@ -34,6 +34,30 @@ obj.reducers['hideViewModal'] = (state, { payload }) => {
 	return { ...state, ...payload, viewModalVisible: false}
 }
 
+
+obj.reducers['showPayModalVisible'] = (state, { payload }) => {
+	return { ...state, ...payload, payModalVisible: true}
+}
+
+obj.reducers['hidePayModalVisible'] = (state, { payload }) => {
+	return { ...state, ...payload, payModalVisible: false}
+}
+
+obj.effects['pay'] = function *({ payload}, { call, put }){
+	// payload.currentItemId
+	const data = yield call(query, {id:payload.currentItemId}, `${collectionName}`)
+	// TODO：检查record状态
+	console.log("------------------");
+	console.log(data)
+	if(data){
+		yield put({
+        type: `showPayModalVisible`,
+        payload: {
+          currentItem: data,
+        },
+      })
+	}
+}
 // obj.effects['showViewModal'] = function *({ payload}, { call, put }){
 // 	// payload.currentItemId
 // 	const data = yield call(query, {id:payload.currentItemId}, `${collectionName}`)
@@ -50,7 +74,6 @@ obj.reducers['hideViewModal'] = (state, { payload }) => {
 
 obj.effects['editItem'] = function *({ payload}, { call, put }){
 	// payload.currentItemId
-	console.log(payload)
 	const data = yield call(query, {id: payload.currentItemId}, `${collectionName}`)
     if(data){
       yield put({

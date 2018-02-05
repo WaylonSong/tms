@@ -4,7 +4,7 @@ import { Input, InputNumber } from 'antd';
 class DistanceHandler extends Component {
     constructor(props) {
 		super(props);
-		const value = this.props.value;
+		const value = this.props.value||{value:0, from:'', to:''};
 		this.state = {
 		  value: value.value||0,
 		  from: value.from||'',
@@ -13,6 +13,8 @@ class DistanceHandler extends Component {
 	}
 	componentWillReceiveProps(nextProps) {
 		var shouldUpdate = false;
+		if(!nextProps || !nextProps.value)
+			return
 		if(nextProps.value['from'] == '' || nextProps.value['to'] == ''){
 			return;
 		}else{
@@ -24,7 +26,6 @@ class DistanceHandler extends Component {
 			}
 			if (shouldUpdate) {
 				// {from:"西单", to:"东单"};
-				console.log(nextProps.value.from, nextProps.value.to)
 				if(nextProps.value){
 	  		  		this.transit.search(nextProps.value.from, nextProps.value.to);
 				}

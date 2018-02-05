@@ -2,12 +2,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { routerRedux } from 'dva/router'
 import { connect } from 'dva'
-import { Row, Col, Button, Popconfirm, Tabs } from 'antd'
+import { Row, Col, Button, Popconfirm, Tabs, Modal } from 'antd'
 import { Page } from 'components'
 import queryString from 'query-string'
 import List from './List'
 import Filter from './Filter'
 import CreateModal from './CreateModal'
+import PayModal from './PayModal'
 import ViewModal from './ViewModal'
 import ACInput from '../../components/Map/ACInput'
 import {OrderDetailStateDict, EnumDeliveryStatusDict} from '../../utils/dict'
@@ -24,7 +25,7 @@ const options = ['id', 'from.name', 'from.address', 'from.phone', 'to.name', 'to
 const Obj = (props) => {
   var {dispatch, loading, location } = props;
   var obj = props[resourceName];
-  const { list, pagination, currentItem, modalVisible, viewModalVisible, modalType, isMotion, selectedRowKeys, itemIndexes } = obj
+  const { list, pagination, currentItem, modalVisible, viewModalVisible, payModalVisible, modalType, isMotion, selectedRowKeys, itemIndexes } = obj
   const { pageSize } = pagination
   const { pathname } = location
   const query = queryString.parse(location.search);
@@ -39,7 +40,8 @@ const Obj = (props) => {
     }
   };
   const modalProps = {
-    item: props[resourceName].modalType === 'create' ? {from:{},to:[{}]} : currentItem,
+    // item: props[resourceName].modalType === 'create' ? {from:{},to:[{}]} : currentItem,
+    item: {from:{}, orders:[{}]},
     itemIndexes,
     visible: props[resourceName].modalVisible,
     maskClosable: false,
@@ -48,17 +50,17 @@ const Obj = (props) => {
     title: getModalTitle(props[resourceName].modalType, currentItem.id),
     wrapresourceName: 'vertical-center-modal',
     onOk (data) {
-      if(modalType == "view"){
-        dispatch({
-          type: resourceName+'/hideModal',
-        })
-      }
-      else{
+      // if(modalType == "view"){
+      //   dispatch({
+      //     type: resourceName+'/hideModal',
+      //   })
+      // }
+      // else{
         dispatch({
           type: `${resourceName}/${modalType}`,
           payload: data,
         })
-      }
+      // }
     },
     onCancel () {
       dispatch({
@@ -97,6 +99,19 @@ const Obj = (props) => {
       })
     },
   }
+  const payModalProps = {
+    item: currentItem,
+    visible: true,
+    maskClosable: false,
+    confirmLoading: loading.effects[resourceName+'/pay'],
+    title: "支付订单："+currentItem.id,
+    wrapresourceName: 'vertical-center-modal',
+    onCancel () {
+      dispatch({
+        type: resourceName+'/hidePayModalVisible',
+      })
+    },
+  }
   const listProps = {
     resourceName,
     dataSource: list,
@@ -129,6 +144,14 @@ const Obj = (props) => {
         },
       })
     },
+    onPay(recordId){
+      dispatch({
+        type: `${resourceName}/pay`,
+        payload: {
+          currentItemId: recordId,
+        },
+      })
+    }
   }
   const handleTabClick = (key) => {
     var routes = {
@@ -176,6 +199,7 @@ const Obj = (props) => {
       <Filter {...filterProps} />
       {modalVisible && <CreateModal {...modalProps} />}
       {viewModalVisible && <ViewModal {...viewModalProps} />}
+      {payModalVisible && <PayModal {...payModalProps}/>}
       <Tabs activeKey={activeKey} onTabClick={handleTabClick} size="small">
         <TabPane tab="全部" key={""}>
           <List {...listProps} />

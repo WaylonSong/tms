@@ -11,7 +11,7 @@ import {OrderDetailStateDict, EnumDeliveryStatusDict} from '../../utils/dict'
 import {OrderDetailState, EnumDeliveryStatus} from '../../utils/enums'
 
 const confirm = Modal.confirm
-const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...tableProps }) => {
+const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, onPay, ...tableProps }) => {
   location.query = queryString.parse(location.search)
 
   const handleMenuClick = (recordId, e) => {
@@ -24,6 +24,8 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
           onDeleteItem(recordId)
         },
       })
+    } else if (e.key === '5') {
+      onPay(recordId);
     }
   }
   const viewItem = (record, e)=>{
@@ -35,7 +37,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       key: 'operation',
       width: 100,
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record.id, e)} menuOptions={[{ key: '1', name: '修改' }, { key: '2', name: '删除' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record.id, e)} menuOptions={[{ key: '1', name: '详情' }, { key: '5', name: '支付' }, { key: '2', name: '删除' }]} />
       },
     },{
       title: '订单编号',

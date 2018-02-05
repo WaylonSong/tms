@@ -23,24 +23,31 @@ const { apiPrefix } = config
 //   ],
 // })
 
-/*let ordersListData2 = Mock.mock({
+let orderPostDTO = Mock.mock({
   'data|15-20': [
     {
       id: '@id',
       from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'@cword(5, 10)', x:'33', y:'116'}},
-      to: [{id: '@id',name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', detail:'@ctitle', address: {str:'@cword(5, 10)', x:'33', y:'116'}, 'cube|1-100.1-10': 1, 'price|50-200.1-2': 1, distance:'@string("number", 2)', 'cargo_price|1500-2000.1-2': 1, deliveries:['@id']}, 
-      {name: '@name', phone: /^1[34578]\d{9}$/, detail:'@ctitle', district: '@county(true)', address: {str:'@cword(5, 10)', x:'33', y:'116'}, distance:'@string("number", 2)', 'cube|1-100.1-2': 1, 'price|50-200.1-2': 1, 'cargo_price|1500-2000.1-2': 1, deliveries:['@id']}],
-      'price|150-250.1-2': 1,
-      'cargo_price|3050-4050.1-2': 1,
-      'price_type|+1': ["现金支付","在线支付","回单支付"],
-      'price_status|+1': ["未支付","已支付"],
-      'status|1-2': 1,
-      createTime: '@datetime',
+      orders:[
+        {
+          to: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'@cword(5, 10)', x:'33', y:'116'}}, 
+          payment: {
+            'deliverPrice|150-250.1-2': 1, 
+            'insurancePrice|150-250.1-2': 1, 
+          },
+          cargoes: [{name: '@cname', remark: '@cname', 'weight|10-100.1-2': 1, 'volume|10-100.1-2': 1, 'price|10-100.1-2': 1, 'cargoType|+1':["冷链", "百货", "建材"]}], 
+          distance: 100,
+        }
+      ],
+      payment: {
+        'deliverPrice|150-250.1-2': 1, 
+        'insurancePrice|150-250.1-2': 1, 
+        'payPrice|300-500.1-2': 1, 
+      },
       'customerId|+1': [0,1,2,3,4,5],
-      'driverId|+1': [0,1,2,3,4,5],
     }
   ],
-})*/
+})
 
 let ordersListData3 = Mock.mock({
   'data|3-5': [

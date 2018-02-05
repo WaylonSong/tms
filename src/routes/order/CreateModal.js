@@ -40,29 +40,24 @@ const modal = ({
   ...modalProps
 }) => {
   const handleOk = () => {
-    if(modalType == "view")
-      onOk("");
-    else{
-      validateFields((errors) => {
-        if (errors) {
-          return
-        }
-        var fieldsValue = getFieldsValue();
-        var tos = fieldsValue.to;
-        //TODO： distance和district衍生值，update和create时 初始value处理不同
-        for(var i in tos){
-          tos[i].distance = tos[i].distance.value
-          tos[i].district = districtMap[`to[${i}].district`] || getCode(tos[i].district[2])
-
-        }
-        fieldsValue.from.district = districtMap[`from.district`] || getCode(fieldsValue.from.district[2])
-        const data = {
-          ...fieldsValue,
-          key: item.key,
-        }
-        onOk(data)
-      })
-    }
+    validateFields((errors) => {
+      if (errors) {
+        return
+      }
+      var fieldsValue = getFieldsValue();
+      var orders = fieldsValue.orders;
+      //TODO： distance和district衍生值，update和create时 初始value处理不同
+      for(var i in orders){
+        orders[i].distance = orders[i].distance&&orders[i].distance.value||0
+        orders[i].to.district = districtMap[`orders[${i}].district`] || getCode(orders[i].to.district[2])
+      }
+      fieldsValue.from.district = districtMap[`from.district`] || getCode(fieldsValue.from.district[2])
+      const data = {
+        ...fieldsValue,
+        key: item.key,
+      }
+      onOk(data)
+    })
   }
   const calPrice = (volume, distance) =>{
     return Number(2 * volume * distance).toFixed(2)
@@ -86,7 +81,7 @@ const modal = ({
   const handleFromAddress = (value)=>{
     var params = {};
     for(var j = 0; j < itemIndexes.length; j++){
-      params[`to[${j}].distance`] = {from: value.str||'', to:safeGetFieldValue(`to[${j}].address`).str||''};
+      params[`orders[${j}].distance`] = {from: value.str||'', to:safeGetFieldValue(`orders[${j}].to.address`).str||''};
     }
     setFieldsValue(
        params
@@ -94,29 +89,30 @@ const modal = ({
   }
   const handleToAddress = (i)=>(value)=>{
     var params = {};
-    params[`to[${i}].distance`] = {from:safeGetFieldValue('from.address').str||'', to: value.str||''};
+    params[`orders[${i}].distance`] = {from:safeGetFieldValue('from.address').str||'', to: value.str||''};
     setFieldsValue(
        params
     );
   }
   
-  const handlePrice = (i)=>(value)=>{
-    var totalPrice = 0;
-    for(var j = 0; j < itemIndexes.length; j++){
-      if(i == j){
-        totalPrice += Number(value)
-      }
-      else{
-        totalPrice += Number(getFieldValue(`to[${j}].price`));
-      }
-    }
+  const handleDeliverPrice = (i)=>(value)=>{
+    var totalPrice = calcTotalPrice(value, 'payment.deliverPrice', i, itemIndexes.length);
+    var payPrice = Number(totalPrice)+Number(getFieldValue(`payment.insurancePrice`)) 
     setFieldsValue(
-       {"payment.deliverPrice": totalPrice.toFixed(2)}
+      {
+        "payment.deliverPrice": totalPrice, 
+        "payment.payPrice": payPrice, 
+      }
     );
   }
   const handleInsurancePrice = (i)=>(value)=>{
+    var totalPrice = calcTotalPrice(value, 'payment.insurancePrice', i, itemIndexes.length);
+    var payPrice = Number(totalPrice)+Number(getFieldValue(`payment.deliverPrice`)) 
     setFieldsValue(
-       {"payment.insurancePrice": calcTotalPrice(value, 'insurancePrice', i, itemIndexes.length)}
+      {
+        "payment.insurancePrice": totalPrice,
+        "payment.payPrice": payPrice
+      }
     );
   }
   const calcTotalPrice = (currentValue, key, index, length)=>{
@@ -125,28 +121,28 @@ const modal = ({
       if(index == j)
         totalPrice += Number(currentValue)
       else
-        totalPrice += Number(getFieldValue(`to[${j}].${key}`));
+        totalPrice += Number(getFieldValue(`orders[${j}].${key}`));
     }
     return totalPrice.toFixed(2);
   }
   const handleVolume = (i)=>(value)=>{
     var params = {};
-    var price = calPrice(Number(value), Number(safeGetFieldValue(`to[${i}].distance`).value));
+    var price = calPrice(Number(value), Number(safeGetFieldValue(`orders[${i}].distance`).value));
     if(isNaN(price))
       price = 0;
-    params[`to[${i}].price`] = price
-    params[`price`] = calcTotalPrice(price, 'price', i, itemIndexes.length)
+    params[`orders[${i}].payment.deliverPrice`] = price
+    params[`price`] = calcTotalPrice(price, 'payment.deliverPrice', i, itemIndexes.length)
     setFieldsValue(
        params
     );
   }
   const handleDistance = (i)=>(value)=>{
     var params = {};
-    var price = calPrice(Number(safeGetFieldValue(`to[${i}].volume`)), Number(value.value));
+    var price = calPrice(Number(safeGetFieldValue(`orders[${i}].cargoes[0].volume`)), Number(value.value));
     if(isNaN(price))
       price = 0;
-    params[`to[${i}].price`] = price
-    params[`price`] = calcTotalPrice(price, 'price', i, itemIndexes.length)
+    params[`orders[${i}].payment.deliverPrice`] = price
+    params[`payment.deliverPrice`] = calcTotalPrice(price, 'payment.deliverPrice', i, itemIndexes.length)
     setFieldsValue(
        params
     );
@@ -177,16 +173,15 @@ const modal = ({
         extra = (<span>{extra}
           <Tooltip title="添加收货人" ><Icon type="plus-circle-o" style={{ fontSize: 16, color: '#08c', cursor:"pointer", marginLeft:10}}  onClick={handleAddBlankTo(i+1)}/></Tooltip></span>)
       }
-      if(item.to[i]){
+      if(item.orders[i]){
       }else{
-        item.to[i] = {};
+        item.orders[i] = {};
       }
       return(
         <Col xs={{ span: 24}} lg={{ span: 11, offset:1, pull:1}} key={`colCard-${i}`}>
           <Card key={`toCard-${i}`} style={{width: '100%'}} title={`收货方（${counter+1}）`} bordered={false} {...{extra}}>
             <FormItem key={`district_${i}`} label="省市区县" hasFeedback {...formItemLayout}>
-              {getFieldDecorator(`to[${i}].district`, {
-                initialValue: item.to[i].district&&item.to[i].district.split(' '),
+              {getFieldDecorator(`orders[${i}].to.district`, {
                 rules: [
                   {
                     required: true,
@@ -198,22 +193,20 @@ const modal = ({
                 style={{ width: '100%' }}
                 options={city}
                 placeholder="请选择"
-                onChange={handleDistrict(`to[${i}].district`)}
+                onChange={handleDistrict(`orders[${i}].district`)}
               />)}
             </FormItem>
             <FormItem key={`address_${i}`} label="详细地址" hasFeedback {...formItemLayout}>
-              {getFieldDecorator(`to[${i}].address`, {
-                initialValue: item.to[i].address,
+              {getFieldDecorator(`orders[${i}].to.address`, {
                 rules: [
                   {
                     required: true,
                   },
                 ],
-              })(<ACInput id={`to[${i}].address`} center='贵阳' onChange={handleToAddress(i)}/>)}
+              })(<ACInput id={`orders[${i}].to.address`} center='贵阳' onChange={handleToAddress(i)}/>)}
             </FormItem>
             <FormItem label="收货人" hasFeedback {...formItemLayout}>
-              {getFieldDecorator(`to[${i}].name`, {
-                initialValue: item.to[i].name,
+              {getFieldDecorator(`orders[${i}].to.name`, {
                 rules: [
                   {
                     required: true,
@@ -222,8 +215,7 @@ const modal = ({
               })(<Input/>)}
             </FormItem>
             <FormItem label="电话" hasFeedback {...formItemLayout}>
-              {getFieldDecorator(`to[${i}].phone`, {
-                initialValue: item.to[i].phone,
+              {getFieldDecorator(`orders[${i}].to.phone`, {
                 rules: [
                   {
                     required: true,
@@ -231,9 +223,20 @@ const modal = ({
                 ],
               })(<Input/>)}
             </FormItem>
+            <FormItem label="里程测算" hasFeedback {...formItemLayout}>
+              {getFieldDecorator(`orders[${i}].distance`, {
+                rules: [
+                  {
+                    required: true,
+                  },
+                ],
+              })(<DistanceHandler
+                  id={`orders[${i}].distance`}
+                  onChange={handleDistance(i)}
+                />)}
+            </FormItem>
             <FormItem label="物品详情描述" hasFeedback {...formItemLayout}>
-              {getFieldDecorator(`to[${i}].detail`, {
-                initialValue: item.to[i].detail,
+              {getFieldDecorator(`orders[${i}].cargoes[0].remark`, {
                 rules: [
                   {
                     required: true,
@@ -241,60 +244,49 @@ const modal = ({
                 ],
               })(<Input placeholder="简述货物情况，比如“洗衣机”"/>)}
             </FormItem>
-            <FormItem label="里程测算" hasFeedback {...formItemLayout}>
-              {getFieldDecorator(`to[${i}].distance`, {
-                initialValue: {value:item.to[i].distance||0, to:item.to[i].address, from:item.from.address},
-                rules: [
-                  {
-                    required: true,
-                  },
-                ],
-              })(<DistanceHandler
-                  id={`to[${i}].distance`}
-                  onChange={handleDistance(i)}
-                 
-                />)}
-            </FormItem>
             <FormItem label="物品尺寸" hasFeedback {...formItemLayout}>
-              {getFieldDecorator(`to[${i}].volume`, {
-                initialValue: item.to[i].volume||0,
+              {getFieldDecorator(`orders[${i}].cargoes[0].volume`, {
                 rules: [
                   {
                     required: true,
                   },
                 ],
               })(<InputNumber
-                 
                   min={0}
                   onChange={handleVolume(i)}
                 />)}<span>立方米</span>
             </FormItem>
-           
-            <FormItem label="运费价格" hasFeedback {...formItemLayout}>
-              {getFieldDecorator(`to[${i}].price`, {
-                initialValue: item.to[i].price||0,
+           <FormItem label="物品重量" hasFeedback {...formItemLayout}>
+              {getFieldDecorator(`orders[${i}].cargoes[0].weight`, {
                 rules: [
                   {
                     required: true,
                   },
                 ],
               })(<InputNumber
-                 
                   min={0}
-                  onChange={handlePrice(i)}
+                />)}<span>千克</span>
+            </FormItem>
+            <FormItem label="运费价格" hasFeedback {...formItemLayout}>
+              {getFieldDecorator(`orders[${i}].payment.deliverPrice`, {
+                rules: [
+                  {
+                    required: true,
+                  },
+                ],
+              })(<InputNumber
+                  min={0}
+                  onChange={handleDeliverPrice(i)}
                 />)}<span>元</span>
             </FormItem>
-
             <FormItem label="保价金额" hasFeedback {...formItemLayout}>
-              {getFieldDecorator(`to[${i}].insurancePrice`, {
-                initialValue: item.to[i].insurancePrice||0,
+              {getFieldDecorator(`orders[${i}].payment.insurancePrice`, {
                 rules: [
                   {
                     required: true,
                   },
                 ],
               })(<InputNumber
-                 
                   min={0}
                   onChange={handleInsurancePrice(i)}
                 />)}<span>元</span>
@@ -326,7 +318,6 @@ const modal = ({
                     },
                   ],
                 })(<Cascader
-                 
                   size="large"
                   style={{ width: '100%' }}
                   options={city}
@@ -379,6 +370,7 @@ const modal = ({
                 ],
               })(<InputNumber
                   min={0}
+                  disabled={true}
                 />)}<span>元</span>
               </FormItem>
               <FormItem label="保价金额" {...formItemLayout}>
@@ -391,7 +383,8 @@ const modal = ({
                 ],
               })(<InputNumber
                   min={0}
-                />)}<span>元</span>
+                  disabled={true}
+                />)}<span className={'some'}>元</span>
               </FormItem>
               <FormItem label="订单总额" {...formItemLayout}>
                   {getFieldDecorator('payment.payPrice', {
@@ -403,6 +396,7 @@ const modal = ({
                 ],
               })(<InputNumber
                   min={0}
+                  disabled={true}
                 />)}<span>元</span>
               </FormItem>
               <FormItem label="支付状态" {...formItemLayout}>

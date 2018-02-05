@@ -50,7 +50,7 @@ const modal = ({
     wrapperCol: { span: 16 },
   };
 
-  var disableFlag = false//{disabled:modalType=='view'}
+  var disableFlag = {disabled:true}//{disabled:modalType=='view'}
   // getFieldDecorator('keys', { initialValue: [] });
   return (
     <Modal {...modalOpts} footer={<Button type="primary" onClick={modalProps.onCancel}>关闭</Button>} title={`订单编号：${item.id} [${OrderDetailStateDict[item.state]}]`} width={1200} style={{}}>
@@ -82,7 +82,7 @@ const modal = ({
                       required: true,
                     },
                   ],
-                })(<Input/>)}
+                })(<Input {...disableFlag}/>)}
               </FormItem>
               <FormItem label="发货人" {...formItemLayout}>
                 {getFieldDecorator('from.name', {
@@ -175,7 +175,7 @@ const modal = ({
                       required: true,
                     },
                   ],
-                })(<Input/>)}
+                })(<Input {...disableFlag}/>)}
               </FormItem>
               <FormItem label="收货人" {...formItemLayout}>
                 {getFieldDecorator(`to.name`, {
@@ -253,6 +253,7 @@ const modal = ({
                 ],
               })(<InputNumber
                   min={0}
+                  {...disableFlag}
                 />)}<span>元</span>
               </FormItem>
               <FormItem label="保价金额" {...formItemLayout}>
@@ -265,6 +266,7 @@ const modal = ({
                 ],
               })(<InputNumber
                   min={0}
+                  {...disableFlag}
                 />)}<span>元</span>
               </FormItem>
               <FormItem label="支付状态" {...formItemLayout}>
@@ -290,6 +292,7 @@ const modal = ({
                 ],
               })(<InputNumber
                   min={0}
+                  {...disableFlag}
                 />)}<span>元</span>
               </FormItem>
             </Card>

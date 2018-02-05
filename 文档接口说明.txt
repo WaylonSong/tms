@@ -29,7 +29,10 @@ d.删除对象
 
 二.Order接口
 1.数据模型
-order在运单调度完成之后，会绑定相关运单信息，目前在mock中，属性to会包含deliveries:['@id']，后面可能要扩充到起止地货物情况等。
+订单创建接口（mock方式描述）
+
+
+
 2.查询接口
 列表查询参数
 const options = ['id', 'from.name', 'from.address', 'from.phone', 'to.name', 'to.address', 'to.phone']
