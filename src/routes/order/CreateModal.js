@@ -20,7 +20,13 @@ const formItemLayout = {
   },
 }
 var districtMap = {}
-
+var handler = {};
+const onFieldsChange = (props, fields)=>{
+  var re = /\orders(.*)(payment.deliverPrice|payment.insurancePrice)/;
+  if(re.test(Object.keys(fields)[0])){
+    handler.setTotalPrice();
+  }
+}
 const modal = ({
   item,
   modalType,
@@ -59,10 +65,7 @@ const modal = ({
       onOk(data)
     })
   }
-  const calPrice = (volume, distance) =>{
-    return Number(2 * volume * distance).toFixed(2)
-  }
-
+  
   const handleMinusTo = (i, counter)=>()=>{
     onMinusTo(counter)
   }
@@ -77,6 +80,30 @@ const modal = ({
     else
       return ""
   }
+
+  const calcTotalPrice = ()=>{
+    let length = itemIndexes.length;
+    let [insurancePrice, deliverPrice, payPrice] = [0, 0, 0];
+    var totalPrice = 0;
+    for(var j = 0; j < length; j++){
+      insurancePrice += Number(safeGetFieldValue(`orders[${j}].payment.insurancePrice`));
+      deliverPrice += Number(safeGetFieldValue(`orders[${j}].payment.deliverPrice`));
+    }
+    payPrice = insurancePrice+deliverPrice;
+    return {insurancePrice, deliverPrice, payPrice};
+  }
+
+  handler.setTotalPrice = ()=>{
+    let {insurancePrice, deliverPrice, payPrice} = calcTotalPrice();
+    setFieldsValue(
+      {
+        "payment.deliverPrice": deliverPrice,
+        "payment.insurancePrice": insurancePrice,
+        "payment.payPrice": payPrice
+      }
+    );
+  }
+
   
   const handleFromAddress = (value)=>{
     var params = {};
@@ -89,60 +116,32 @@ const modal = ({
   }
   const handleToAddress = (i)=>(value)=>{
     var params = {};
+    console.log(safeGetFieldValue('from.address').str||'')
     params[`orders[${i}].distance`] = {from:safeGetFieldValue('from.address').str||'', to: value.str||''};
     setFieldsValue(
        params
     );
   }
-  
-  const handleDeliverPrice = (i)=>(value)=>{
-    var totalPrice = calcTotalPrice(value, 'payment.deliverPrice', i, itemIndexes.length);
-    var payPrice = Number(totalPrice)+Number(getFieldValue(`payment.insurancePrice`)) 
-    setFieldsValue(
-      {
-        "payment.deliverPrice": totalPrice, 
-        "payment.payPrice": payPrice, 
-      }
-    );
-  }
-  const handleInsurancePrice = (i)=>(value)=>{
-    var totalPrice = calcTotalPrice(value, 'payment.insurancePrice', i, itemIndexes.length);
-    var payPrice = Number(totalPrice)+Number(getFieldValue(`payment.deliverPrice`)) 
-    setFieldsValue(
-      {
-        "payment.insurancePrice": totalPrice,
-        "payment.payPrice": payPrice
-      }
-    );
-  }
-  const calcTotalPrice = (currentValue, key, index, length)=>{
-    var totalPrice = 0;
-    for(var j = 0; j < length; j++){
-      if(index == j)
-        totalPrice += Number(currentValue)
-      else
-        totalPrice += Number(getFieldValue(`orders[${j}].${key}`));
-    }
-    return totalPrice.toFixed(2);
+
+  const calDeliverPrice = (volume, distance) =>{
+    return Number(2 * volume * distance).toFixed(2)
   }
   const handleVolume = (i)=>(value)=>{
     var params = {};
-    var price = calPrice(Number(value), Number(safeGetFieldValue(`orders[${i}].distance`).value));
+    var price = calDeliverPrice(Number(value), Number(safeGetFieldValue(`orders[${i}].distance`).value));
     if(isNaN(price))
       price = 0;
     params[`orders[${i}].payment.deliverPrice`] = price
-    params[`price`] = calcTotalPrice(price, 'payment.deliverPrice', i, itemIndexes.length)
     setFieldsValue(
        params
     );
   }
   const handleDistance = (i)=>(value)=>{
     var params = {};
-    var price = calPrice(Number(safeGetFieldValue(`orders[${i}].cargoes[0].volume`)), Number(value.value));
+    var price = calDeliverPrice(Number(safeGetFieldValue(`orders[${i}].cargoes[0].volume`)), Number(value.value));
     if(isNaN(price))
       price = 0;
     params[`orders[${i}].payment.deliverPrice`] = price
-    params[`payment.deliverPrice`] = calcTotalPrice(price, 'payment.deliverPrice', i, itemIndexes.length)
     setFieldsValue(
        params
     );
@@ -246,6 +245,7 @@ const modal = ({
             </FormItem>
             <FormItem label="物品尺寸" hasFeedback {...formItemLayout}>
               {getFieldDecorator(`orders[${i}].cargoes[0].volume`, {
+                initialValue: 0,
                 rules: [
                   {
                     required: true,
@@ -258,6 +258,7 @@ const modal = ({
             </FormItem>
            <FormItem label="物品重量" hasFeedback {...formItemLayout}>
               {getFieldDecorator(`orders[${i}].cargoes[0].weight`, {
+                initialValue: 0,
                 rules: [
                   {
                     required: true,
@@ -269,6 +270,7 @@ const modal = ({
             </FormItem>
             <FormItem label="运费价格" hasFeedback {...formItemLayout}>
               {getFieldDecorator(`orders[${i}].payment.deliverPrice`, {
+                initialValue: 0,
                 rules: [
                   {
                     required: true,
@@ -276,11 +278,11 @@ const modal = ({
                 ],
               })(<InputNumber
                   min={0}
-                  onChange={handleDeliverPrice(i)}
                 />)}<span>元</span>
             </FormItem>
             <FormItem label="保价金额" hasFeedback {...formItemLayout}>
               {getFieldDecorator(`orders[${i}].payment.insurancePrice`, {
+                initialValue: 0,
                 rules: [
                   {
                     required: true,
@@ -288,7 +290,6 @@ const modal = ({
                 ],
               })(<InputNumber
                   min={0}
-                  onChange={handleInsurancePrice(i)}
                 />)}<span>元</span>
             </FormItem>
           </Card>
@@ -442,4 +443,4 @@ modal.propTypes = {
   onOk: PropTypes.func,
 }
 
-export default Form.create()(modal)
+export default Form.create({onFieldsChange:onFieldsChange})(modal)

@@ -6,27 +6,10 @@ const tools = require('../utils/cityTools')
 const cookietools = require('../utils/cookietools')
 const {PayState, PayType, OrderDetailState, PayChannel} = require('../utils/enums')
 const { apiPrefix } = config
-
-// let ordersListData = Mock.mock({
-//   'data|80-100': [
-//     {
-//       id: '@id',
-//       name: '@name',
-//       from: {name: '@name', phone: /^1[34578]\d{9}$/, address: '@county(true)'},
-//       to: [{name: '@name', phone: /^1[34578]\d{9}$/, address: '@county(true)'}, {name: '@name', phone: /^1[34578]\d{9}$/, address: '@county(true)'}],
-//       'status|1-2': 1,
-//       createTime: '@datetime',
-//       avatar () {
-//         return Mock.Random.image('100x100', Mock.Random.color(), '#757575', 'png', this.nickName.substr(0, 1))
-//       },
-//     },
-//   ],
-// })
-
+//DTO举例
 let orderPostDTO = Mock.mock({
   'data|15-20': [
     {
-      id: '@id',
       from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'@cword(5, 10)', x:'33', y:'116'}},
       orders:[
         {
@@ -157,22 +140,26 @@ module.exports = {
 
   [`POST ${apiPrefix}/orders`] (req, res) {
     const newData = req.body
-    newData.createTime = Mock.mock('@now')
-    newData.id = Mock.mock('@id')
-
-    // newData.from.district = Mock.mock('@country')
-    console.log(req.body)
-    newData.from.district = tools.getFullName(newData.from.district)
-    for(var i in newData.to){
-      newData.to[i].district = tools.getFullName(newData.to[i].district)
-      newData.to[i].deliveries = [Mock.mock('@id')]
-    }
-
+   
     var user = cookietools.getUser(req);
-    if(user.role == "CUSTOMER"){
-      newData['customerId'] = user.id
+    newData.from.district = tools.getFullName(newData.from.district)
+    for(var i in newData.orders){
+      var customerOrder = {};
+      customerOrder.id = Mock.mock('@id');
+      customerOrder.state = OrderDetailState.NOT_DISTRIBUTED;
+      customerOrder.from = newData.from
+      customerOrder.to = newData.orders[i].to
+      customerOrder.cargoes = newData.orders[i].cargoes
+      customerOrder.payment = newData.payment
+      customerOrder.distance = newData.orders[i].distance
+      customerOrder.createTime = Mock.mock('@datetime')
+      customerOrder.customerId = user.id
+      customerOrder.deliverOrders = []
+      database.unshift(customerOrder)
+
     }
-    database.unshift(newData)
+
+    // database.unshift(newData)
     res.status(200).end()
   },
 

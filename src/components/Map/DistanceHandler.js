@@ -19,13 +19,16 @@ class DistanceHandler extends Component {
 			return;
 		}else{
 			for (var key in nextProps.value){
+				if(!this.props.value){
+					shouldUpdate = true;
+					break
+				}
 				if(nextProps.value[key] != this.props.value[key]){
 					shouldUpdate = true;
 					break
 				}
 			}
 			if (shouldUpdate) {
-				// {from:"西单", to:"东单"};
 				if(nextProps.value){
 	  		  		this.transit.search(nextProps.value.from, nextProps.value.to);
 				}
