@@ -32,7 +32,7 @@ let orderPostDTO = Mock.mock({
   ],
 })
 
-let ordersListData3 = Mock.mock({
+let orderModals = Mock.mock({
   'data|3-5': [
     {
       'id|+1': 10000001,
@@ -58,8 +58,24 @@ let ordersListData3 = Mock.mock({
   ],
 })
 
+let orderListDTO = Mock.mock({
+  'data|3-5': [
+    {
+      'id|+1': 10000001,
+      'state|+1': [/*OrderDetailState.NOT_DISTRIBUTED, OrderDetailState.ONBOARD, */OrderDetailState.COMPLETED, /*.INVALID*/],
+      from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'@cword(5, 10)', x:'33', y:'116'}},
+      to:   {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'@cword(5, 10)', x:'33', y:'116'}}, 
+      payment: {
+        'payPrice|300-500.1-2': 1, 
+      },
+      createTime: '@datetime',
+      'customerId|+1': [0,1,2,3,4,5],
+    }
+  ],
+})
 
-let database = ordersListData3.data
+
+let database = orderModals.data
 
 const queryArray = (array, key, keyAlias = 'key') => {
   if (!(array instanceof Array)) {

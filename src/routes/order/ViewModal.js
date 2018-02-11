@@ -223,25 +223,6 @@ const modal = ({
             </Card>
           </Col>
           <Col xs={{ span: 24}} lg={{ span: 11, offset:1, pull:1}} style={{height:350}}>
-            <Card style={{width: '100%'}} title="运单详情" bordered={false}>
-              <Collapse accordion defaultActiveKey={[item.deliverOrders.length+""]}>
-                {item.deliverOrders.map((i,index)=>{
-                  return (
-                    <Panel header={`运单编号：${i.id}`} key={index+1}>
-                      <p>运单状态：{EnumDeliveryStatusDict[i.deliverOrderState]}</p>
-                      <p>承运车辆：{i.vehicle.number}</p>
-                      <p>司机名称：{i.driver.name}</p>
-                      <p>运单金额：{i.price}</p>
-                      {i.deliverOrderState == EnumDeliveryStatus.COMPLETED?<p>完成时间：{i.completeTime}</p>:''}
-                    </Panel>
-                  )
-                })}
-              </Collapse>
-            </Card>
-          </Col>
-        </Row>
-        <Row gutter={24}>
-          <Col xs={{ span: 24}} lg={{ span: 11, offset:1, pull:1}} style={{height:350}}>
             <Card style={{width: '100%'}} title="支付详情" bordered={false}>
               <FormItem label="运费金额" {...formItemLayout}>
                   {getFieldDecorator('payment.deliverPrice', {
@@ -298,6 +279,25 @@ const modal = ({
             </Card>
           </Col>
         </Row>
+        {item.state != OrderDetailState.NOT_DISTRIBUTED && <Row gutter={24}>
+          <Col xs={{ span: 24}} lg={{ span: 11, offset:1, pull:1}} >
+            <Card style={{width: '100%'}} title="运单详情" bordered={false}>
+              <Collapse accordion defaultActiveKey={[item.deliverOrders.length+""]}>
+                {item.deliverOrders.map((i,index)=>{
+                  return (
+                    <Panel header={`运单编号：${i.id}`} key={index+1}>
+                      <p>运单状态：{EnumDeliveryStatusDict[i.deliverOrderState]}</p>
+                      <p>承运车辆：{i.vehicle.number}</p>
+                      <p>司机名称：{i.driver.name}</p>
+                      <p>运单金额：{i.price}</p>
+                      {i.deliverOrderState == EnumDeliveryStatus.COMPLETED?<p>完成时间：{i.completeTime}</p>:''}
+                    </Panel>
+                  )
+                })}
+              </Collapse>
+            </Card>
+          </Col>
+        </Row>}
       </Form>
     </Modal>
   )
