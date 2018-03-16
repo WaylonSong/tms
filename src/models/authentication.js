@@ -2,12 +2,15 @@ import { routerRedux } from 'dva/router'
 import { login } from 'services/login'
 
 export default {
-  namespace: 'register',
+  namespace: 'authentication',
 
   state: {},
   reducers: {
-    captcha (state) {
-      return { ...state, isCaptchaClicked: true }
+    driver (state) {
+      return { ...state, type: 'driver' }
+    },
+    customer (state) {
+      return { ...state, type: 'customer' }
     },
   },
   effects: {
@@ -16,8 +19,6 @@ export default {
     }, { put, call, select }) {
       console.log('________________________')
       console.log(payload)
-      // TODO cookie操作
-      yield put(routerRedux.push('/authentication'))
       /*const data = yield call(login, payload)
       const { locationQuery } = yield select(_ => _.app)
       if (data.success) {

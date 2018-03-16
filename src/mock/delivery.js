@@ -6,7 +6,7 @@ const { apiPrefix } = config
 const collectionName = "deliveries"
 
 let deliveryListData2 = Mock.mock({
-  'data|20-40': [
+  'data|20': [
     {
       'id|+1': 10000001,
       'customerOrder.id|+1': 10000001,
@@ -15,6 +15,7 @@ let deliveryListData2 = Mock.mock({
       'price|150-250.1-2': 1,
       vehicle: {id:"@id", number:'贵'+'@character("upper")'+'@string("number", 5)'},
       driver:{id:"@id", name: '@cname', phone: /^1[34578]\d{9}$/},
+      distance: 100,
       detail:'@ctitle',
       'cube|1-100.1-2': 1, 
       'deliverOrderState|0-3': 1,
@@ -35,9 +36,11 @@ const queryArray = (array, key, keyAlias = 'key') => {
     return null
   }
   let data
+  if(key == ":id")
+    return {};
 
   for (let item of array) {
-    if (item[keyAlias] === key) {
+    if (item[keyAlias] == key) {
       data = item
       break
     }
@@ -46,13 +49,7 @@ const queryArray = (array, key, keyAlias = 'key') => {
   if (data) {
     return data
   }
-  // return 
-  //便于测试，随机id搜索不到。默认返回首元素
-  var index = parseInt(Math.random()*array.length);
-  if(key != ":id")
-    array[index].id = key;
-  return array[index]
-
+  return null
 }
 
 const NOTFOUND = {
@@ -165,7 +162,9 @@ module.exports = {
 
   [`GET ${apiPrefix}/${collectionName}/:id`] (req, res) {
     const { id } = req.params
+    console.log(database)
     const data = queryArray(database, id, 'id')
+    console.log(data)
     if (data) {
       res.status(200).json(data)
     } else {

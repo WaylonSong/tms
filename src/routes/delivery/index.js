@@ -10,6 +10,7 @@ import Filter from './Filter'
 import Modal from './Modal'
 import SplitModal from './SplitModal'
 import {EnumDeliveryStatus} from '../../utils/enums'
+import {OrderDetailStateDict, EnumDeliveryStatusDict} from '../../utils/dict'
 
 const resourceName = "delivery";
 const TabPane = Tabs.TabPane
@@ -93,10 +94,11 @@ const Obj = (props) => {
     modalType: props[resourceName].modalType,
     wrapresourceName: 'vertical-center-modal',
     onOk (data) {
-      dispatch({
+     /* dispatch({
         type: resourceName+'/postSplit',
         payload: data
-      })
+      })*/
+      onCancel();
     },
     onCancel () {
       dispatch({
@@ -163,7 +165,7 @@ const Obj = (props) => {
   const handleTabClick = (key) => {
     var routes = {
       pathname,
-      search: queryString.stringify({...query, status:key, page:1}),
+      search: queryString.stringify({...query, deliverOrderState:key, page:1}),
       // query: ({status:key}),
     }
     dispatch(routerRedux.push(routes))
@@ -194,8 +196,8 @@ const Obj = (props) => {
     },
   }
   let activeKey = "";
-  if(query.status)
-    activeKey = query.status;
+  if(query.deliverOrderState)
+    activeKey = query.deliverOrderState;
 
   const parsed = queryString.parse(location.search);
   // console.log(location);
@@ -204,25 +206,17 @@ const Obj = (props) => {
       <Filter {...filterProps} />
       {modalVisible && <Modal {...modalProps} />}
       {splitModalVisible && <SplitModal {...splitModalProps} />}
-      <Tabs type="line" size='small' activeKey={activeKey} onTabClick={handleTabClick}>
+
+      <Tabs activeKey={activeKey} onTabClick={handleTabClick} size="small">
         <TabPane tab="全部" key={""}>
           <List {...listProps} />
         </TabPane>
-        <TabPane tab="待分配" key={String(EnumDeliveryStatus.NOT_DISTRIBUTED)}>
-          <List {...listProps} />
-        </TabPane>
-        <TabPane tab="待接货" key={String(EnumDeliveryStatus.NOT_RECEIVED)}>
-          <List {...listProps} />
-        </TabPane>
-        <TabPane tab="配送中" key={String(EnumDeliveryStatus.ONBOARD)}>
-          <List {...listProps} />
-        </TabPane>
-        <TabPane tab="已送达" key={String(EnumDeliveryStatus.RECEIVED)}>
-          <List {...listProps} />
-        </TabPane>
-        <TabPane tab="已拆分" key={String(EnumDeliveryStatus.SPLITTED)}>
-          <List {...listProps} />
-        </TabPane>
+        {EnumDeliveryStatusDict.map((i, index)=>{
+          return (
+            <TabPane tab={i} key={String(index)}>
+              <List {...listProps} />
+            </TabPane>)
+        })}
       </Tabs>
     </Page>
   )

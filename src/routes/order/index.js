@@ -25,6 +25,7 @@ const options = ['id', 'from.name', 'from.address', 'from.phone', 'to.name', 'to
 const Obj = (props) => {
   var {dispatch, loading, location } = props;
   var obj = props[resourceName];
+  const role = props["app"].permissions.role;
   const { list, pagination, currentItem, modalVisible, viewModalVisible, payModalVisible, modalType, isMotion, selectedRowKeys, itemIndexes } = obj
   const { pageSize } = pagination
   const { pathname } = location
@@ -93,11 +94,23 @@ const Obj = (props) => {
     modalType: props[resourceName].modalType,
     title: "订单详情："+currentItem.id,
     wrapresourceName: 'vertical-center-modal',
-    onCancel () {
+    role: role,
+    onCancel:()=>{
       dispatch({
         type: resourceName+'/hideViewModal',
       })
     },
+    onTransfer:()=>{
+      dispatch({
+        type: resourceName+'/nextState',
+        payload: {nextState:currentItem.state+1, id:currentItem.id}
+      });
+    },
+    viewDelivery:(id)=>()=>{
+      dispatch(routerRedux.push({
+        pathname: `/delivery/${id}`
+      }))
+    }
   }
   const payModalProps = {
     item: currentItem,
@@ -169,6 +182,7 @@ const Obj = (props) => {
         },
       })
     },
+    role: role,
     onFilterChange (fields) {
 
       var params = {...query}
@@ -199,7 +213,7 @@ const Obj = (props) => {
       <Filter {...filterProps} />
       {modalVisible && <CreateModal {...modalProps} />}
       {viewModalVisible && <ViewModal {...viewModalProps} />}
-      {payModalVisible && <PayModal {...payModalProps}/>}
+      {/*payModalVisible && <PayModal {...payModalProps}/>*/}
       <Tabs activeKey={activeKey} onTabClick={handleTabClick} size="small">
         <TabPane tab="全部" key={""}>
           <List {...listProps} />
@@ -221,4 +235,4 @@ Obj.propTypes = {
   loading: PropTypes.object,
 }
 
-export default connect(({ order, loading }) => ({ order, loading }))(Obj)
+export default connect(({ order, app, loading }) => ({ order, app, loading }))(Obj)

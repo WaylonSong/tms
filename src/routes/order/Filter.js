@@ -22,6 +22,7 @@ const ColProps = {
 const Filter = ({
   addOrder, 
   onFilterChange,
+  role,
   form: {
     getFieldDecorator,
     getFieldsValue,
@@ -68,9 +69,10 @@ const Filter = ({
   }
   return (
     <Row gutter={24}>
-      <Col xl={{ span: 2 }} md={{ span: 4 }}>
+      {role == 'DRIVER'?'':<Col xl={{ span: 2 }} md={{ span: 4 }}>
         <Button style={{ width: '100%' }} size="large" type="primary" onClick={addOrder}>创建</Button>
-      </Col>
+      </Col>}
+      
       <Col {...ColProps}  xl={{ span: 8 }} md={{ span: 8 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
           {getFieldDecorator('field')(

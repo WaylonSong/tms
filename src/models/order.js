@@ -1,11 +1,14 @@
 /* global window */
 import { crudModelGenerator } from './common'
 import { queryAll, query, queryById, deleteAll, create, remove, update } from 'services/crud'
+import { stateTransfer } from 'services/order'
+
 const resourceName = "order"
 const collectionName = "orders"
 
 var obj = crudModelGenerator(`${resourceName}`, `${collectionName}`)
 // function addBlanckTo(state){}
+
 obj.state["item"] = {from:{},to:[{}]};
 obj.reducers['addBlanckTo'] = (state)=>  {
 	var itemIndexes = [];
@@ -74,6 +77,7 @@ obj.effects['pay'] = function *({ payload}, { call, put }){
 
 obj.effects['editItem'] = function *({ payload}, { call, put }){
 	// payload.currentItemId
+	console.log(payload.currentItemId);
 	const data = yield call(query, {id: payload.currentItemId}, `${collectionName}`)
     if(data){
       yield put({
@@ -84,6 +88,21 @@ obj.effects['editItem'] = function *({ payload}, { call, put }){
         },
       })
     }
+}
+
+obj.effects['nextState'] = function *({ payload}, { call, put }){
+	// payload.currentItemId
+	const data = yield call(stateTransfer, {id: payload.id, state: payload.nextState}, `${collectionName}`)
+    yield put({type: `hideViewModal`})
+    yield put({ type: 'query' })
+
+    /*if(data){
+		data.state = payload.nextState
+      yield put({
+        type: `update`,
+        payload: data
+      })
+    }*/
 }
 
 export default obj

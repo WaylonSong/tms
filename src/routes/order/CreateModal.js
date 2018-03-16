@@ -296,7 +296,6 @@ const modal = ({
         </Col>
       )
     })
-
     return (
       <div>
         {list}

@@ -8,8 +8,9 @@ import queryString from 'query-string'
 import AnimTableBody from 'components/DataTable/AnimTableBody'
 import styles from './List.less'
 import {EnumDeliveryStatus} from '../../utils/enums'
+import {OrderDetailStateDict, EnumDeliveryStatusDict} from '../../utils/dict'
 
-const status = ['待分配', '待接货', '配送中', '已送达', '已拆分'];
+const deliverOrderState = EnumDeliveryStatusDict
 
 const confirm = Modal.confirm
 const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...tableProps }) => {
@@ -38,7 +39,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       key: 'operation',
       width: 50,
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={record.status == EnumDeliveryStatus.NOT_DISTRIBUTED?[{ key: '1', name: '调度' }, { key: '2', name: '拆分' }]:[{ key: '1', name: '查看' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={record.deliverOrderState == EnumDeliveryStatus.NOT_DISTRIBUTED?[{ key: '1', name: '调度' }, { key: '2', name: '拆分' }]:[{ key: '1', name: '查看' }]} />
       },
     },{
       title: '运单编号',
@@ -49,10 +50,10 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       render: (text, record) => <a onClick={e => onEditItem(record, e)}>{text}</a>,
     }, {
       title: '运单状态',
-      dataIndex: 'status',
-      key: 'status',
+      dataIndex: 'deliverOrderState',
+      key: 'deliverOrderState',
       width: 80,
-      render: (text) => <span>{status[parseInt(text)]}</span>,
+      render: (text) => <span>{deliverOrderState[parseInt(text)]}</span>,
     }, {
       title: '订单金额',
       dataIndex: 'price',
@@ -123,38 +124,38 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       dataIndex: 'distributTime',
       width: 150,
       key: 'distributTime',
-      render: (text, record) => <span>{parseInt(record.status) > 0?text:''}</span>,
+      render: (text, record) => <span>{parseInt(record.deliverOrderState) > 0?text:''}</span>,
     }, {
       title: '分配车辆',
-      dataIndex: 'vehicle',
-      key: 'vehicle',
+      dataIndex: 'vehicle.number',
+      key: 'vehicle.number',
       width: 100,
-      render: (text, record) => <span>{record.status == EnumDeliveryStatus.NOT_DISTRIBUTED?'':text}</span>,
+      render: (text, record) => <span>{record.deliverOrderState == EnumDeliveryStatus.NOT_DISTRIBUTED?'':text}</span>,
     }, {
       title: '司机',
       dataIndex: 'driver.name',
       key: 'driver.name',
       width: 100,
-      render: (text, record) => <span>{record.status == EnumDeliveryStatus.NOT_DISTRIBUTED?'':text}</span>,
+      render: (text, record) => <span>{record.deliverOrderState == EnumDeliveryStatus.NOT_DISTRIBUTED?'':text}</span>,
     }, {
       title: '司机电话',
       dataIndex: 'driver.phone',
       key: 'driver.phone',
       width: 120,
-      render: (text, record) => <span>{record.status == EnumDeliveryStatus.NOT_DISTRIBUTED?'':text}</span>,
+      render: (text, record) => <span>{record.deliverOrderState == EnumDeliveryStatus.NOT_DISTRIBUTED?'':text}</span>,
     },{
       title: '接货时间',
       dataIndex: 'loadTime',
       width: 150,
       key: 'loadTime',
-      render: (text, record) => <span>{parseInt(record.status) > 1?text:''}</span>,
+      render: (text, record) => <span>{parseInt(record.deliverOrderState) > 1?text:''}</span>,
     }, {
       title: '送抵时间',
       dataIndex: 'arriveTime',
       width: 150,
       key: 'arriveTime',
-      render: (text, record) => <span>{parseInt(record.status) == 3?text:''}</span>,
-    }, 
+      render: (text, record) => <span>{parseInt(record.deliverOrderState) == 3?text:''}</span>,
+    },
   ]
 
   const getBodyWrapperProps = {

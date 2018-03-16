@@ -32,7 +32,7 @@ const menuList =[
     id: 31,
     bpid: 3,
     mpid: 3,
-    name: '运单调度',
+    name: '运单列表',
     icon: 'bars',
     route: '/delivery',
   },{

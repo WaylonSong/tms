@@ -9,7 +9,7 @@ module.exports = {
   iconFontCSS: '/iconfont.css',
   iconFontJS: '/iconfont.js',
   CORS: [],
-  openPages: ['/login', '/register'],
+  openPages: ['/login', '/register', '/authentication'],
   apiPrefix: '/api/v1',
   APIV1,
   APIV2,
@@ -30,5 +30,6 @@ module.exports = {
     'assginTo': `${APIV1}/deliveries/assignTo`,
     'split': `${APIV1}/deliveries/split`,
     'locationList': `${APIV1}/vehicles/locationList`,
+    'order_state_transfer':`${APIV1}/orders/stateTransfer`
   },
 }

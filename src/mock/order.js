@@ -7,7 +7,7 @@ const cookietools = require('../utils/cookietools')
 const {PayState, PayType, OrderDetailState, PayChannel} = require('../utils/enums')
 const { apiPrefix } = config
 //DTO举例
-let orderPostDTO = Mock.mock({
+/*et orderPostDTO = Mock.mock({
   'data|15-20': [
     {
       from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'@cword(5, 10)', x:'33', y:'116'}},
@@ -30,7 +30,7 @@ let orderPostDTO = Mock.mock({
       'customerId|+1': [0,1,2,3,4,5],
     }
   ],
-})
+})*/
 
 let orderModals = Mock.mock({
   'data|3-5': [
@@ -54,6 +54,7 @@ let orderModals = Mock.mock({
       'deliverOrders|+1':[/*[{}],*/[{'id|+1':10000001, deliverOrderState:3, distance: 100,'customerOrder.id|+1':10000001,from:{name:'@cname',phone:/^1[34578]\d{9}$/,district:'@county(true)',address:'@ctitle'},to:{name:'@cname',phone:/^1[34578]\d{9}$/,district:'@county(true)',address:'@ctitle'},'price|150-250.1-2':1,vehicle:{id:"@id",number:'贵'+'@character("upper")'+'@string("number", 5)'},driver:{id:"@id",name:'@cname',phone:/^1[34578]\d{9}$/},detail:'@ctitle','cube|1-100.1-2':1,'status|0-3':1,createTime:'@datetime',distributTime:'@datetime',loadTime:'@datetime',completeTime:'@datetime'}]],
       createTime: '@datetime',
       'customerId|+1': [0,1,2,3,4,5],
+      'driverId|+1': [0,1,2,3,4,5],
     }
   ],
 })
@@ -75,6 +76,7 @@ let orderListDTO = Mock.mock({
 })
 
 
+let vodb = orderListDTO.data
 let database = orderModals.data
 
 const queryArray = (array, key, keyAlias = 'key') => {
@@ -121,7 +123,10 @@ module.exports = {
         newData = newData.filter((item) => {
           // if ({}.hasOwnProperty.call(item, key)) {
             var itemValue = '';
-
+            if (user.role == "DRIVER"){
+              if(item.state == OrderDetailState.NOT_DISTRIBUTED)
+                return 1;
+            }
             if (key.indexOf('.')>-1) {
               itemValue = String(item[key.split('.')[0]][key.split('.')[1]]).trim();
             }  
@@ -165,6 +170,7 @@ module.exports = {
       customerOrder.state = OrderDetailState.NOT_DISTRIBUTED;
       customerOrder.from = newData.from
       customerOrder.to = newData.orders[i].to
+      customerOrder.to.district = tools.getFullName(customerOrder.to.district)
       customerOrder.cargoes = newData.orders[i].cargoes
       customerOrder.payment = newData.payment
       customerOrder.distance = newData.orders[i].distance
@@ -202,20 +208,21 @@ module.exports = {
     }
   },
 
-  [`PUT ${apiPrefix}/orders/:id`] (req, res) {
-    const { id } = req.params
-    const editItem = req.body
-    let isExist = false
-
+  [`POST ${apiPrefix}/orders/stateTransfer`] (req, res) {
+    const { id, state } = req.body
+    let isExist = false;
     database = database.map((item) => {
       if (item.id === id) {
         isExist = true
-        editItem.from.district = tools.getFullName(editItem.from.district)
-        for(var i in editItem.to){
-          editItem.to[i].district = tools.getFullName(editItem.to[i].district)
-          editItem.to[i].deliveries = [Mock.mock('@id')]
-        }
-        return Object.assign({}, item, editItem)
+        item.state = state
+        //测试代码 司机id=2
+        console.log(state);
+        if(state == OrderDetailState.NOT_PAID)
+          item.deliverOrders = Mock.mock([{'id|+1':10000001, deliverOrderState:state, distance: 100,from:item.from,to:item.to,'price|150-250.1-2':1,vehicle:{id:"@id",number:'贵A12345'},driver:{id:2,name:'测试司机',phone:/^1[34578]\d{9}$/},detail:'@ctitle','cube|1-100.1-2':1,'status|0-3':1,createTime:'@datetime',distributTime:'@datetime',loadTime:'@datetime',completeTime:'@datetime'}]);
+        item.deliverOrders[0].deliverOrderState = state;
+        item.driverId = 2
+        console.log(item)
+        // if(item.)
       }
       return item
     })

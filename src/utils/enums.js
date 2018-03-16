@@ -18,22 +18,24 @@ const PayChannel = {
 }
 
 const OrderDetailState = {
-  NOT_PAID : 0,
-  NOT_DISTRIBUTED : 1,
+  NOT_DISTRIBUTED : 0,
+  NOT_PAID : 1,
   NOT_RECEIVED : 2,
   ONBOARD : 3,
   COMPLETED : 4,
-  INVALID : 5,
-  CONFIRMED : 6
+  CONFIRMED : 5,
+  INVALID : 6,
 }
 
 const EnumDeliveryStatus = {
   NOT_DISTRIBUTED : 0,
-  NOT_RECEIVED : 1,
-  ONBOARD : 2,
-  COMPLETED : 3,
-  INVALID : 4,
-  SPLITTED : 5,
+  NOT_PAID : 1,
+  NOT_RECEIVED : 2,
+  ONBOARD : 3,
+  COMPLETED : 4,
+  CONFIRMED : 5,
+  INVALID : 6,
+  SPLITTED : 7,
 }
 
 const PayState = {

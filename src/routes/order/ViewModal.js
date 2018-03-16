@@ -9,6 +9,7 @@ import DistanceHandler from '../../components/Map/DistanceHandler'
 import {Collapse} from 'antd';
 import {OrderDetailStateDict, EnumDeliveryStatusDict} from '../../utils/dict'
 import {OrderDetailState, EnumDeliveryStatus} from '../../utils/enums'
+import { routerRedux } from 'dva/router'
 
 
 const Panel = Collapse.Panel;
@@ -32,6 +33,7 @@ const modal = ({
   modalType,
   itemIndexes,
   onMinusTo,
+  role,
   form: {
     getFieldDecorator,
     validateFields,
@@ -49,6 +51,31 @@ const modal = ({
     labelCol: { span: 5 },
     wrapperCol: { span: 16 },
   };
+
+  const genOperButton = ()=>{
+    let title = ''
+    if(role == "CUSTOMER"){
+      switch(item.state){
+        case OrderDetailState.NOT_PAID:
+          title =  '确认付款';break;
+        case OrderDetailState.NOT_RECEIVED:
+          title =  '确认已装货';break;
+        case OrderDetailState.COMPLETED:
+          title =  '确认收货';break;
+      }
+    }
+    else if(role == "DRIVER"){
+      switch(item.state){
+        case OrderDetailState.NOT_DISTRIBUTED:
+          title =  '确认接单';break;
+        case OrderDetailState.ONBOARD:
+          title =  '确认送达';break;
+      }
+    }
+    if(title){
+      return <Button type="primary" onClick={modalProps.onTransfer}>{title}</Button>
+    }
+  }
 
   var disableFlag = {disabled:true}//{disabled:modalType=='view'}
   // getFieldDecorator('keys', { initialValue: [] });
@@ -279,7 +306,7 @@ const modal = ({
             </Card>
           </Col>
         </Row>
-        {item.state != OrderDetailState.NOT_DISTRIBUTED && <Row gutter={24}>
+        {(item.state != OrderDetailState.NOT_DISTRIBUTED || item.state != OrderDetailState.NOT_PAID)&& <Row gutter={24}>
           <Col xs={{ span: 24}} lg={{ span: 11, offset:1, pull:1}} >
             <Card style={{width: '100%'}} title="运单详情" bordered={false}>
               <Collapse accordion defaultActiveKey={[item.deliverOrders.length+""]}>
@@ -291,10 +318,16 @@ const modal = ({
                       <p>司机名称：{i.driver.name}</p>
                       <p>运单金额：{i.price}</p>
                       {i.deliverOrderState == EnumDeliveryStatus.COMPLETED?<p>完成时间：{i.completeTime}</p>:''}
+                      <p><Button style={{marginTop:9}} onClick={modalProps.viewDelivery(`${i.id}`)}>查看详情</Button></p>
                     </Panel>
                   )
                 })}
               </Collapse>
+            </Card>
+          </Col>
+          <Col xs={{ span: 24}} lg={{ span: 11, offset:1, pull:1}} >
+            <Card style={{width: '100%'}} title="订单操作" bordered={false}>
+              {genOperButton()}
             </Card>
           </Col>
         </Row>}
