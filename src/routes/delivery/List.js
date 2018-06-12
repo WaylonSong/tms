@@ -55,7 +55,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       width: 80,
       render: (text) => <span>{deliverOrderState[parseInt(text)]}</span>,
     }, {
-      title: '订单金额',
+      title: '金额',
       dataIndex: 'price',
       width: 60,
       key: 'price',

@@ -1,5 +1,6 @@
 文档接口说明
 
+
 一.通用接口CRUD接口
 
 1.crud通用request代码模板见services/crud，符合Rest接口风格，其中url为资源集合名称（eg, orders, deliveries）
@@ -30,8 +31,6 @@ d.删除对象
 二.Order接口
 1.数据模型
 订单创建接口（mock方式描述）
-
-
 
 2.查询接口
 列表查询参数

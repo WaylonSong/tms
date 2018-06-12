@@ -160,5 +160,5 @@ Obj.propTypes = {
   dispatch: PropTypes.func,
   loading: PropTypes.object,
 }
-
+//connect 返回了哪些store中的内容是要从全局获取的--mapStateToProps，这里是driver和loading
 export default connect(({ driver, loading }) => ({ driver, loading }))(Obj)

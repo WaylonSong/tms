@@ -53,12 +53,15 @@ let orderModals = Mock.mock({
       distance: 100,
       'deliverOrders|+1':[/*[{}],*/[{'id|+1':10000001, deliverOrderState:3, distance: 100,'customerOrder.id|+1':10000001,from:{name:'@cname',phone:/^1[34578]\d{9}$/,district:'@county(true)',address:'@ctitle'},to:{name:'@cname',phone:/^1[34578]\d{9}$/,district:'@county(true)',address:'@ctitle'},'price|150-250.1-2':1,vehicle:{id:"@id",number:'贵'+'@character("upper")'+'@string("number", 5)'},driver:{id:"@id",name:'@cname',phone:/^1[34578]\d{9}$/},detail:'@ctitle','cube|1-100.1-2':1,'status|0-3':1,createTime:'@datetime',distributTime:'@datetime',loadTime:'@datetime',completeTime:'@datetime'}]],
       createTime: '@datetime',
+      //该字段仅用于mock中筛选元素
       'customerId|+1': [0,1,2,3,4,5],
+      //该字段仅用于mock中筛选元素
       'driverId|+1': [0,1,2,3,4,5],
     }
   ],
 })
 
+      //列表DTO
 let orderListDTO = Mock.mock({
   'data|3-5': [
     {

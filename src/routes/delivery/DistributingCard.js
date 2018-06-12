@@ -19,9 +19,9 @@ const DistributingCard = ({
   // const handlePageChange = (page)=>{
   //   distributProps.onVehiclePageChange(page)
   // }
-
+// /*extra={<a onClick={()=>console.log('111')}>刷新</a>}*/
   return (
-    <Card key={'car-distribution'} style={{width: '100%'}} title='车量调度' extra={<a href="#">刷新</a>} bordered={false} >
+    <Card key={'car-distribution'} style={{width: '100%'}} title='车量调度'  bordered={false} >
       <Tabs type="line" size='small' defaultActiveKey={'1'}>
         <TabPane tab="列表模式" key={1}>
           <VehicleList distributProps={distributProps}></VehicleList>

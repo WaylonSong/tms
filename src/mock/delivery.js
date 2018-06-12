@@ -121,7 +121,8 @@ module.exports = {
       if (item.id === id) {
         var editItem = Object.assign({}, item)
         editItem.vehicle = vehicle_number
-        editItem.status = EnumDeliveryStatus.NOT_RECEIVED
+        editItem.deliverOrderState = EnumDeliveryStatus.NOT_RECEIVED
+        console.log(editItem)
         return editItem
       }
       return item
