@@ -2,6 +2,7 @@
 ## 大概设计思路
 订单-运单-车辆：
 订单可以支持一单多票，即同一发送地址到多个目的地，下单成功后会根据目的地行程多个运单，运单可以再进行拆分到子运单等。
+接口文档：[接口文档](https://github.com/WaylonSong/tms/blob/master/%E6%96%87%E6%A1%A3%E6%8E%A5%E5%8F%A3%E8%AF%B4%E6%98%8E.txt)
 
 ## 参考项目
 [![React](https://img.shields.io/badge/react-^15.6.1-brightgreen.svg?style=flat-square)](https://github.com/facebook/react)
