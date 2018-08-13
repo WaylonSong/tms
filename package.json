@@ -25,7 +25,6 @@
     "jsonwebtoken": "^8.1.1",
     "less-vars-to-js": "^1.1.2",
     "lodash": "^4.17.4",
-    "maptalks": "^0.40.3",
     "mapv": "^2.0.24",
     "mockjs": "^1.0.1-beta3",
     "nprogress": "^0.2.0",
@@ -61,6 +60,7 @@
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-react": "^7.1.0",
     "html-webpack-plugin": "^2.29.0",
+    "maptalks": "^0.40.5",
     "redbox-react": "^1.2.10",
     "roadhog": "^1.2.2"
   },

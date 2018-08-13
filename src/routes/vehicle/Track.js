@@ -13,7 +13,7 @@ const Track = ({vehicle, dispatch, history }) => {
     <div>
       <Card key={'track'} style={{width: '100%'}} title={'历史运行轨迹'} bordered={false} >
         <Col xs={{ span: 22, offset: 1}} lg={{ span: 22, offset: 1}}>
-      	 {vehicle.item&&vehicle.item.number&&<VehicleTrackView vehicle={vehicle.item}/>}
+      	 {vehicle.item&&vehicle.item.number&&<VehicleTrackView vehicle={vehicle.item}/>&&"请到列表中选择车辆"}
       	</Col>
       </Card>
       <Card key={'temperature'} style={{width: '100%'}} title={'车辆温度监控'} bordered={false} >

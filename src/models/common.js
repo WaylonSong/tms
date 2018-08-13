@@ -139,11 +139,11 @@ const crudModelGenerator = (namespace, collectionName)=>{return{
           yield put({
             type: 'querySuccess',
             payload: {
-              list: data.data,
+              list: data.data.content,
               pagination: {
                 current: Number(payload.page) || 1,
                 pageSize: Number(payload.pageSize) || 10,
-                total: data.total,
+                total: data.data.total,
               },
             },
           })

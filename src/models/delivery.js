@@ -98,6 +98,7 @@ obj.effects['editItem'] = function *({ payload}, { call, put }){
 	// payload.currentItemId
 	console.log(payload.id)
 	const data = yield call(query, {id:payload.id}, `${collectionName}`)
+	console.log(data)
 	var putData = {
         type: `showModal`,
         payload: {
@@ -105,7 +106,7 @@ obj.effects['editItem'] = function *({ payload}, { call, put }){
           currentItem: data
         }
     }
-	if(data.deliverOrderState != EnumDeliveryStatus.NOT_DISTRIBUTED){
+	if(data.deliverOrderState != "NOT_DISTRIBUTED"){
 		const assignedVehicle = yield call(querySituation, {number:data.vehicle}, `vehicles`)
 		putData.payload['assignedVehicle'] = /*assignedVehicle.data[0]||*/{"id":"130000199703110733","number":"贵N93121","status":1,"occupy":16,"type":"箱货","brand":"五菱","driver":{name:"曹艳",phone:"17016385315"},"company":"党段型安名","location":{"x":116.424,"y":39.915}, "track":[{"x":116.384,"y":39.925},{"x":116.355,"y":39.930}, {"x":116.280,"y":39.927}, {"x":116.104,"y":39.905}]};
 		yield put(putData)
@@ -142,19 +143,21 @@ obj.effects['postSplit'] = function *({ payload}, { call, put }){
 }
 
 obj.effects['queryCandidateVehicles'] = function *({payload, putData}, { call, put, select }){
+
 	var putData2 = putData || {
         type: `showModal`,
         payload: {}
     }
-	const vehicles = yield call(queryCandidateVehicles, {id:payload.id, page:payload.page||1, pageSize:payload.pageSize||10})
+	var vehicles = yield call(queryCandidateVehicles, {id:payload.id, page:payload.page||1, pageSize:payload.pageSize||10})
+
 	if(vehicles){
 		putData2.payload['distribut'] = {
-          	candidateVehicles: vehicles.data,
+          	candidateVehicles: vehicles.data.content,
 			distributButtonDisabled: false,
 			pagination: {
                 current: Number(payload.page) || 1,
                 pageSize: Number(payload.pageSize) || 10,
-                total: vehicles.total,
+                total: vehicles.data.total,
             },
         }
 		yield put(putData2)

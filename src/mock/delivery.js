@@ -18,7 +18,7 @@ let deliveryListData2 = Mock.mock({
       distance: 100,
       detail:'@ctitle',
       'cube|1-100.1-2': 1, 
-      'deliverOrderState|0-3': 1,
+      'deliverOrderState|+1': ["NOT_PAID", "NOT_DISTRIBUTED", "NOT_RECEIVED"],
       createTime: '@datetime',
       distributTime: '@datetime',
       loadTime: '@datetime',
@@ -91,8 +91,10 @@ module.exports = {
     }
 
     res.status(200).json({
-      data: newData.slice((page - 1) * pageSize, page * pageSize),
-      total: newData.length,
+      data: {
+        content : newData.slice((page - 1) * pageSize, page * pageSize),
+        total: newData.length
+      }
     })
   },
 
@@ -121,7 +123,7 @@ module.exports = {
       if (item.id === id) {
         var editItem = Object.assign({}, item)
         editItem.vehicle = vehicle_number
-        editItem.deliverOrderState = EnumDeliveryStatus.NOT_RECEIVED
+        editItem.deliverOrderState = "NOT_RECEIVED"
         console.log(editItem)
         return editItem
       }
@@ -135,7 +137,7 @@ module.exports = {
     var subItems = [];
     for(var j in database){
       if (database[j].id === id) {
-        database[j].status = EnumDeliveryStatus.SPLITTED
+        database[j].status = "SPLITTED"
         database[j].splitTime = Mock.mock('@now')
 
         var subTotalPrice = 0;

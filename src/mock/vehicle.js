@@ -118,8 +118,10 @@ module.exports = {
     }
 
     res.status(200).json({
-      data: newData.slice((page - 1) * pageSize, page * pageSize),
-      total: newData.length,
+      data: {
+        content : newData.slice((page - 1) * pageSize, page * pageSize),
+        total: newData.length
+      }
     })
   },
 
@@ -131,8 +133,10 @@ module.exports = {
 
     let newData = assignedVehicleList.data
     res.status(200).json({
-      data: newData.slice((page - 1) * pageSize, page * pageSize),
-      total: newData.length,
+      data: {
+        content : newData.slice((page - 1) * pageSize, page * pageSize),
+        total: newData.length
+      }
     })
   },
 
@@ -151,7 +155,10 @@ module.exports = {
     }
     console.log(result)
     res.status(200).json({
-      data: result
+      data: {
+        content : result,
+        total: result.length
+      }
     })
   },
 
@@ -169,8 +176,10 @@ module.exports = {
       locationList.push({...newData[i], x:xyList[randomIndex].x, y:xyList[randomIndex].y});
     }
     res.status(200).json({
-      data: locationList,
-      total: withtrackdb.length,
+      data: {
+        content : locationList,
+        total: withtrackdb.length
+      }
     })
 
   },

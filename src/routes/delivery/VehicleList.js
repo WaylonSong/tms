@@ -59,13 +59,13 @@ const List = ({ distributProps }) => {
       key: 'occupy',
       width: 80,
       render: (text) => <span>{text}吨</span>,
-    }, {
+    }, /*{
       title: '车辆位置',
       dataIndex: 'location',
       key: 'location',
       width: 80,
       render: (text) => <a href="#">查看</a>,
-    }, {
+    }, */{
       title: '确认分配',
       dataIndex: 'submit',
       key: 'submit',

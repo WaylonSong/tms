@@ -27,7 +27,7 @@ let ordersListData2 = Mock.mock({
       name: '@cname',
       phone: /^1[34578]\d{9}$/,
       number: '贵'+'@character("upper")'+'@string("number", 5)',
-      'status|0-1': 1,
+      'status|+1': ["ON", "OFF"],
       'occupy|1-20': 1, 
       'gender|+1': ["男", "女"],
       'education|+1': ['小学', '中学', '专科', '本科', '研究生及以上'],
@@ -102,8 +102,10 @@ module.exports = {
     }
 
     res.status(200).json({
-      data: newData.slice((page - 1) * pageSize, page * pageSize),
-      total: newData.length,
+      data: {
+        content : newData.slice((page - 1) * pageSize, page * pageSize),
+        total: newData.length
+      }
     })
   },
 
@@ -117,7 +119,7 @@ module.exports = {
   [`POST ${apiPrefix}/${collectionName}`] (req, res) {
     const newData = req.body
     newData.createTime = Mock.mock('@now')
-    newData.avatar = newData.avatar || Mock.Random.image('100x100', Mock.Random.color(), '#757575', 'png', newData.nickName.substr(0, 1))
+    // newData.avatar = newData.avatar || Mock.Random.image('100x100', Mock.Random.color(), '#757575', 'png', newData.nickName.substr(0, 1))
     newData.id = Mock.mock('@id')
 
     database.unshift(newData)

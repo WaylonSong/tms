@@ -54,13 +54,30 @@ const modal = ({
 
   const genOperButton = ()=>{
     let title = ''
-    if(role == "CUSTOMER"){
+
+    const OrderDetailState = {
+  NOT_PAID : "待支付",
+  NOT_DISTRIBUTED : "待分配",
+  NOT_RECEIVED : "待接货",
+  ONBOARD : "配送中",
+  COMPLETED : "送货完成",
+  CONFIRMED : "确认收货",
+  INVALID : "已取消",
+}
+    let nextState = ''
+    if(role == "ADMIN"){
+          title =  '取消订单';
+          nextState = "INVALID"
+    }else if(role == "CUSTOMER"){
       switch(item.state){
         case OrderDetailState.NOT_PAID:
+          nextState = "NOT_DISTRIBUTED"
           title =  '确认付款';break;
         case OrderDetailState.NOT_RECEIVED:
+          nextState = "ONBOARD"
           title =  '确认已装货';break;
         case OrderDetailState.COMPLETED:
+          nextState = "CONFIRMED"
           title =  '确认收货';break;
       }
     }
@@ -73,14 +90,14 @@ const modal = ({
       }
     }
     if(title){
-      return <Button type="primary" onClick={modalProps.onTransfer}>{title}</Button>
+      return <Button type="primary" onClick={modalProps.onTransfer(nextState)}>{title}</Button>
     }
   }
 
   var disableFlag = {disabled:true}//{disabled:modalType=='view'}
   // getFieldDecorator('keys', { initialValue: [] });
   return (
-    <Modal {...modalOpts} footer={<Button type="primary" onClick={modalProps.onCancel}>关闭</Button>} title={`订单编号：${item.id} [${OrderDetailStateDict[item.state]}]`} width={1200} style={{}}>
+    <Modal {...modalOpts} footer={<Button type="primary" onClick={modalProps.onCancel}>关闭</Button>} title={`订单编号：${item.id} [${EnumDeliveryStatus[item.state]}]`} width={1200} style={{}}>
       <Form layout="horizontal">
         <Row gutter={24}>
           <Col xs={{ span: 24}} lg={{ span: 12}}>

@@ -158,8 +158,10 @@ module.exports = {
     }
 
     res.status(200).json({
-      data: newData.slice((page - 1) * pageSize, page * pageSize),
-      total: newData.length,
+      data: {
+        content : newData.slice((page - 1) * pageSize, page * pageSize),
+        total: newData.length
+      }
     })
   },
 

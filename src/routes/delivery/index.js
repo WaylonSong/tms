@@ -10,7 +10,7 @@ import Filter from './Filter'
 import Modal from './Modal'
 import SplitModal from './SplitModal'
 import {EnumDeliveryStatus} from '../../utils/enums'
-import {OrderDetailStateDict, EnumDeliveryStatusDict} from '../../utils/dict'
+import {genTabs} from '../../utils/tabUtil'
 
 const resourceName = "delivery";
 const TabPane = Tabs.TabPane
@@ -211,12 +211,7 @@ const Obj = (props) => {
         <TabPane tab="全部" key={""}>
           <List {...listProps} />
         </TabPane>
-        {EnumDeliveryStatusDict.map((i, index)=>{
-          return (
-            <TabPane tab={i} key={String(index)}>
-              <List {...listProps} />
-            </TabPane>)
-        })}
+        { genTabs(EnumDeliveryStatus, listProps, List)}
       </Tabs>
     </Page>
   )

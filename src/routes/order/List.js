@@ -51,7 +51,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, onPa
       dataIndex: 'state',
       key: 'state',
       width: 80,
-      render: (text, record) => <span>{OrderDetailStateDict[text]}</span>,
+      render: (text, record) => <span>{OrderDetailState[text]}</span>,
     }, {
       title: '金额',
       dataIndex: 'payment.payPrice',

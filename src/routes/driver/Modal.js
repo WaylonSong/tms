@@ -170,8 +170,8 @@ const modal = ({
               rules: [{required: true}],
             })(
               <Radio.Group defaultValue={0}>
-                <Radio value={0}>下班</Radio>
-                <Radio value={1}>当班</Radio>
+                <Radio value={"OFF"}>下班</Radio>
+                <Radio value={"ON"}>当班</Radio>
               </Radio.Group>
             )}
           </FormItem>

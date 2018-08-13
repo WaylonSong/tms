@@ -13,6 +13,7 @@ import ViewModal from './ViewModal'
 import ACInput from '../../components/Map/ACInput'
 import {OrderDetailStateDict, EnumDeliveryStatusDict} from '../../utils/dict'
 import {OrderDetailState, EnumDeliveryStatus} from '../../utils/enums'
+import {genTabs} from '../../utils/tabUtil'
 
 const resourceName = "order";
 const TabPane = Tabs.TabPane
@@ -100,10 +101,10 @@ const Obj = (props) => {
         type: resourceName+'/hideViewModal',
       })
     },
-    onTransfer:()=>{
+    onTransfer:(nextState)=>()=>{
       dispatch({
-        type: resourceName+'/nextState',
-        payload: {nextState:currentItem.state+1, id:currentItem.id}
+        type: resourceName +'/nextState',
+        payload: {nextState:nextState, id:currentItem.id}
       });
     },
     viewDelivery:(id)=>()=>{
@@ -218,12 +219,9 @@ const Obj = (props) => {
         <TabPane tab="全部" key={""}>
           <List {...listProps} />
         </TabPane>
-        {OrderDetailStateDict.map((i, index)=>{
-          return (
-            <TabPane tab={i} key={String(index)}>
-              <List {...listProps} />
-            </TabPane>)
-        })}
+        {
+          genTabs(OrderDetailState, listProps, List)
+        }
       </Tabs>
     </Page>
   )

@@ -62,7 +62,7 @@ obj.effects['querySituation'] = function *({ payload}, { call, put }){
         }
     }
 	const result = yield call(querySituation, {number:payload.number}, `vehicles`)
-	putData.payload['item'] = result.data;
+	putData.payload['item'] = result.data.content;
 	console.log(payload.number, putData)
 	yield put(putData)
 }

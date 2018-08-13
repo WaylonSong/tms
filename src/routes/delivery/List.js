@@ -39,7 +39,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       key: 'operation',
       width: 50,
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={record.deliverOrderState == EnumDeliveryStatus.NOT_DISTRIBUTED?[{ key: '1', name: '调度' }, { key: '2', name: '拆分' }]:[{ key: '1', name: '查看' }]} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={record.deliverOrderState == "NOT_DISTRIBUTED"?[{ key: '1', name: '调度' }, { key: '2', name: '拆分' }]:[{ key: '1', name: '查看' }]} />
       },
     },{
       title: '运单编号',
@@ -53,7 +53,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       dataIndex: 'deliverOrderState',
       key: 'deliverOrderState',
       width: 80,
-      render: (text) => <span>{deliverOrderState[parseInt(text)]}</span>,
+      render: (text) => <span>{EnumDeliveryStatus[text]}</span>,
     }, {
       title: '金额',
       dataIndex: 'price',

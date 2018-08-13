@@ -9,6 +9,7 @@ import List from './List'
 import Filter from './Filter'
 import Modal from './Modal'
 import {EnumOnDutyType} from '../../utils/enums'
+import {genTabs} from '../../utils/tabUtil'
 const options = ['id', 'name', 'phone', 'idCard']
 
 const resourceName = "driver";
@@ -129,11 +130,14 @@ const Obj = (props) => {
 
 
   var activeKey = "";
-  if(query.status === String(EnumOnDutyType.ON))
-    activeKey = String(EnumOnDutyType.ON)
-  else if(query.status === String(EnumOnDutyType.OFF))
-    activeKey = String(EnumOnDutyType.OFF)
+  // if(query.status === String(EnumOnDutyType.ON))
+  //   activeKey = String(EnumOnDutyType.ON)
+  // else if(query.status === String(EnumOnDutyType.OFF))
+  //   activeKey = String(EnumOnDutyType.OFF)
 
+  if(query.status){
+    activeKey = String(query.status)
+  }
   const parsed = queryString.parse(location.search);
   // console.log(location);
   return (
@@ -144,12 +148,7 @@ const Obj = (props) => {
         <TabPane tab="全部" key={""}>
           <List {...listProps} />
         </TabPane>
-        <TabPane tab="当班" key={String(EnumOnDutyType.ON)}>
-          <List {...listProps} />
-        </TabPane>
-        <TabPane tab="休息" key={String(EnumOnDutyType.OFF)}>
-          <List {...listProps} />
-        </TabPane>
+        { genTabs(EnumOnDutyType, listProps, List)}
       </Tabs>
     </Page>
   )
