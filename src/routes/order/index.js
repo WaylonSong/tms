@@ -115,7 +115,7 @@ const Obj = (props) => {
   }
   const payModalProps = {
     item: currentItem,
-    visible: true,
+    visible: props[resourceName].payModalVisible,
     maskClosable: false,
     confirmLoading: loading.effects[resourceName+'/pay'],
     title: "支付订单："+currentItem.id,
@@ -123,6 +123,12 @@ const Obj = (props) => {
     onCancel () {
       dispatch({
         type: resourceName+'/hidePayModalVisible',
+      })
+    },
+    onPayComplete () {
+      dispatch({
+        payload : {id:currentItem.id},
+        type: resourceName+'/onPayComplete',
       })
     },
   }
@@ -214,7 +220,7 @@ const Obj = (props) => {
       <Filter {...filterProps} />
       {modalVisible && <CreateModal {...modalProps} />}
       {viewModalVisible && <ViewModal {...viewModalProps} />}
-      {/*payModalVisible && <PayModal {...payModalProps}/>*/}
+      {payModalVisible && <PayModal {...payModalProps}/>}
       <Tabs activeKey={activeKey} onTabClick={handleTabClick} size="small">
         <TabPane tab="全部" key={""}>
           <List {...listProps} />

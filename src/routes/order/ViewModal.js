@@ -10,6 +10,7 @@ import {Collapse} from 'antd';
 import {OrderDetailStateDict, EnumDeliveryStatusDict} from '../../utils/dict'
 import {OrderDetailState, EnumDeliveryStatus} from '../../utils/enums'
 import { routerRedux } from 'dva/router'
+import {getFullName} from '../../utils/cityTools'
 
 
 const Panel = Collapse.Panel;
@@ -104,7 +105,7 @@ const modal = ({
             <Card style={{width: '100%'}} title="发货方" bordered={false}>
               <FormItem label="省市区县" {...formItemLayout}>
                 {getFieldDecorator('from.district', {
-                  initialValue: item.from.district && item.from.district.split(' '),
+                  initialValue: getFullName(item.from.district) && getFullName(item.from.district).split(' '),
                   rules: [
                     {
                       required: true,
@@ -197,7 +198,7 @@ const modal = ({
             <Card key={`toCard`} style={{width: '100%'}} title={`收货方`} bordered={false}>
               <FormItem key={`to.district`} label="省市区县" {...formItemLayout}>
                 {getFieldDecorator(`to.district`, {
-                  initialValue: item.to.district&&item.to.district.split(' '),
+                  initialValue: getFullName(item.to.district)&&getFullName(item.to.district).split(' '),
                   rules: [
                     {
                       required: true,

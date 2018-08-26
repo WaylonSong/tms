@@ -10,8 +10,8 @@ let deliveryListData2 = Mock.mock({
     {
       'id|+1': 10000001,
       'customerOrder.id|+1': 10000001,
-      from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: '@ctitle'},
-      to: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: '@ctitle'}, 
+      from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: 140425, address: {str:'@cword(5, 10)', x:'33', y:'116'}},
+      to:   {name: '@cname', phone: /^1[34578]\d{9}$/, district: 140425, address: {str:'@cword(5, 10)', x:'33', y:'116'}}, 
       'price|150-250.1-2': 1,
       vehicle: {id:"@id", number:'贵'+'@character("upper")'+'@string("number", 5)'},
       driver:{id:"@id", name: '@cname', phone: /^1[34578]\d{9}$/},
@@ -169,7 +169,7 @@ module.exports = {
     const data = queryArray(database, id, 'id')
     console.log(data)
     if (data) {
-      res.status(200).json(data)
+      res.status(200).json({data:data})
     } else {
       res.status(404).json(NOTFOUND)
     }

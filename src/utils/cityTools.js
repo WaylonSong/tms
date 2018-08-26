@@ -22,6 +22,20 @@
     JSON.stringify(map)
     ```
 */
+const getFullName = (code)=>{
+  code = code+"";
+  var province = `${code.slice(0,2)}0000`
+  var city = `${code.slice(0,4)}00`
+  return DICT[province] + ' ' + DICT[city] + ' ' + DICT[code];
+}
+
+const getCode = (address) => {
+  for(var i in DICT){
+    if(address == DICT[i])
+      return i
+  }
+  return '000000';
+}
 let DICT = {
   110000: '北京',
   110100: '北京市',
@@ -4070,18 +4084,6 @@ let Options = (function () {
   return tree(fixed)
 }())
 
-const getFullName = (code)=>{
-  var province = `${code.slice(0,2)}0000`
-  var city = `${code.slice(0,4)}00`
-  return DICT[province] + ' ' + DICT[city] + ' ' + DICT[code];
-}
 
-const getCode = (address) => {
-  for(var i in DICT){
-    if(address == DICT[i])
-      return i
-  }
-  return '000000';
-}
 
-export {Options, getFullName, getCode};
+module.exports = { getFullName, getCode}

@@ -98,12 +98,11 @@ obj.effects['editItem'] = function *({ payload}, { call, put }){
 	// payload.currentItemId
 	console.log(payload.id)
 	const data = yield call(query, {id:payload.id}, `${collectionName}`)
-	console.log(data)
 	var putData = {
         type: `showModal`,
         payload: {
           modalType: payload.modalType,
-          currentItem: data
+          currentItem: data.data,
         }
     }
 	if(data.deliverOrderState != "NOT_DISTRIBUTED"){

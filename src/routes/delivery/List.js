@@ -9,6 +9,7 @@ import AnimTableBody from 'components/DataTable/AnimTableBody'
 import styles from './List.less'
 import {EnumDeliveryStatus} from '../../utils/enums'
 import {OrderDetailStateDict, EnumDeliveryStatusDict} from '../../utils/dict'
+import {getFullName} from '../../utils/cityTools'
 
 const deliverOrderState = EnumDeliveryStatusDict
 
@@ -54,12 +55,12 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       key: 'deliverOrderState',
       width: 80,
       render: (text) => <span>{EnumDeliveryStatus[text]}</span>,
-    }, {
+    }/*, {
       title: '金额',
       dataIndex: 'price',
       width: 60,
       key: 'price',
-    },{
+    }*/, {
       title: '发货人',
       dataIndex: 'from.name',
       key: 'from.name',
@@ -70,14 +71,14 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       dataIndex: 'from.district',
       width: 200,
       key: 'from.district',
-      render: (text) => <span>{text}</span>,
+      render: (text) => <span>{getFullName(text)}</span>,
     }, {
       title: '发货地址',
       dataIndex: 'from.address',
       width: 200,
       key: 'from.address',
-      render: (text) => <span>{text}</span>,
-    }, {
+      render: (text, record) => <span>{record.from.address.str}</span>,
+    },{
       title: '发货人电话',
       dataIndex: 'from.phone',
       width: 120,
@@ -94,13 +95,13 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       dataIndex: 'to.district',
       width: 200,
       key: 'to.district',
-      render: (text) => <span>{text}</span>,
-    },{
+      render: (text) => <span>{getFullName(text)}</span>,
+    }, {
       title: '收货地址',
       dataIndex: 'to.address',
       width: 200,
       key: 'to.address',
-      render: (text) => <span>{text}</span>,
+      render: (text, record) => <span>{record.to.address.str}</span>,
     }, {
       title: '收货人电话',
       dataIndex: 'to.phone',

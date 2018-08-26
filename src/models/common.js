@@ -122,7 +122,7 @@ const crudModelGenerator = (namespace, collectionName)=>{return{
             type: `showModal`,
             payload: {
               modalType: payload.modalType,
-              currentItem: data,
+              currentItem: data.data,
             },
           })
         }

@@ -50,15 +50,13 @@ obj.effects['pay'] = function *({ payload}, { call, put }){
 	// payload.currentItemId
 	const data = yield call(query, {id:payload.currentItemId}, `${collectionName}`)
 	// TODO：检查record状态
-	console.log("------------------");
-	console.log(data)
 	if(data){
 		yield put({
-        type: `showPayModalVisible`,
-        payload: {
-          currentItem: data,
-        },
-      })
+	        type: `showPayModalVisible`,
+	        payload: {
+	          currentItem: data.data,
+	        },
+	    })
 	}
 }
 // obj.effects['showViewModal'] = function *({ payload}, { call, put }){
@@ -77,23 +75,30 @@ obj.effects['pay'] = function *({ payload}, { call, put }){
 
 obj.effects['editItem'] = function *({ payload}, { call, put }){
 	// payload.currentItemId
-	console.log(payload.currentItemId);
 	const data = yield call(query, {id: payload.currentItemId}, `${collectionName}`)
     if(data){
       yield put({
         type: `showViewModal`,
         payload: {
           modalType: payload.modalType,
-          currentItem: data,
+          currentItem: data.data,
         },
       })
     }
 }
 
+obj.effects['onPayComplete'] = function *({ payload}, { call, put }){
+	console.log("onPayCompleteonPayCompleteonPayCompleteonPayCompleteonPayCompleteonPayComplete")
+	const data = yield call(stateTransfer, {id: payload.id, state: 'NOT_DISTRIBUTED'}, `${collectionName}`)
+    yield put({ type: `hidePayModalVisible`})
+    yield put({ type: 'query' })
+}
+
+
+
 obj.effects['nextState'] = function *({ payload}, { call, put }){
-	// payload.currentItemId
 	const data = yield call(stateTransfer, {id: payload.id, state: payload.nextState}, `${collectionName}`)
-    yield put({type: `hideViewModal`})
+    yield put({ type: `hideView=Modal`})
     yield put({ type: 'query' })
 
     /*if(data){

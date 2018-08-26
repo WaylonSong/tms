@@ -131,7 +131,7 @@ module.exports = {
     const { id } = req.params
     const data = queryArray(database, id, 'id')
     if (data) {
-      res.status(200).json(data)
+      res.status(200).json({data:data})
     } else {
       res.status(404).json(NOTFOUND)
     }

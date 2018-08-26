@@ -9,6 +9,7 @@ import AnimTableBody from 'components/DataTable/AnimTableBody'
 import styles from './List.less'
 import {OrderDetailStateDict, EnumDeliveryStatusDict} from '../../utils/dict'
 import {OrderDetailState, EnumDeliveryStatus} from '../../utils/enums'
+import {getFullName} from '../../utils/cityTools'
 
 const confirm = Modal.confirm
 const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, onPay, ...tableProps }) => {
@@ -37,7 +38,11 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, onPa
       key: 'operation',
       width: 100,
       render: (text, record) => {
-        return <DropOption onMenuClick={e => handleMenuClick(record.id, e)} menuOptions={[{ key: '1', name: '详情' }, { key: '5', name: '支付' }, { key: '2', name: '删除' }]} />
+        var menuOptions = [{ key: '1', name: '详情' }, /*, { key: '2', name: '删除' }*/];
+        if(record.state == "NOT_PAID"){
+            menuOptions.push({ key: '5', name: '支付' });
+        }
+        return <DropOption onMenuClick={e => handleMenuClick(record.id, e)} menuOptions={menuOptions} />
       },
     },{
       title: '订单编号',
@@ -68,7 +73,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, onPa
       dataIndex: 'from.address',
       width: 300,
       key: 'from.address',
-      render: (text, record) => <span>{record.from.district+' '+record.from.address.str}</span>,
+      render: (text, record) => <span>{getFullName(record.from.district)+' '+record.from.address.str}</span>,
     }, {
       title: '电话',
       dataIndex: 'from.phone',
@@ -85,7 +90,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, onPa
       dataIndex: 'to.address',
       width: 300,
       key: 'to.address',
-      render: (text, record) => <span>{record.to.district+' '+record.to.address.str}</span>,
+      render: (text, record) => <span>{getFullName(record.to.district)+' '+record.to.address.str}</span>,
     }, {
       title: '创建时间',
       dataIndex: 'createTime',

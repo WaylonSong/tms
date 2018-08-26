@@ -48,7 +48,7 @@ obj.effects['editItem'] = function *({ payload}, { call, put }){
         type: `showModal`,
         payload: {
           modalType: payload.modalType,
-          currentItem: data,
+          currentItem: data.data,
         },
       })
 	}
@@ -62,7 +62,7 @@ obj.effects['querySituation'] = function *({ payload}, { call, put }){
         }
     }
 	const result = yield call(querySituation, {number:payload.number}, `vehicles`)
-	putData.payload['item'] = result.data.content;
+	putData.payload['item'] = result.data;
 	console.log(payload.number, putData)
 	yield put(putData)
 }

@@ -37,9 +37,9 @@ let orderModals = Mock.mock({
     {
       'id|+1': 10000001,
       // id: '@id',
-      'state|+1': [/*OrderDetailState.NOT_DISTRIBUTED, OrderDetailState.ONBOARD, */"COMPLETED", /*.INVALID*/],
-      from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'@cword(5, 10)', x:'33', y:'116'}},
-      to:   {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'@cword(5, 10)', x:'33', y:'116'}}, 
+      'state|+1': ["NOT_PAID", "COMPLETED", /*.INVALID*/],
+      from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: 140425, address: {str:'@cword(5, 10)', x:'33', y:'116'}},
+      to:   {name: '@cname', phone: /^1[34578]\d{9}$/, district: 140425, address: {str:'@cword(5, 10)', x:'33', y:'116'}}, 
       cargoes: [{name: '@cname', remark: '@cname', 'weight|10-100.1-2': 1, 'volume|10-100.1-2': 1, 'price|10-100.1-2': 1, 'cargoType|+1':["冷链", "百货", "建材"]}], 
       payment: {
         'deliverPrice|150-250.1-2': 1, 
@@ -47,11 +47,11 @@ let orderModals = Mock.mock({
         'payPrice|300-500.1-2': 1, 
         'originalPrice|150-250.1-2': 1, 
         'payType|+1': ["SENDER_PAY"/*, PayType.RECEIVER_PAY, PayType.SENDER_ORDER_PAY*/],
-        'payState|+1': [/*PayState.UNPAY, */"COMPLETE"],
+        'payState|+1': ["NOT_PAID", "COMPLETE", ],
         'items': [{id: '@id', payState: "COMPLETE", payChannel: "ALIPAY", tradeNo:'@id', finishTime:'@datetime'}]
       },
       distance: 100,
-      'deliverOrders|+1':[/*[{}],*/[{'id|+1':10000001, deliverOrderState:"NOT_RECEIVED", distance: 100,'customerOrder.id|+1':10000001,from:{name:'@cname',phone:/^1[34578]\d{9}$/,district:'@county(true)',address:'@ctitle'},to:{name:'@cname',phone:/^1[34578]\d{9}$/,district:'@county(true)',address:'@ctitle'},'price|150-250.1-2':1,vehicle:{id:"@id",number:'贵'+'@character("upper")'+'@string("number", 5)'},driver:{id:"@id",name:'@cname',phone:/^1[34578]\d{9}$/},detail:'@ctitle','cube|1-100.1-2':1,'status|0-3':1,createTime:'@datetime',distributTime:'@datetime',loadTime:'@datetime',completeTime:'@datetime'}]],
+      'deliverOrders|+1':[/*[{}],*/[{'id|+1':10000001, 'deliverOrderState|+1':"NOT_RECEIVED", distance: 100,'customerOrder.id|+1':10000001,from:{name:'@cname',phone:/^1[34578]\d{9}$/,district:'@county(true)',address:'@ctitle'},to:{name:'@cname',phone:/^1[34578]\d{9}$/,district:'@county(true)',address:'@ctitle'},'price|150-250.1-2':1,vehicle:{id:"@id",number:'贵'+'@character("upper")'+'@string("number", 5)'},driver:{id:"@id",name:'@cname',phone:/^1[34578]\d{9}$/},detail:'@ctitle','cube|1-100.1-2':1,'status|0-3':1,createTime:'@datetime',distributTime:'@datetime',loadTime:'@datetime',completeTime:'@datetime'}]],
       createTime: '@datetime',
       //该字段仅用于mock中筛选元素
       'customerId|+1': [0,1,2,3,4,5],
@@ -62,24 +62,24 @@ let orderModals = Mock.mock({
 })
 
       //列表DTO
-let orderListDTO = Mock.mock({
-  'data|3-5': [
-    {
-      'id|+1': 10000001,
-      'state|+1': [/*OrderDetailState.NOT_DISTRIBUTED, OrderDetailState.*/"ONBOARD", "COMPLETED", /*.INVALID*/],
-      from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'@cword(5, 10)', x:'33', y:'116'}},
-      to:   {name: '@cname', phone: /^1[34578]\d{9}$/, district: '@county(true)', address: {str:'@cword(5, 10)', x:'33', y:'116'}}, 
-      payment: {
-        'payPrice|300-500.1-2': 1, 
-      },
-      createTime: '@datetime',
-      'customerId|+1': [0,1,2,3,4,5],
-    }
-  ],
-})
+// let orderListDTO = Mock.mock({
+//   'data|3-5': [
+//     {
+//       'id|+1': 10000001,
+//       'state|+1': [/*OrderDetailState.NOT_DISTRIBUTED, OrderDetailState.*/"ONBOARD", "COMPLETED", /*.INVALID*/],
+//       from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: 140425, address: {str:'@cword(5, 10)', x:'33', y:'116'}},
+//       to:   {name: '@cname', phone: /^1[34578]\d{9}$/, district: 140425, address: {str:'@cword(5, 10)', x:'33', y:'116'}}, 
+//       payment: {
+//         'payPrice|300-500.1-2': 1, 
+//       },
+//       createTime: '@datetime',
+//       'customerId|+1': [0,1,2,3,4,5],
+//     }
+//   ],
+// })
 
 
-let vodb = orderListDTO.data
+// let vodb = orderListDTO.data
 let database = orderModals.data
 
 const queryArray = (array, key, keyAlias = 'key') => {
@@ -196,7 +196,7 @@ module.exports = {
     const data = queryArray(database, id, 'id')
     console.log(data)
     if (data) {
-      res.status(200).json(data)
+      res.status(200).json({data:data})
     } else {
       res.status(404).json(NOTFOUND)
     }

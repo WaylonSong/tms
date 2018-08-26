@@ -19,7 +19,7 @@ obj.effects['editItem'] = function *({ payload}, { call, put }){
         type: `showModal`,
         payload: {
           modalType: payload.modalType,
-          currentItem: data,
+          currentItem: data.data,
         },
       })
 	}
