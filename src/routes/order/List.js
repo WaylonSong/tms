@@ -15,18 +15,18 @@ const confirm = Modal.confirm
 const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, onPay, ...tableProps }) => {
   location.query = queryString.parse(location.search)
 
-  const handleMenuClick = (recordId, e) => {
+  const handleMenuClick = (record, e) => {
     if (e.key === '1') {
-      onEditItem(recordId, 'update')
+      onEditItem(record.id, 'update')
     } else if (e.key === '2') {
       confirm({
         title: '确认删除么？',
         onOk () {
-          onDeleteItem(recordId)
+          onDeleteItem(record.id)
         },
       })
     } else if (e.key === '5') {
-      onPay(recordId);
+      onPay(record.payment.id);
     }
   }
   const viewItem = (record, e)=>{
@@ -42,7 +42,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, onPa
         if(record.state == "NOT_PAID"){
             menuOptions.push({ key: '5', name: '支付' });
         }
-        return <DropOption onMenuClick={e => handleMenuClick(record.id, e)} menuOptions={menuOptions} />
+        return <DropOption onMenuClick={e => handleMenuClick(record, e)} menuOptions={menuOptions} />
       },
     },{
       title: '订单编号',

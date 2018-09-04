@@ -27,14 +27,13 @@ const Obj = (props) => {
   const distributProps = {
     currentItem,
     distribut,
-    assignTo : (number, driver, driver_phone)=>{
+    assignTo : (vehicleId, driverId)=>{
       dispatch({
         type : 'delivery/assignTo',
         payload: {
-          id: currentItem.id,
-          vehicle_number: number,
-          'driver.name':driver,
-          'driver.phone':driver_phone
+          deliverOrderNo: currentItem.id,
+          vehicleId: vehicleId,
+          driverId:driverId,
         }
       })
     },
@@ -94,11 +93,10 @@ const Obj = (props) => {
     modalType: props[resourceName].modalType,
     wrapresourceName: 'vertical-center-modal',
     onOk (data) {
-     /* dispatch({
+      dispatch({
         type: resourceName+'/postSplit',
         payload: data
-      })*/
-      onCancel();
+      })
     },
     onCancel () {
       dispatch({

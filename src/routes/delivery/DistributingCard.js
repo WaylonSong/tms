@@ -32,9 +32,9 @@ const DistributingCard = ({
           </Col>
         </TabPane>
       </Tabs>
-      <Row type="flex" justify="center" align="middle" style={{marginTop:20}}>
+      {/*<Row type="flex" justify="center" align="middle" style={{marginTop:20}}>
         <Pagination defaultCurrent={1} total={50} onChange={distributProps.onVehiclePageChange}/>
-      </Row>
+      </Row>*/}
       <Row>
       </Row>
     </Card>

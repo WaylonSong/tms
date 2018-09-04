@@ -1,6 +1,5 @@
 文档接口说明
 
-
 一.通用接口CRUD接口
 
 1.crud通用request代码模板见services/crud，符合Rest接口风格，其中url为资源集合名称（eg, orders, deliveries）
@@ -57,12 +56,6 @@ response参数见mock/vehicle中assignedVehicleList,举例：{"data":[{"id":"230
 3.1.2指派操作
 POST ${apiPrefix}/${collectionName}/assignTo
 参数，id为运单号码，车辆和司机信息从上述候选列表中获取，后台建立运单、车辆、司机关联
-payload: {
-  id: currentItem.id,
-  vehicle_number: number,
-  'driver.name':driver,
-  'driver.phone':driver_phone
-}
 response:成功 res.status(200).end()
 
 3.2.拆分

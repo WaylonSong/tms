@@ -37,7 +37,7 @@ class VehicleMap extends Component {
         var p = e.target;
         var self = this;
         var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
-        var jsx = `<h2>车辆详情</h4><div>车牌号码：${params.number}</div><div>车型：${params.brand}-${params.type}</div><div>剩余空间：${params.occupy}立方米</div>
+        var jsx = `<h2>车辆详情</h4><div>车牌号码：${params.plateNumber}</div><div>车型：${params.brand}-${params.vehicleSubType}</div><div>剩余空间：${params.loads}立方米</div>
                     <div>司机：${params.driver.name}</div><div>司机手机：${params.driver.phone}</div>
                     <div style='width:100%; text-align:center'>
                         <input type='button' style='margin:10px; padding:10px; cursor:pointer;font-color:white' value='查看车辆监控' 

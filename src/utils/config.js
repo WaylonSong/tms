@@ -30,6 +30,11 @@ module.exports = {
     'assginTo': `${APIV1}/deliveries/assignTo`,
     'split': `${APIV1}/deliveries/split`,
     'locationList': `${APIV1}/vehicles/locationList`,
-    'order_state_transfer':`${APIV1}/orders/stateTransfer`
+    'order_state_transfer':`${APIV1}/orders/stateTransfer`,
+    'order_paid':`${APIV1}/orders/paid`,
+    'order_cancel':`${APIV1}/orders/cancel`,
+    'order_payment':`${APIV1}/orders/payment`,
+    // 'order_payment_customerOrderNo':`${APIV1}/orders/payment/customerOrderNo`,
+    'order_payment_paymentId':`${APIV1}/orders/payment`,
   },
 }

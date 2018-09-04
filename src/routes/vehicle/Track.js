@@ -1,19 +1,35 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Form, Input, InputNumber, Radio, Modal, Cascader, Row, Col, Card, Icon, Tooltip} from 'antd'
+import { Page } from 'components'
+import { routerRedux } from 'dva/router'
+
 import { connect } from 'dva'
 import VehicleTrackView from './VehicleTrackView'
 import GaugeComponent from './statistics/GaugeComponent'
 import Temperature from './statistics/Temperature'
 import Humidity from './statistics/Humidity'
+const Search = Input.Search
+// form: {
+//     getFieldDecorator,
+//     getFieldsValue,
+//     setFieldsValue,
+//   }
 
 
-const Track = ({vehicle, dispatch, history }) => {
+const Track = ({vehicleSituation, dispatch, history}) => {
+  var item = vehicleSituation.item
+  const handleSearch = (value)=>{
+    dispatch(routerRedux.push({
+      pathname: `/vehicle/${value}/track`
+    }))
+  }
   return (
     <div>
       <Card key={'track'} style={{width: '100%'}} title={'历史运行轨迹'} bordered={false} >
         <Col xs={{ span: 22, offset: 1}} lg={{ span: 22, offset: 1}}>
-      	 {vehicle.item&&vehicle.item.number&&<VehicleTrackView vehicle={vehicle.item}/>||"请到列表中选择车辆"}
+      	 {item&&item.plateNumber&&<VehicleTrackView vehicle={item}/>||
+         <Search placeholder="搜索车牌号码" style={{ width: '400' }} size="large" onSearch={value => {handleSearch(value)}} />}
       	</Col>
       </Card>
       <Card key={'temperature'} style={{width: '100%'}} title={'车辆温度监控'} bordered={false} >
@@ -43,4 +59,5 @@ Track.propTypes = {
   onOk: PropTypes.func,*/
 }
 
-export default connect(({ vehicle, loading }) => ({ vehicle, loading }))(Track)
+export default connect(({ vehicleSituation, app, loading }) => ({ vehicleSituation, app, loading }))(Track)
+

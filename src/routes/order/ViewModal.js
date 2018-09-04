@@ -57,16 +57,16 @@ const modal = ({
     let title = ''
 
     const OrderDetailState = {
-  NOT_PAID : "待支付",
-  NOT_DISTRIBUTED : "待分配",
-  NOT_RECEIVED : "待接货",
-  ONBOARD : "配送中",
-  COMPLETED : "送货完成",
-  CONFIRMED : "确认收货",
-  INVALID : "已取消",
-}
+      NOT_PAID : "待支付",
+      NOT_DISTRIBUTED : "待分配",
+      NOT_RECEIVED : "待接货",
+      ONBOARD : "配送中",
+      COMPLETED : "送货完成",
+      CONFIRMED : "确认收货",
+      INVALID : "已取消",
+    }
     let nextState = ''
-    if(role == "ADMIN"){
+    /*if(role == "ADMIN"){
           title =  '取消订单';
           nextState = "INVALID"
     }else if(role == "CUSTOMER"){
@@ -89,9 +89,13 @@ const modal = ({
         case OrderDetailState.ONBOARD:
           title =  '确认送达';break;
       }
-    }
-    if(title){
-      return <Button type="primary" onClick={modalProps.onTransfer(nextState)}>{title}</Button>
+    }*/
+    if(item.state == "NOT_PAID"){
+      return (<p><Button type="primary" onClick={modalProps.orderCancel}>取消订单</Button><span style={{marginLeft:10}}/>
+        <Button type="primary" onClick={modalProps.toPay(item.payment.id)}>支付订单</Button>
+      </p>);
+    }else if(item.state == "NOT_DISTRIBUTED"||item.state == "NOT_RECEIVED"){
+      return <Button type="primary" onClick={modalProps.orderCancel}>取消订单</Button>
     }
   }
 
@@ -331,11 +335,11 @@ const modal = ({
                 {item.deliverOrders.map((i,index)=>{
                   return (
                     <Panel header={`运单编号：${i.id}`} key={index+1}>
-                      <p>运单状态：{EnumDeliveryStatusDict[i.deliverOrderState]}</p>
-                      <p>承运车辆：{i.vehicle.number}</p>
+                      <p>运单状态：{EnumDeliveryStatus[i.deliverOrderState]}</p>
+                      <p>承运车辆：{i.vehicle.plateNumber}</p>
                       <p>司机名称：{i.driver.name}</p>
-                      <p>运单金额：{i.price}</p>
-                      {i.deliverOrderState == EnumDeliveryStatus.COMPLETED?<p>完成时间：{i.completeTime}</p>:''}
+                      <p>运单金额：{i.deliverPrice}</p>
+                      {i.deliverOrderState == "COMPLETED"?<p>完成时间：{i.completeTime}</p>:''}
                       <p><Button style={{marginTop:9}} onClick={modalProps.viewDelivery(`${i.id}`)}>查看详情</Button></p>
                     </Panel>
                   )

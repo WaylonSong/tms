@@ -96,7 +96,7 @@ const Routers = function ({ history, app }) {
       component: () => import('./routes/vehicle/VehicleDistribute'),
     },{
       path: '/vehicle/:id/track',
-      models: () => [import('./models/vehicle')],
+      models: () => [import('./models/vehicle/situation')],
       component: () => import('./routes/vehicle/Track'),
     },{
       path: '/driver',

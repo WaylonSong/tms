@@ -1,3 +1,4 @@
+import queryString from 'query-string'
 import { request, config } from 'utils'
 
 const { api } = config
@@ -15,7 +16,7 @@ export async function assignTo (params) {
   return request({
     url: assginTo,
     method: 'post',
-    data: params,
+    data: queryString.stringify(params),
   })
 }
 

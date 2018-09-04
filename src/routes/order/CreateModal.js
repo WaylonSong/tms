@@ -4,8 +4,10 @@ import { Form, Input, InputNumber, Radio, Modal, Cascader, Row, Col, Card, Icon,
 import city from '../../utils/city'
 import {getCode} from '../../utils/cityTools'
 import ACInput from '../../components/Map/ACInput'
+import ACInput2 from '../../components/Map/ACInput2'
 import Price from '../../components/Map/Price'
 import DistanceHandler from '../../components/Map/DistanceHandler'
+import {getFullName} from '../../utils/cityTools'
 
 const Search = Input.Search
 
@@ -21,6 +23,7 @@ const formItemLayout = {
 }
 var districtMap = {}
 var handler = {};
+var fromAddressSwitch = false;
 const onFieldsChange = (props, fields)=>{
   var re = /\orders(.*)(payment.deliverPrice|payment.insurancePrice)/;
   if(re.test(Object.keys(fields)[0])){
@@ -114,9 +117,21 @@ const modal = ({
        params
     );
   }
+
+  const validateAddress = (rule, value, callback) => {
+    if(value.x == 0 || value.y == 0 )
+      callback("地址解析出错，请根据提示框点选");
+    else
+      callback();
+    /*const form = this.props.form;
+    if (value && value !== form.getFieldValue('password')) {
+      callback('Two passwords that you enter is inconsistent!');
+    } else {
+      callback();
+    }*/
+  }
   const handleToAddress = (i)=>(value)=>{
     var params = {};
-    console.log(safeGetFieldValue('from.address').str||'')
     params[`orders[${i}].distance`] = {from:safeGetFieldValue('from.address').str||'', to: value.str||''};
     setFieldsValue(
        params
@@ -147,7 +162,22 @@ const modal = ({
     );
   }
   const handleDistrict = (key)=>(value, selectedOptions) => {
+    if(key.indexOf("from") > -1){
+      console.log(key)
+      setFieldsValue({"from.district": selectedOptions[2]["id"]})
+      /*if(fromAddressSwitch)
+        fromAddressSwitch = false
+      else
+        fromAddressSwitch = true*/
+      fromAddressSwitch = !fromAddressSwitch
+      console.log(fromAddressSwitch)
+    }
+    if(key.indexOf("to") > -1)
+      setFieldsValue({"from.district": selectedOptions[2]["id"]})
+
+    // console.log(value)
     districtMap[key] = selectedOptions[2]["id"]
+    // console.log(selectedOptions[2]["id"])
   }
   
   const modalOpts = {
@@ -187,7 +217,6 @@ const modal = ({
                   },
                 ],
               })(<Cascader
-               
                 size="large"
                 style={{ width: '100%' }}
                 options={city}
@@ -200,9 +229,10 @@ const modal = ({
                 rules: [
                   {
                     required: true,
+                    validator: validateAddress,
                   },
                 ],
-              })(<ACInput id={`orders[${i}].to.address`} center='贵阳' onChange={handleToAddress(i)}/>)}
+              })(<ACInput id={`orders[${i}].to.address`} center={getFieldValue(`orders[${i}].to.district`)&&getFieldValue(`orders[${i}].to.district`)[1]}  onChange={handleToAddress(i)}/>)}
             </FormItem>
             <FormItem label="收货人" hasFeedback {...formItemLayout}>
               {getFieldDecorator(`orders[${i}].to.name`, {
@@ -331,9 +361,10 @@ const modal = ({
                   rules: [
                     {
                       required: true,
+                      validator: validateAddress,
                     },
                   ],
-                })(<ACInput id='from_address' center='贵阳' onChange={handleFromAddress}/>)}
+                })(<ACInput id='from_address' flag={true} center={getFieldValue('from.district')&&getFieldValue('from.district')[1]} onChange={handleFromAddress}/>)}
               </FormItem>
               <FormItem label="发货人" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('from.name', {

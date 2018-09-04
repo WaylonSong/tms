@@ -12,7 +12,7 @@ class ACInput extends Component {
 		  str: "",
 		  x: "",
 		  y: "",
-		  center:""
+		  center:"北京"
 		};
 	}
 	componentWillReceiveProps(nextProps) {
@@ -37,7 +37,6 @@ class ACInput extends Component {
 				self.map.centerAndZoom(point, 16);
 				self.map.addOverlay(new BMap.Marker(point));
 				const state = {x:point.lat, y:point.lng};
-				console.log(address, state)
 				self.setState(state);
 				self.triggerChange(state)
 			}else{

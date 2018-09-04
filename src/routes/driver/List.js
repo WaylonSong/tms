@@ -51,13 +51,13 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       width: 50,
       key: 'name',
       render: (text) => <span>{text}</span>,
-    }, {
+    }, /*{
       title: '所在车辆',
       dataIndex: 'number',
       width: 50,
       key: 'number',
       render: (text) => <span>{text}</span>,
-    }, {
+    }, */{
       title: '性别',
       dataIndex: 'gender',
       width: 50,
@@ -92,7 +92,7 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, ...t
       dataIndex: 'status',
       key: 'status',
       width: 50,
-      render: (text, record) => <span>{text == 1? '当班':'休息'}</span>,
+      render: (text, record) => <span>{text == "ON"? '当班':'休息'}</span>,
     },
   ]
 

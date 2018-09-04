@@ -24,15 +24,16 @@ let ordersListData2 = Mock.mock({
   'data|80-100': [
     {
       id: '@id',
-      number: '贵'+'@character("upper")'+'@string("number", 5)',
-      'status|0-1': 1,
-      'occupy|1-20': 1, 
-      'type|+1': ["箱货", "货车", "平板", "面包车", "冷藏车"],
+      driveLicense: '@id',
+      plateNumber: '贵'+'@character("upper")'+'@string("number", 5)',
+      'state|+1': ["ON", "OFF"],
+      'loads|1-20': 1, 
+      'vehicleType|+1': ["箱货", "货车", "平板", "面包车", "冷藏车"],
       'brand|+1': ["五菱", "依维柯", "金杯", "卡玛斯", "东风"],
       drivers: [{id:'@id', name: '@cname', phone: /^1[34578]\d{9}$/}, {id:'@id', name: '@cname', phone: /^1[34578]\d{9}$/}, {id:'@id', name: '@cname', phone: /^1[34578]\d{9}$/}], 
       company: '@ctitle(3,5)', 
       owner: '@cname',
-      phone: /^1[34578]\d{9}$/, 
+      ownerPhone: /^1[34578]\d{9}$/, 
       createTime: '@datetime',
     },
   ],
@@ -42,15 +43,16 @@ let assignedVehicleList = Mock.mock({
   'data|80-100': [
     {
       id: '@id',
-      number: '贵'+'@character("upper")'+'@string("number", 5)',
-      'status|1-2': 1,
-      'occupy|1-20': 1, 
-      'type|+1': ["箱货", "货车", "平板", "面包车", "冷藏车"],
+      driveLicense: '@id',
+      plateNumber: '贵'+'@character("upper")'+'@string("number", 5)',
+      'state|+1': ["ON", "OFF"],
+      'loads|1-20': 1, 
+      'remainLoads|1-20': 1, 
+      'vehicleType|+1': ["箱货", "货车", "平板", "面包车", "冷藏车"],
       'brand|+1': ["五菱", "依维柯", "金杯", "卡玛斯", "东风"],
-      driver: {name:'@cname', phone: /^1[34578]\d{9}$/, },
+      driver: {id:'@id',name:'@cname', phone: /^1[34578]\d{9}$/, },
       company: '@ctitle(3,5)', 
       "track|3-5":[{"x|+1":[114.99, 115.01, 115.12, 115.22, 115.32, 115.55, 115.65, 115.88, 115.998, 116.012, 116.1234, 116.234, 116.252, 116.272, 116.292, 116.252, 116.292, 116.312, 116.352,],"y|+1":[39.5, 39.7, 39.84, 39.89, 39.9856, 39.9955,]}],
-      "location|1":[{ x: 116.1234, y: 39.89},{ x: 116.234, y: 39.8955},{ x: 116.34, y: 39.9955},{ x: 116.34, y: 40.1},{ x: 116.234, y: 39.7955},{ x: 116.4, y: 39.9955},{ x: 116.2222, y: 39.8986},{ x: 116.2522, y: 39.8996},{ x: 116.4232, y: 39.916},{ x: 116.2232, y: 39.9856},{ x: 116.3252, y: 40.056}],      
     },
   ],
 })
@@ -117,12 +119,13 @@ module.exports = {
       }
     }
 
-    res.status(200).json({
-      data: {
-        content : newData.slice((page - 1) * pageSize, page * pageSize),
-        total: newData.length
-      }
-    })
+    // res.status(200).json({
+    //   data: {
+    //     content : newData.slice((page - 1) * pageSize, page * pageSize),
+    //     total: newData.length
+    //   }
+    // })
+    res.status(200).json({"code":"200","msg":"接口调用成功","sub_code":"20000","sub_msg":"操作成功","data":{"content":[{"id":2,"vehicleType":"货车","plateNumber":"222","driveLicense":"111111","operatorLicense":"","state":"OFF","brand":"11","company":"22","owner":"22","ownerPhone":"22","loads":222.0,"drivers":[{"creator":1,"createTime":"2018-08-28","lastModifyTime":"2018-08-28","lastModifier":"","version":1,"id":"111","name":"测试姓名","gender":"MALE","drivingLicense":"10010222443434","idCard":"2357111317","education":"本科","bankCard":"1234567","phone":"13912345678","sysDriver":"","deleted":false}]},{"id":1,"vehicleType":"货车","plateNumber":"222","driveLicense":"1","operatorLicense":"","state":"ON","brand":"111","company":"11","owner":"11","ownerPhone":"11","loads":111.0,"drivers":[]}],"last":true,"totalPages":1,"totalElements":2,"size":20,"number":0,"sort":[{"direction":"DESC","property":"id","ignoreCase":false,"nullHandling":"NATIVE","ascending":false,"descending":true}],"first":true,"numberOfElements":2}});
   },
 
   [`GET ${apiPrefix}/${collectionName}/candidate`] (req, res) {
@@ -138,23 +141,23 @@ module.exports = {
         total: newData.length
       }
     })
+    // res.status(200).json({"code":"200","msg":"接口调用成功","sub_code":"20000","sub_msg":"操作成功","data":{"content":[{"id":2,"vehicleType":"货车","plateNumber":"222","driveLicense":"111111","operatorLicense":"","state":"OFF","brand":"11","company":"22","owner":"22","ownerPhone":"22","loads":222.0,"drivers":[{"creator":1,"createTime":"2018-08-28","lastModifyTime":"2018-08-28","lastModifier":"","version":1,"id":"111","name":"测试姓名","gender":"MALE","drivingLicense":"10010222443434","idCard":"2357111317","education":"本科","bankCard":"1234567","phone":"13912345678","sysDriver":"","deleted":false}]},{"id":1,"vehicleType":"货车","plateNumber":"222","driveLicense":"1","operatorLicense":"","state":"ON","brand":"111","company":"11","owner":"11","ownerPhone":"11","loads":111.0,"drivers":[]}],"last":true,"totalPages":1,"totalElements":2,"size":20,"number":0,"sort":[{"direction":"DESC","property":"id","ignoreCase":false,"nullHandling":"NATIVE","ascending":false,"descending":true}],"first":true,"numberOfElements":2}});
   },
 
   [`GET ${apiPrefix}/${collectionName}/situation`] (req, res) {
     const { query } = req
-    let { number } = query
-    let newData = withtrackdb
-    let result = {}
-    var vehicles = newData.filter((item) => {
-      return item.number == number
-    })
-    if(vehicles.length == 0){
-      result = newData[parseInt(Math.random()*100000%newData.length)]
-    }else {
-      result = vehicles[0]
-    }
+    let { pageSize, page, ...other } = query
+    pageSize = pageSize || 10
+    page = page || 1
+
+    let newData = assignedVehicleList.data
     res.status(200).json({
-      data: result
+      /*data: {
+        content : newData.slice((page - 1) * pageSize, page * pageSize),
+        total: newData.length
+      }*/
+      // 后台接口数据
+      "data":{"id":1,"vehicleType":"箱货","plateNumber":"京A123456","driveLicense":"9876543210","operatorLicense":"","state":"ON","brand":"大众","company":"大众公司","owner":"李四","ownerPhone":"18612345678","loads":3,"remainLoads":0,"driver":{"id":"1597654343872662","name":"张三","gender":"男","drivingLicense":"1597654343872662","idCard":"11012222222223333","education":"本科","bankCard":"23132131231312331","phone":"12312312313213","status":""},"track":[{"x":116.307629,"y":40.058359},{"x":116.307629,"y":40.158359}]}
     })
   },
 
@@ -195,7 +198,7 @@ module.exports = {
         if(!drivers[i].hasOwnProperty('name'))
           drivers[i]['name'] = Mock.mock('@cname');
         if(!i.hasOwnProperty('phone'))
-          drivers[i]['phone'] = Mock.mock(/^1[34578]\d{9}$/);
+          drivers[i]['ownerPhone'] = Mock.mock(/^1[34578]\d{9}$/);
       }
     }
 
@@ -240,7 +243,7 @@ module.exports = {
             if(!drivers[i].hasOwnProperty('name'))
               drivers[i]['name'] = Mock.mock('@cname');
             if(!i.hasOwnProperty('phone'))
-              drivers[i]['phone'] = Mock.mock(/^1[34578]\d{9}$/);
+              drivers[i]['ownerPhone'] = Mock.mock(/^1[34578]\d{9}$/);
           }
         }
         return Object.assign({}, item, editItem)
@@ -254,6 +257,7 @@ module.exports = {
       res.status(404).json(NOTFOUND)
     }
   },
+
 
   // [{ x: 116.1234, y: 39.89},{ x: 116.234, y: 39.8955},{ x: 116.34, y: 39.9955},{ x: 116.34, y: 40.1},{ x: 116.234, y: 39.7955},{ x: 116.4, y: 39.9955},{ x: 116.2222, y: 39.8986},{ x: 116.2522, y: 39.8996},{ x: 116.4232, y: 39.916},{ x: 116.2232, y: 39.9856},{ x: 116.3252, y: 40.056}]
 }

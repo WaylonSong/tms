@@ -10,17 +10,25 @@ let deliveryListData2 = Mock.mock({
     {
       'id|+1': 10000001,
       'customerOrder.id|+1': 10000001,
-      from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: 140425, address: {str:'@cword(5, 10)', x:'33', y:'116'}},
-      to:   {name: '@cname', phone: /^1[34578]\d{9}$/, district: 140425, address: {str:'@cword(5, 10)', x:'33', y:'116'}}, 
-      'price|150-250.1-2': 1,
-      vehicle: {id:"@id", number:'贵'+'@character("upper")'+'@string("number", 5)'},
+      from: {name: '@cname', phone: /^1[34578]\d{9}$/, district: 110101, 'address|+1': [{str:'东直门', x:'33', y:'116'}, {str:'三里屯', x:'33.01', y:'116'}]},
+      to:   {name: '@cname', phone: /^1[34578]\d{9}$/, district: 110101, address: {str:'天安门', x:'33', y:'116.01'}}, 
+      'deliverPrice|150-250.1-2': 1,
+      vehicle: {id:"@id", plateNumber:'贵'+'@character("upper")'+'@string("number", 5)'},
       driver:{id:"@id", name: '@cname', phone: /^1[34578]\d{9}$/},
       distance: 100,
       detail:'@ctitle',
-      'cube|1-100.1-2': 1, 
       'deliverOrderState|+1': ["NOT_PAID", "NOT_DISTRIBUTED", "NOT_RECEIVED"],
       createTime: '@datetime',
       distributTime: '@datetime',
+      "cargoes": [{
+        "name": "",
+        "count": "",
+        "weight": 2.00,
+        "volume": 5.00,
+        "price": "",
+        "cargoType": "",
+        "remark": "123132131"
+      }],
       loadTime: '@datetime',
       completeTime: '@datetime',
     },
@@ -99,14 +107,14 @@ module.exports = {
   },
 
   [`DELETE ${apiPrefix}/${collectionName}`] (req, res) {
-    const { ids } = req.body
+    const { ids } = req.params
     database = database.filter(item => !ids.some(_ => _ === item.id))
     res.status(204).end()
   },
 
 
   [`POST ${apiPrefix}/${collectionName}`] (req, res) {
-    const newData = req.body
+    const newData = req.params
     newData.createTime = Mock.mock('@now')
     newData.avatar = newData.avatar || Mock.Random.image('100x100', Mock.Random.color(), '#757575', 'png', newData.nickName.substr(0, 1))
     newData.id = Mock.mock('@id')
@@ -117,14 +125,13 @@ module.exports = {
   },
 
   [`POST ${apiPrefix}/${collectionName}/assignTo`] (req, res) {
-    const newData = req.body
-    const {id, vehicle_number} = req.body
+    const newData = req.params
+    const {deliverOrderNo, vehicleId, driverId} = req.params
     database = database.map((item) => {
-      if (item.id === id) {
+      if (item.id === deliverOrderNo) {
         var editItem = Object.assign({}, item)
-        editItem.vehicle = vehicle_number
+        editItem.vehicle.id = vehicleId
         editItem.deliverOrderState = "NOT_RECEIVED"
-        console.log(editItem)
         return editItem
       }
       return item
@@ -133,7 +140,7 @@ module.exports = {
   },
 
   [`POST ${apiPrefix}/${collectionName}/split`] (req, res) {
-    const {id, splitCubes} = req.body
+    const {id, splitCubes} = req.params
     var subItems = [];
     for(var j in database){
       if (database[j].id === id) {
@@ -165,9 +172,7 @@ module.exports = {
 
   [`GET ${apiPrefix}/${collectionName}/:id`] (req, res) {
     const { id } = req.params
-    console.log(database)
     const data = queryArray(database, id, 'id')
-    console.log(data)
     if (data) {
       res.status(200).json({data:data})
     } else {

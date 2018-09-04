@@ -4,31 +4,33 @@ import { Form, Input, InputNumber, Radio, Modal, Cascader, Row, Col, Card, Icon,
 // import {columns} from './List'
 import ACDriver from './ACDriver'
 const Option = Select.Option;
+// const options = ['id', 'plateNumber', 'vehicleSubType', 'brand', 'loads', 'driveLicense', 'operatorLicense', 'owner', 'ownerPhone']
+
 const columns = [
     {
       title: '行驶证编号',
-      dataIndex: 'id',
-      key: 'id',
+      dataIndex: 'driveLicense',
+      key: 'driveLicense',
     }, {
       title: '车牌号码',
-      dataIndex: 'number',
-      key: 'number',
+      dataIndex: 'plateNumber',
+      key: 'plateNumber',
     }, {
       title: '车辆状态',
-      dataIndex: 'status',
-      key: 'status',
+      dataIndex: 'state',
+      key: 'state',
     }, {
       title: '车型',
-      dataIndex: 'type',
-      key: 'type',
+      dataIndex: 'vehicleType',
+      key: 'vehicleType',
     },{
       title: '品牌',
       dataIndex: 'brand',
       key: 'brand',
     }, {
       title: '载重',
-      dataIndex: 'occupy',
-      key: 'occupy',
+      dataIndex: 'loads',
+      key: 'loads',
     }, {
       title: '司机',
       dataIndex: 'drivers',
@@ -43,8 +45,8 @@ const columns = [
       key: 'owner',
     }, {
       title: '车主电话',
-      dataIndex: 'phone',
-      key: 'phone',
+      dataIndex: 'ownerPhone',
+      key: 'ownerPhone',
     },{
       title: '操作',
       key: 'operation',
@@ -140,23 +142,40 @@ const modal = ({
     for(var i = 0; i < columns.length-1; i++){
       if(columns[i].title == '司机')
         continue;
-      if(columns[i].title == '车辆状态'){
+      else if(columns[i].title == '车辆状态'){
         list.push(
           <FormItem label="车辆状态" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('status', {
-              initialValue: item[columns[i].key]||0,
+            {getFieldDecorator('state', {
+              initialValue: item[columns[i].key]||"ON",
               rules: [
                 {
                   required: true,
                 },
               ],
             })(
-              <Radio.Group defaultValue={0}>
-                <Radio value={0}>下班</Radio>
-                <Radio value={1}>当班</Radio>
+              <Radio.Group>
+                <Radio value={"OFF"}>下班</Radio>
+                <Radio value={"ON"}>当班</Radio>
               </Radio.Group>
             )}
           </FormItem>
+        );
+      }else if(columns[i].title == '载重'){
+        list.push(
+            <FormItem label="载重" {...formItemLayout}>
+                {getFieldDecorator(`loads`, {
+                  initialValue: item[columns[i].key]||0,
+                  rules: [
+                    {
+                      required: true,
+                    },
+                  ],
+                })(<InputNumber
+                    {...disableFlag}
+                    min={0}
+                  />)}<span>千克</span>
+              </FormItem>
+
         );
       }else{
         list.push(<FormItem label={columns[i].title} hasFeedback {...formItemLayout}>
@@ -170,6 +189,7 @@ const modal = ({
           })(columns[i].title=='车型'?<Select {...disableFlag}>{types.map(function(j){return <Option key={`option_${j}`} value={j}>{j}</Option>})}</Select>:<Input {...disableFlag}/>)}
         </FormItem>)
       }
+      
     }
     return list;
   }

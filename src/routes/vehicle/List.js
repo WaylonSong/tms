@@ -12,6 +12,8 @@ import {EnumOnDutyType} from '../../utils/enums'
 const confirm = Modal.confirm
 const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, onTrack, ...tableProps }) => {
   location.query = queryString.parse(location.search)
+// const options = ['id', 'plateNumber', 'vehicleSubType', 'brand', 'loads', 'driveLicense', 'operatorLicense', 'owner', 'ownerPhone']
+
   const columns = [
     {
       title: '操作',
@@ -22,28 +24,28 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, onTr
       },
     },{
       title: '行驶证编号',
-      dataIndex: 'id',
-      key: 'id',
+      dataIndex: 'driveLicense',
+      key: 'driveLicense',
       width: 80,
       className: styles.avatar,
       // render: (text, record) => <a onClick={e => viewItem(record.id, e)}>{text}</a>,
     }, {
       title: '车牌号码',
-      dataIndex: 'number',
-      key: 'number',
+      dataIndex: 'plateNumber',
+      key: 'plateNumber',
       width: 80,
       className: styles.avatar,
       // render: (text, record) => <a onClick={e => viewItem(record.id, e)}>{text}</a>,
     }, {
       title: '车辆状态',
-      dataIndex: 'status',
-      key: 'status',
+      dataIndex: 'state',
+      key: 'state',
       width: 80,
-      render: (text) => <span>{text==String(EnumOnDutyType.ON)?'当班':'休息'}</span>,
+      render: (text) => <span>{EnumOnDutyType[text]}</span>,
     }, {
       title: '车型',
-      dataIndex: 'type',
-      key: 'type',
+      dataIndex: 'vehicleType',
+      key: 'vehicleType',
       width: 80,
       render: (text) => <span>{text}</span>,
     },{
@@ -54,10 +56,16 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, onTr
       render: (text) => <span>{text}</span>,
     }, {
       title: '载重',
-      dataIndex: 'occupy',
-      key: 'occupy',
+      dataIndex: 'loads',
+      key: 'loads',
       width: 80,
-      render: (text) => <span>{text}吨</span>,
+      render: (text) => <span>{text} 千克</span>,
+    }, {
+      title: '剩余载重',
+      dataIndex: 'remainLoads',
+      key: 'remainLoads',
+      width: 80,
+      render: (text) => <span>{text} 千克</span>,
     }, {
       title: '司机',
       dataIndex: 'drivers',
@@ -78,9 +86,9 @@ const List = ({ resourceName, onDeleteItem, onEditItem, isMotion, location, onTr
       render: (text) => <span>{text}</span>,
     }, {
       title: '车主电话',
-      dataIndex: 'phone',
+      dataIndex: 'ownerPhone',
       width: 100,
-      key: 'phone',
+      key: 'ownerPhone',
       render: (text) => <span>{text}</span>,
     },
   ]

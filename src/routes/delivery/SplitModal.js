@@ -10,6 +10,7 @@ import classnames from 'classnames'
 import styles from './Modal.less'
 import {EnumDeliveryStatus} from '../../utils/enums'
 const confirm = Modal.confirm;
+import {getFullName} from '../../utils/cityTools'
 
 const TabPane = Tabs.TabPane
 
@@ -61,7 +62,7 @@ const SplitModal = ({
           const data = {
             ...result,
           }
-          console.log(data)
+          /*console.log(data)
           var totalCubes = 0;
           data.splitCubes.map((i)=>{
             totalCubes += i;
@@ -69,7 +70,8 @@ const SplitModal = ({
           if(totalCubes != getFieldValue("cube")){
             message.error("拆分运单体积总量与原始运单不符！")
             return
-          }
+          }*/
+          console.log(data)
           onOk(data)
         })
       },
@@ -106,14 +108,34 @@ const SplitModal = ({
         return  <Col xs={{ span: 24}} lg={{ span: 12}}>
             <Card style={{width: '100%'}} title={`拆分运单-${index+1}`} bordered={false} {...{extra}}>
               <FormItem label="货物体积"  {...formItemLayout}>
-                {getFieldDecorator(`splitCubes[${index}]`, {
+                {getFieldDecorator(`splitCubes[${index}]['volume']`, {
                   initialValue: 0,
                   rules: [
                     {
                       required: true,
                     },
                   ],
-                })(<InputNumber min={0} max={item.cube}/>)}<span>立方米</span>
+                })(<InputNumber min={0} max={item.cargoes[0].volume}/>)}<span>立方米</span>
+              </FormItem>
+              <FormItem label="货物重量"  {...formItemLayout}>
+                {getFieldDecorator(`splitCubes[${index}]['weight']`, {
+                  initialValue: 0,
+                  rules: [
+                    {
+                      required: true,
+                    },
+                  ],
+                })(<InputNumber min={0} max={item.cargoes[0].weight}/>)}<span>千克</span>
+              </FormItem>
+              <FormItem label="运费金额"  {...formItemLayout}>
+                {getFieldDecorator(`splitCubes[${index}]['deliverPrice']`, {
+                  initialValue: 0,
+                  rules: [
+                    {
+                      required: true,
+                    },
+                  ],
+                })(<InputNumber min={0} max={item.deliverPrice}/>)}<span>元</span>
               </FormItem>
             </Card>
           </Col>
@@ -142,7 +164,7 @@ const SplitModal = ({
             <Card style={{width: '100%'}} title="原始运单" bordered={false}>
               <FormItem label="发货区域" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('from.district', {
-                  initialValue: item.from.district && item.from.district.split(' '),
+                  initialValue: item.from.district && getFullName(item.from.district).split(' '),
                   rules: [
                     {
                       required: true,
@@ -152,7 +174,7 @@ const SplitModal = ({
               </FormItem>
               <FormItem label="发货地址" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('from.address', {
-                  initialValue: item.from.address,
+                  initialValue: item.from.address.str,
                   rules: [
                     {
                       required: true,
@@ -181,8 +203,28 @@ const SplitModal = ({
                 })(<Input {...disableFlag}/>)}
               </FormItem>
               <FormItem label="货物体积" hasFeedback {...formItemLayout}>
-                {getFieldDecorator('cube', {
-                  initialValue: item.cube,
+                {getFieldDecorator('item.cargoes[0].volume', {
+                  initialValue: item.cargoes[0].volume,
+                  rules: [
+                    {
+                      required: true,
+                    },
+                  ],
+                })(<Input {...disableFlag}/>)}
+              </FormItem>
+              <FormItem label="货物重量" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('item.cargoes[0].weight', {
+                  initialValue: item.cargoes[0].weight,
+                  rules: [
+                    {
+                      required: true,
+                    },
+                  ],
+                })(<Input {...disableFlag}/>)}
+              </FormItem>
+              <FormItem label="配送价格" hasFeedback {...formItemLayout}>
+                {getFieldDecorator('item.deliverPrice', {
+                  initialValue: item.deliverPrice,
                   rules: [
                     {
                       required: true,
@@ -193,7 +235,7 @@ const SplitModal = ({
              
               <FormItem label="收货区域" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('to.district', {
-                  initialValue: item.to.district && item.to.district.split(' '),
+                  initialValue: item.to.district && getFullName(item.to.district).split(' '),
                   rules: [
                     {
                       required: true,
@@ -203,7 +245,7 @@ const SplitModal = ({
               </FormItem>
               <FormItem label="收货地址" hasFeedback {...formItemLayout}>
                 {getFieldDecorator('from.address', {
-                  initialValue: item.to.address,
+                  initialValue: item.to.address.str,
                   rules: [
                     {
                       required: true,

@@ -101,10 +101,19 @@ const Obj = (props) => {
         type: resourceName+'/hideViewModal',
       })
     },
-    onTransfer:(nextState)=>()=>{
+    toPay:(paymentId)=>()=>{
+      console.log(paymentId)
       dispatch({
-        type: resourceName +'/nextState',
-        payload: {nextState:nextState, id:currentItem.id}
+        type: `${resourceName}/pay`,
+        payload: {
+          paymentId: paymentId,
+        },
+      })
+    },
+    orderCancel:(nextState)=>{
+      dispatch({
+        type: resourceName +'/orderCancel',
+        payload: {id:currentItem.id}
       });
     },
     viewDelivery:(id)=>()=>{
@@ -114,21 +123,20 @@ const Obj = (props) => {
     }
   }
   const payModalProps = {
-    item: currentItem,
     visible: props[resourceName].payModalVisible,
+    payment: props[resourceName].payment,
     maskClosable: false,
     confirmLoading: loading.effects[resourceName+'/pay'],
-    title: "支付订单："+currentItem.id,
     wrapresourceName: 'vertical-center-modal',
     onCancel () {
       dispatch({
         type: resourceName+'/hidePayModalVisible',
       })
     },
-    onPayComplete () {
+    onPaid : (paymentId)=>()=>{
       dispatch({
-        payload : {id:currentItem.id},
-        type: resourceName+'/onPayComplete',
+        type: resourceName+'/paid',
+        payload : {paymentId:paymentId},
       })
     },
   }
@@ -164,11 +172,11 @@ const Obj = (props) => {
         },
       })
     },
-    onPay(recordId){
+    onPay(paymentId){
       dispatch({
         type: `${resourceName}/pay`,
         payload: {
-          currentItemId: recordId,
+          paymentId: paymentId,
         },
       })
     }

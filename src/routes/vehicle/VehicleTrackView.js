@@ -29,7 +29,7 @@ class VehicleTrackView extends Component {
     	var p = e.target;
     	var self = this;
 		var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
-		var jsx = `<h2>当前派送车辆详情</h4><div>车牌号码：${params.number}</div><div>车型：${params.brand}-${params.type}</div><div>剩余空间：${params.occupy}立方米</div>
+		var jsx = `<h2>当前派送车辆详情</h4><div>车牌号码：${params.plateNumber}</div><div>车型：${params.brand}</div><div>剩余空间：${params.remainLoads}立方米</div>
 					<div>司机：${params.driver.name}</div><div>司机手机：${params.driver.phone}</div>
                     `
 		var infoWindow = new BMap.InfoWindow(jsx,opts);  // 创建信息窗口对象 
@@ -38,6 +38,7 @@ class VehicleTrackView extends Component {
 
     componentDidMount() {
 		var options = this.options;
+        var item = this.props.vehicle
 
         options = this.getOptions(options);
         if (this.props.enableMapClick !== true) {
@@ -59,21 +60,20 @@ class VehicleTrackView extends Component {
   //       console.log(from, to);
         // driving.search(from, to);
         // driving.search("昌平", "涞水");
+        this.map.centerAndZoom(new BMap.Point(item.track[item.track.length-1].x, item.track[item.track.length-1].y)||'北京',12);   
+
 		var zoom = this.props.zoom;
         // this.map.centerAndZoom(this.props.center||'北京',12);   
-        var item = this.props.vehicle;
-        console.log(item);
         var self = this;
-    	var marker2 = new BMap.Marker(new BMap.Point(item.location.x, item.location.y),{icon:new BMap.Icon("/truck.png", new BMap.Size(50,50))});  // 创建标注
-		marker2.setLabel(new BMap.Label(item.number, {offset:new BMap.Size(20,-10)}));
+    	var marker2 = new BMap.Marker(new BMap.Point(item.track[item.track.length-1].x, item.track[item.track.length-1].y),{icon:new BMap.Icon("/truck.png", new BMap.Size(50,50))});  // 创建标注
+		marker2.setLabel(new BMap.Label(item.plateNumber, {offset:new BMap.Size(20,-10)}));
 		map.addOverlay(marker2);
 		marker2.addEventListener("click", function(e){
 			self.openInfo(item, e, map)}
 		)
         var points = [];
-        this.map.centerAndZoom(new BMap.Point(item.location.x, item.location.y)||'北京',12);   
         
-        points.push(new BMap.Point(item.location.x, item.location.y))
+        points.push(new BMap.Point(item.track[item.track.length-1].x, item.track[item.track.length-1].y))
         item.track.map(function(i){
             points.push(new BMap.Point(i.x, i.y))
         })

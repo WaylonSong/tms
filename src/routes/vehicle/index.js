@@ -13,7 +13,8 @@ import {EnumOnDutyType} from '../../utils/enums'
 const resourceName = "vehicle";
 const TabPane = Tabs.TabPane
 
-const options = ['id', 'number', 'type', 'brand', 'occupy']
+// const options = ['id', 'plateNumber', 'vehicleSubType', 'brand', 'loads', 'driveLicense', 'operatorLicense', 'owner', 'ownerPhone']
+const options = ['plateNumber', 'vehicleType', 'brand', 'loads', 'driveLicense']
 
 const Obj = (props) => {
   var {dispatch, loading, location } = props;
@@ -102,7 +103,7 @@ const Obj = (props) => {
   const handleTabClick = (key) => {
     var routes = {
       pathname,
-      search: queryString.stringify({...query, status:key, page:1}),
+      search: queryString.stringify({...query, state:key, page:1}),
       // query: ({status:key}),
     }
     dispatch(routerRedux.push(routes))
@@ -134,10 +135,9 @@ const Obj = (props) => {
 
 
   var activeKey = "";
-  if(query.status === String(EnumOnDutyType.ON))
-    activeKey = String(EnumOnDutyType.ON)
-  else if(query.status === String(EnumOnDutyType.OFF))
-    activeKey = String(EnumOnDutyType.OFF)
+  if(query.state){
+    activeKey = String(query.state)
+  }
 
   const parsed = queryString.parse(location.search);
   // console.log(location);
@@ -149,10 +149,10 @@ const Obj = (props) => {
         <TabPane tab="全部" key={""}>
           <List {...listProps} />
         </TabPane>
-        <TabPane tab="当班车辆" key={String(EnumOnDutyType.ON)}>
+        <TabPane tab="当班车辆" key={"ON"}>
           <List {...listProps} />
         </TabPane>
-        <TabPane tab="休息车辆" key={String(EnumOnDutyType.OFF)}>
+        <TabPane tab="休息车辆" key={"OFF"}>
           <List {...listProps} />
         </TabPane>
       </Tabs>

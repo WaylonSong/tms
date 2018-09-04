@@ -1,4 +1,5 @@
 /* global window */
+/* global window */
 // import { crudModelGenerator } from './common'
 import delivery from '../delivery'
 import pathToRegexp from 'path-to-regexp'

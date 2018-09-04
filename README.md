@@ -1,7 +1,22 @@
 
 ## 大概设计思路
 订单-运单-车辆：
-订单可以支持一单多票，即同一发送地址到多个目的地，下单成功后会根据目的地行程多个运单，运单可以再进行拆分到子运单等，目前业务流转请求响应与数据使用Mock测试框架模拟，在数据一致性上会有差。
+下单可以支持一单多票，即同一发送地址到多个目的地，下单成功后会根据目的地行程多个订单（CustomOrder），多个CustomerOrder关联一条相同的支付信息Payment，即可以进行合并支付，Payment支付成功各个CustomerOrder进入代配送状态。Payment取消则各个CustomerOrder均取消。
+
+订单创建成功同时会生成一条运单信息DeliveryOrder，实际关联了配送车辆、司机等信息，对于运单可以货物重量大小进行进一步拆分，对于干路运输后续可以增加按段进行拆分。
+
+关联关系是 Payment一对多关联CustomerOrder， CustomerOrder一对多关联DeliveryOrder（如果没有发生拆单等情况，实际上一条CustomerOrder只对应了一条DeliverOrder）
+
+## Tips
+核心的路由文件以及UI model绑定在router.js文件中实现
+注册组件在routes/register中 尚未使用
+地图组件在components/Map中 实现对百度地图的封装
+页面框架包括面包屑、菜单栏等在componets/Layout中，Menu的数据文件在models/app.js中
+
+运单状态的改变 要结合后端项目的Swagger来一起调整
+
+
+具体实现
 
 项目部署时，注意前后端分离，可以单独部署前后端项目，也可以将前端项目打包配置到后端的镜像资源（注意模板、路由等配置），注意路径配置于跨域访问，配置api路径访问后端项目--[配置文件](https://github.com/WaylonSong/tms/blob/master/src/utils/config.js)
 

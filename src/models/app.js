@@ -54,14 +54,14 @@ const menuList =[
     name: '车辆列表',
     icon: 'video-camera',
     route: '/vehicle',
-  },{
+  },/*{
     id: 42,
     bpid: 4,
     mpid: 4,
     name: '车辆分布',
     icon: 'dot-chart',
     route: '/vehicle/map',
-  },{
+  },*/{
     id: 43,
     bpid: 4,
     mpid: 4,

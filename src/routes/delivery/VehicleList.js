@@ -13,12 +13,12 @@ const status = ['待分配', '待接货', '配送中', '已送达'];
 const confirm = Modal.confirm
 const List = ({ distributProps }) => {
   // location.query = queryString.parse(location.search)
-  const showConfirm = (number, driver, phone)=>()=>{
+  const showConfirm = (record)=>()=>{
     confirm({
       title: '确定分批？',
-      content: `确定分批给车辆“${number}”吗？`,
+      content: `确定分批给车辆“${record.plateNumber}”吗？`,
       onOk() {
-        distributProps.assignTo(number, driver, phone)
+        distributProps.assignTo(record.id, record.driver.id)
       },
       onCancel() {},
     });
@@ -26,8 +26,8 @@ const List = ({ distributProps }) => {
   const columns = [
     {
       title: '车牌号码',
-      dataIndex: 'number',
-      key: 'number',
+      dataIndex: 'plateNumber',
+      key: 'plateNumber',
       width: 80,
     }, {
       title: '当班司机',
@@ -43,8 +43,8 @@ const List = ({ distributProps }) => {
       render: (text) => <span>{text}</span>,
     }, {
       title: '车型',
-      dataIndex: 'type',
-      key: 'type',
+      dataIndex: 'vehicleType',
+      key: 'vehicleType',
       width: 80,
       render: (text) => <span>{text}</span>,
     }, {
@@ -55,10 +55,12 @@ const List = ({ distributProps }) => {
       render: (text) => <span>{text}</span>,
     }, {
       title: '剩余载重',
-      dataIndex: 'occupy',
-      key: 'occupy',
+      dataIndex: 'remainLoads',
+      key: 'remainLoads',
       width: 80,
-      render: (text) => <span>{text}吨</span>,
+      // render: (record) => <span>{record.remainLoads||record.loads} 千克</span>,
+      render: (text) => <span>{text+' 千克'}</span>,
+
     }, /*{
       title: '车辆位置',
       dataIndex: 'location',
@@ -70,7 +72,7 @@ const List = ({ distributProps }) => {
       dataIndex: 'submit',
       key: 'submit',
       width: 80,
-      render: (text, record) => <Button type="primary" disabled={distributProps.distribut.distributButtonDisabled} onClick={showConfirm(record.number, record.driver.name, record.driver.phone)}>指派</Button>,
+      render: (text, record) => <Button type="primary" disabled={distributProps.distribut.distributButtonDisabled} onClick={showConfirm(record)}>指派</Button>,
     }
   ]
   const getBodyWrapperProps = {

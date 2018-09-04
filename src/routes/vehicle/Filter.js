@@ -10,7 +10,7 @@ const InputGroup = Input.Group;
 const Option = Select.Option;
 const Search = Input.Search
 const { RangePicker } = DatePicker
-const options = [{'id':'行驶证编号'}, {'number':'车牌号码'}, {'type':'车型'}, {'brand':'品牌'}, {'occupy':'载重'}]
+const options = [{'driveLicense':'行驶证编号'}, {'plateNumber':'车牌号码'}, {'vehicleSubType':'车型'}, {'brand':'品牌'}, {'loads':'载重'}]
 
 const ColProps = {
   xs: 24,

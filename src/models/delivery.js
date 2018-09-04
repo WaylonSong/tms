@@ -96,7 +96,6 @@ obj.reducers['minusSplitCube'] = (state, { payload }) => {
 
 obj.effects['editItem'] = function *({ payload}, { call, put }){
 	// payload.currentItemId
-	console.log(payload.id)
 	const data = yield call(query, {id:payload.id}, `${collectionName}`)
 	var putData = {
         type: `showModal`,
@@ -105,9 +104,14 @@ obj.effects['editItem'] = function *({ payload}, { call, put }){
           currentItem: data.data,
         }
     }
-	if(data.deliverOrderState != "NOT_DISTRIBUTED"){
-		const assignedVehicle = yield call(querySituation, {number:data.vehicle}, `vehicles`)
-		putData.payload['assignedVehicle'] = /*assignedVehicle.data[0]||*/{"id":"130000199703110733","number":"贵N93121","status":1,"occupy":16,"type":"箱货","brand":"五菱","driver":{name:"曹艳",phone:"17016385315"},"company":"党段型安名","location":{"x":116.424,"y":39.915}, "track":[{"x":116.384,"y":39.925},{"x":116.355,"y":39.930}, {"x":116.280,"y":39.927}, {"x":116.104,"y":39.905}]};
+    if(data.data.deliverOrderState == "NOT_PAID"){
+		yield put(putData)
+    	return;
+    }
+	if(data.data.deliverOrderState != "NOT_DISTRIBUTED"){
+		// const assignedVehicle = yield call(querySituation, {number:data.vehicle}, `vehicles`)
+		// 查询候选车辆
+		putData.payload['assignedVehicle'] = /*assignedVehicle.data[0]||*/{"vehicle":{"id":"130000199703110733","plateNumber":"贵N93121","status":1,"occupy":16,"type":"箱货","brand":"五菱","company":"党段型安名","location":{"x":116.424,"y":39.915}, "track":[{"x":116.384,"y":39.925},{"x":116.355,"y":39.930}, {"x":116.280,"y":39.927}, {"x":116.104,"y":39.905}]}, "driver":{id:1, name:"曹艳",phone:"17016385315"}};
 		yield put(putData)
 	}else{
 		yield put({type: 'queryCandidateVehicles', payload, putData})
@@ -121,7 +125,7 @@ obj.effects['splitItem'] = function *({ payload}, { call, put }){
         type: `showSplitModal`,
         payload: {
           modalType: payload.modalType,
-          currentItem: {...data, splitCubes:[0, 0]}
+          currentItem: {...data.data, splitCubes:[0, 0]}
         }
     }
     yield put(putData)
@@ -149,7 +153,7 @@ obj.effects['queryCandidateVehicles'] = function *({payload, putData}, { call, p
     }
 	var vehicles = yield call(queryCandidateVehicles, {id:payload.id, page:payload.page||1, pageSize:payload.pageSize||10})
 
-	if(vehicles){
+	if(vehicles.data){
 		putData2.payload['distribut'] = {
           	candidateVehicles: vehicles.data.content,
 			distributButtonDisabled: false,
@@ -165,6 +169,7 @@ obj.effects['queryCandidateVehicles'] = function *({payload, putData}, { call, p
 
 obj.effects['assignTo'] = function *({payload}, { call, put, select }){
 	// payload.currentItemId
+	console.log(payload)
 	yield put({
 		type: 'updateItemPending', 
 	})

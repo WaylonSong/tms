@@ -115,13 +115,6 @@ const modal = ({
               <Input/>
             )}
           </FormItem>
-          <FormItem label="所在车辆" hasFeedback {...formItemLayout}>
-            {getFieldDecorator('number', {
-              initialValue: item.number||'',
-            })(
-              <Input/>
-            )}
-          </FormItem>
           <FormItem label="性别" hasFeedback {...formItemLayout}>
             {getFieldDecorator('gender', {
               initialValue: item.gender||'男',
@@ -166,10 +159,10 @@ const modal = ({
           </FormItem>
           <FormItem label="在岗状态" hasFeedback {...formItemLayout}>
             {getFieldDecorator('status', {
-              initialValue: item.status||0,
+              initialValue: item.status||"ON",
               rules: [{required: true}],
             })(
-              <Radio.Group defaultValue={0}>
+              <Radio.Group>
                 <Radio value={"OFF"}>下班</Radio>
                 <Radio value={"ON"}>当班</Radio>
               </Radio.Group>
